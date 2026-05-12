@@ -82,6 +82,9 @@ rectangle "Sistema de Gestão das Olimpíadas (SGO)" {
   ' --- UC11: Exportar Relatório de Medalhas ---
   usecase "UC11 - Exportar Relatório de Medalhas" as UC11  #E3F2FD
 
+  ' --- UC12: Cancelar Competição ---
+  usecase "UC12 - Cancelar competição" as UC12  #BBDEFB
+
 }
 
 ' === ASSOCIAÇÕES ATOR → CASO DE USO ===
@@ -93,6 +96,7 @@ User  --> UC09
 User  --> UC10
 Atl --> UC05
 Admin --> UC05
+Admin --> UC12
 
 ' === INCLUDE — chamadas obrigatórias ===
 UC01 .> UC02 : <<include>>

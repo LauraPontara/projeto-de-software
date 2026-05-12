@@ -85,8 +85,21 @@ Este projeto é desenvolvido no contexto da disciplina de **Projeto de Software*
 - A alocação deve ficar registrada e visível na agenda do local.
 
 ---
+### US04 — Cancelar Competição
+**Como** administrador do sistema,  
+**Quero** cancelar uma competição,  
+**Para que** a competição seja retirada da agenda, as inscrições sejam encerradas e o local fique disponível para nova alocação quando o evento não puder mais ocorrer.
 
-### US04 — Registrar Resultado de Competição
+**Critérios de aceitação:**
+- Somente um usuário com perfil de administrador pode cancelar uma competição.
+- O sistema permite cancelar competições nos status `agendada` ou `aberta para inscrições`; não deve permitir cancelamento de competições com resultados registrados (`realizada`).
+- Ao cancelar, a competição recebe o status **cancelada**
+- Todas as inscrições vinculadas à competição são marcadas como **canceladas** e os atletas são notificados.
+- O local e o horário ficam liberados na agenda para novas alocações.
+- Após o cancelamento, não é possível inscrever novos atletas nem registrar resultados, exceto se um administrador reverter explicitamente o cancelamento.
+---
+
+### US05 — Registrar Resultado de Competição
 **Como** juiz,  
 **Quero** registrar o resultado de uma competição informando os atletas classificados em 1º, 2º e 3º lugar,  
 **Para que** as medalhas sejam atribuídas corretamente a cada país.
@@ -98,7 +111,7 @@ Este projeto é desenvolvido no contexto da disciplina de **Projeto de Software*
 
 ---
 
-### US05 — Consultar Relatório de Medalhas
+### US06 — Consultar Relatório de Medalhas
 **Como** usuário do sistema (administrador, imprensa ou público),  
 **Quero** consultar o relatório de medalhas por país,  
 **Para que** seja possível acompanhar o desempenho de cada nação ao longo das Olimpíadas.
@@ -110,7 +123,7 @@ Este projeto é desenvolvido no contexto da disciplina de **Projeto de Software*
 
 ---
 
-### US06 — Consultar Competições por Local
+### US07 — Consultar Competições por Local
 **Como** usuário do sistema,  
 **Quero** visualizar todas as competições agendadas em um determinado local,  
 **Para que** seja possível verificar a agenda de uso daquele espaço.
@@ -121,7 +134,7 @@ Este projeto é desenvolvido no contexto da disciplina de **Projeto de Software*
 
 ---
 
-### US07 — Consultar Competições de um Atleta
+### US08 — Consultar Competições de um Atleta
 **Como** usuário do sistema,  
 **Quero** consultar todas as competições nas quais um atleta está inscrito,  
 **Para que** seja possível acompanhar a agenda e os resultados desse atleta.
@@ -143,7 +156,7 @@ Este projeto é desenvolvido no contexto da disciplina de **Projeto de Software*
 
 > 🚧 Diagrama em construção — será inserido em breve.
 
-<!-- <img width="700px" src="https://github.com/lauracampospl/sistema-gestao-olimpiadas/blob/main/imagens/diagrama-de-classes.png"/> -->
+<img width="700px" src="../sgo/imagens/diagrama-de-classes.png"/>
 <img width="700px" src="../sgo/imagens/diagrama-de-pacotes.png"/>
 
 ---
