@@ -134,11 +134,7 @@ Este projeto é desenvolvido no contexto da disciplina de **Projeto de Software*
 ## 📊 Diagramas UML
 
 ### Diagrama de Caso de Uso
-
-> 🚧 Diagrama em construção — será inserido em breve.
-
-<!-- Substitua o src pelo caminho real da imagem no repositório -->
-<!-- <img width="700px" src="https://github.com/lauracampospl/sistema-gestao-olimpiadas/blob/main/imagens/diagrama-de-caso-de-uso.png"/> -->
+<img width="700px" src="../sgo/imagens/diagrama-de-caso-de-uso.png"/>
 
 ---
 

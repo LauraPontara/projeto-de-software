@@ -1,0 +1,113 @@
+@startuml
+!theme aws-orange
+
+title Diagrama de Caso de Uso\nSistema de Gestão das Olimpíadas (SGO)
+
+' === ESTILO ===
+skinparam backgroundColor #FAFAFA
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam actorStyle awesome
+
+skinparam actor {
+  BackgroundColor #D6E8F7
+  BorderColor #1A5276
+  FontColor #1A1A2E
+  FontStyle bold
+}
+
+skinparam usecase {
+  BackgroundColor #EAF4FB
+  BorderColor #2176AE
+  FontColor #1A1A2E
+  BorderThickness 1.5
+}
+
+skinparam rectangle {
+  BackgroundColor #F0F7FF
+  BorderColor #1A5276
+  BorderThickness 2.5
+  FontColor #1A5276
+  FontStyle bold
+  FontSize 14
+}
+
+skinparam arrow {
+  Color #2176AE
+  FontColor #1A5276
+  FontSize 10
+}
+
+left to right direction
+
+' === ATORES ===
+actor "Administrador" as Admin #D6E8F7
+actor "Juiz" as Juiz #D6E8F7
+actor "Usuário" as User #EAF4FB
+actor "Atleta" as Atl #D6E8F7
+
+' Hierarquia: Admin e Juiz herdam de Usuário
+Admin --|> User
+Juiz --|> User
+Atl --|> User
+
+' === FRONTEIRA DO SISTEMA ===
+rectangle "Sistema de Gestão das Olimpíadas (SGO)" {
+
+  ' --- UC01: Cadastrar Competição (US01) ---
+  usecase "UC01 - Cadastrar\nCompetição" as UC01 #BBDEFB
+
+  ' --- UC02: Alocar Local (US03) ---
+  usecase "UC02 - Alocar Local\npara Competição" as UC02 #BBDEFB
+
+  ' --- UC03: Inscrever Atleta (US02) ---
+  usecase "UC03 - Inscrever Atleta\nem Competição" as UC03 #BBDEFB
+
+  ' --- UC05: Cancelar Inscrição (extend de UC03) ---
+  usecase "UC05 - Cancelar\nInscrição de Atleta" as UC05 #BBDEFB
+
+  ' --- UC06: Registrar Resultado (US04) ---
+  usecase "UC06 - Registrar\nResultado da Competição" as UC06 #BBDEFB
+
+  ' --- UC08: Consultar Relatório de Medalhas ---
+  usecase "UC08 - Consultar Relatório\nde Medalhas" as UC08 #BBDEFB
+
+  ' --- UC09: Consultar Competições por Local (US05) ---
+  usecase "UC09 - Consultar Competições\npor Local" as UC09 #BBDEFB
+
+  ' --- UC10: Consultar Competições de um Atleta (US06) ---
+  usecase "UC10 - Consultar Competições\nde um Atleta" as UC10 #BBDEFB
+
+  ' --- UC11: Exportar Relatório de Medalhas ---
+  usecase "UC11 - Exportar Relatório de Medalhas" as UC11  #E3F2FD
+
+}
+
+' === ASSOCIAÇÕES ATOR → CASO DE USO ===
+Admin --> UC01
+Atl   --> UC03
+Juiz  --> UC06
+User  --> UC08
+User  --> UC09
+User  --> UC10
+Atl --> UC05
+Admin --> UC05
+
+' === INCLUDE — chamadas obrigatórias ===
+UC01 .> UC02 : <<include>>
+
+' === EXTEND — chamadas opcionais/condicionais ===
+UC11 .> UC08 : <<extend>>
+
+' === LEGENDA ===
+legend right
+  |= Notação         |= Significado             |
+  | →              | Associação               |
+  | ⇢ <<include>>    | Inclusão obrigatória     |
+  | ⇢ <<extend>>     | Extensão opcional        |
+  | ┄▷          | Generalização de ator    |
+  | Azul escuro| Casos de uso principais |
+  | Azul claro  | Casos de uso auxiliares  |
+endlegend
+@enduml
