@@ -1,0 +1,96 @@
+@startuml diagrama-de-pacotes-sgo
+
+title Diagrama de Pacotes\nSistema de Gestão das Olimpíadas (SGO)
+
+' === CONFIGURAÇÕES GLOBAIS ===
+skinparam backgroundColor #FAFAFA
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+
+skinparam package {
+  BorderThickness 2
+  FontStyle bold
+  FontSize 14
+}
+
+skinparam arrow {
+  Color       #444444
+  FontColor   #444444
+  FontSize    11
+  Thickness   1.5
+}
+
+' =============================================================
+' PACOTES — cores por responsabilidade
+' =============================================================
+
+' Camada de Apresentação
+package "controller" <<Folder>> #F48FB1 {
+}
+
+' Camada de Negócio
+package "service" <<Folder>> #90CAF9 {
+}
+
+' Camada de Persistência
+package "repository" <<Folder>> #C5E1A5 {
+}
+
+' Modelo de Domínio
+package "model" <<Folder>> #4DB6AC {
+}
+
+' Transferência de Dados
+package "dto" <<Folder>> #26A69A {
+}
+
+' Mapeamento entre camadas
+package "mapper" <<Folder>> #A5D6A7 {
+}
+
+' Tratamento de erros
+package "exception" <<Folder>> #EF9A9A {
+}
+
+' Enumerações de domínio
+package "enum" <<Folder>> #90CAF9 {
+}
+
+' Utilitários gerais
+package "utils" <<Folder>> #A5C8A0 {
+}
+
+' =============================================================
+' DEPENDÊNCIAS ENTRE PACOTES
+' =============================================================
+
+' Controller chama Service para executar operações
+controller ..> service : usa >
+
+' Service lança exceções de domínio
+service ..> exception : lança >
+
+' Service usa DTOs como entrada/saída
+service ..> dto : usa >
+
+' Service acessa o repositório para persistência
+service ..> repository : persiste >
+
+' Repository opera sobre as entidades do modelo
+repository ..> model : acessa >
+
+' Mapper converte entre Model e DTO
+mapper ..> model : lê >
+mapper ..> dto   : produz >
+
+' Service delega mapeamento ao Mapper
+service ..> mapper : delega >
+
+' Model usa enumerações de domínio
+model ..> enum : usa >
+
+' Service usa utilitários auxiliares
+service ..> utils : usa >
+
+@enduml
