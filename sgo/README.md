@@ -1,13 +1,14 @@
-# 🏅 Sistema de Gestão das Olimpíadas (SGO)
-
-> Trabalho 1 — Primeira Entrega | Projeto de Software | PUC Minas  
-> Disciplina ministrada pelo Prof. João Paulo Carneiro Aramuni
-
 <div align="center">
   <img src="https://joaopauloaramuni.github.io/image/logo_ES_vertical.png" alt="Logo PUC Minas" width="110px"/>
 </div>
 
 <br/>
+
+# 🏅 Sistema de Gestão das Olimpíadas (SGO)
+
+> Trabalho 1 — Primeira Entrega | Projeto de Software | PUC Minas  
+> Disciplina ministrada pelo Prof. João Paulo Carneiro Aramuni
+
 
 O **SGO — Sistema de Gestão das Olimpíadas** é um sistema modelado para coordenar os diferentes aspectos de um evento olímpico. O sistema contempla o gerenciamento de competições, inscrições de atletas, alocação de locais para as provas e controle de resultados, além da geração de relatórios de medalhas por país.
 
@@ -191,7 +192,6 @@ sgo/
 
 - 📖 [PlantUML — Site Oficial](https://plantuml.com/)
 - 📖 [PlantUML — Guia Completo](https://plantuml.com/guide)
-- 📖 [PlantUML API — Prof. Aramuni (GitHub)](https://github.com/joaopauloaramuni/projeto-de-software/tree/main/PROJETOS/Python/Projeto%20PlantUML%20API)
 
 ---
 
