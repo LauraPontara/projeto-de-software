@@ -153,9 +153,6 @@ Este projeto é desenvolvido no contexto da disciplina de **Projeto de Software*
 ---
 
 ### Diagrama de Classes e de Pacotes
-
-> 🚧 Diagrama em construção — será inserido em breve.
-
 <img width="700px" src="../sgo/imagens/diagrama-de-classes.png"/>
 <img width="700px" src="../sgo/imagens/diagrama-de-pacotes.png"/>
 
