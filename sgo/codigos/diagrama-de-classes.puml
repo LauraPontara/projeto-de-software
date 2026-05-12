@@ -1,0 +1,247 @@
+@startuml diagrama-de-classes-sgo
+
+title Diagrama de Classes\nSistema de Gestão das Olimpíadas (SGO)
+
+' === CONFIGURAÇÕES GLOBAIS ===
+skinparam backgroundColor #FAFAFA
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam classAttributeIconSize 8
+
+skinparam class {
+  BackgroundColor       #EAF4FB
+  BorderColor           #2176AE
+  FontColor             #1A1A2E
+  HeaderBackgroundColor #BBDEFB
+  BorderThickness       1.5
+  ArrowColor            #2176AE
+}
+
+skinparam class {
+  BackgroundColor<<Entity>>  #DCEEFB
+  BorderColor<<Entity>>      #1A5276
+
+  BackgroundColor<<Enum>>    #F3E5F5
+  BorderColor<<Enum>>        #7B1FA2
+  FontColor<<Enum>>          #4A148C
+}
+
+skinparam package {
+  BackgroundColor #F0F7FF
+  BorderColor     #1A5276
+  FontColor       #1A5276
+  FontStyle       bold
+  BorderThickness 2
+}
+
+skinparam note {
+  BackgroundColor #FFFDE7
+  BorderColor     #F9A825
+  FontColor       #4A4A4A
+}
+
+' =============================================================
+' ENUMS
+' =============================================================
+
+enum TipoUsuario <<Enum>> {
+  ADMINISTRADOR
+  ATLETA
+  JUIZ
+  PUBLICO
+}
+
+enum StatusCompeticao <<Enum>> {
+  ABERTA_INSCRICOES
+  EM_ANDAMENTO
+  ENCERRADA
+  CANCELADA
+}
+
+enum StatusInscricao <<Enum>> {
+  ATIVA
+  CANCELADA
+}
+
+' =============================================================
+' HIERARQUIA DE USUÁRIOS
+' =============================================================
+
+' Classe base concreta — representa o usuário comum (público)
+' e serve de base para os papéis especializados
+class Usuario <<Entity>> {
+  - id    : Long
+  - nome  : String
+  - email : String
+  - senha : String
+  - tipo  : TipoUsuario
+  .. Getters ..
+  + getId()    : Long
+  + getNome()  : String
+  + getEmail() : String
+  + getTipo()  : TipoUsuario
+}
+
+' Administrador — papel que gerencia o sistema
+class Administrador <<Entity>> {
+  - nivelAcesso : Integer
+  .. Getters ..
+  + getNivelAcesso() : Integer
+}
+
+' Atleta — possui dados esportivos específicos
+class Atleta <<Entity>> {
+  - dataNascimento : Date
+  - documento      : String
+  .. Getters ..
+  + getDataNascimento() : Date
+  + getDocumento()      : String
+}
+
+' Juiz — possui credencial que o habilita a registrar resultados
+class Juiz <<Entity>> {
+  - credencial : String
+  .. Getters ..
+  + getCredencial() : String
+}
+
+' Herança: especialização de Usuario
+Usuario <|-- Administrador
+Usuario <|-- Atleta
+Usuario <|-- Juiz
+
+' =============================================================
+' ENTIDADES DE DOMÍNIO
+' =============================================================
+
+class Pais <<Entity>> {
+  - id        : Long
+  - nome      : String
+  - codigoISO : String
+  .. Getters ..
+  + getId()        : Long
+  + getNome()      : String
+  + getCodigoISO() : String
+  == Regras de Negócio ==
+  + totalOuros()   : Integer
+  + totalPratas()  : Integer
+  + totalBronzes() : Integer
+}
+
+class Competicao <<Entity>> {
+  - id         : Long
+  - modalidade : String
+  - dataHora   : DateTime
+  - status     : StatusCompeticao
+  .. Getters ..
+  + getId()         : Long
+  + getModalidade() : String
+  + getDataHora()   : DateTime
+  + getStatus()     : StatusCompeticao
+  == Regras de Negócio ==
+  + isAbertaParaInscricoes() : Boolean
+  + isRealizada()            : Boolean
+  + cancelar()               : void
+}
+
+class Local <<Entity>> {
+  - id         : Long
+  - nome       : String
+  - endereco   : String
+  - capacidade : Integer
+  .. Getters ..
+  + getId()       : Long
+  + getNome()     : String
+  + getEndereco() : String
+  == Regras de Negócio ==
+  + verificarDisponibilidade(dataHora : DateTime) : Boolean
+  + getAgenda()                                   : List<Competicao>
+}
+
+' Inscricao: classe de associação entre Atleta, Competicao e Pais
+' Carrega os dados e comportamentos próprios da inscrição
+class Inscricao <<Entity>> {
+  - id              : Long
+  - dataInscricao   : Date
+  - status          : StatusInscricao
+  .. Getters ..
+  + getId()            : Long
+  + getDataInscricao() : Date
+  + getStatus()        : StatusInscricao
+  == Regras de Negócio ==
+  + cancelar()  : void
+  + isAtiva()   : Boolean
+}
+
+' Resultado: registra os três colocados de uma competição
+' Os atributos de posição tornam desnecessário um enum TipoMedalha no relacionamento
+class Resultado <<Entity>> {
+  - id              : Long
+  - dataRegistro    : DateTime
+  - alteravel       : Boolean
+  - primeiroLugar   : Atleta
+  - segundoLugar    : Atleta
+  - terceiroLugar   : Atleta
+  .. Getters ..
+  + getId()           : Long
+  + getDataRegistro() : DateTime
+  + isAlteravel()     : Boolean
+  + getPrimeiroLugar()  : Atleta
+  + getSegundoLugar()   : Atleta
+  + getTerceiroLugar()  : Atleta
+  == Regras de Negócio ==
+  + registrar()         : void
+  + bloquearAlteracao() : void
+  + permitirAlteracao() : void
+}
+
+' =============================================================
+' RELACIONAMENTOS
+' =============================================================
+
+' Competição é realizada em um Local (associação — ambos existem independentemente)
+Competicao "0..*" --> "1" Local : realizada em >
+
+' Inscrição pertence a uma Competição (composição — inscrição não existe sem a competição)
+Competicao "1" *-- "0..*" Inscricao : contém >
+
+' Resultado pertence a uma Competição (composição — resultado não existe sem a competição)
+Competicao "1" *-- "0..1" Resultado : possui >
+
+' Inscrição referencia o Atleta inscrito
+Inscricao "0..*" --> "1" Atleta : do atleta >
+
+' Inscrição registra o País que o Atleta representa naquela competição
+Inscricao "0..*" --> "1" Pais : representando >
+
+' Resultado referencia os três atletas medalhistas via atributos diretos (primeiroLugar, segundoLugar, terceiroLugar)
+' As associações são representadas pelos próprios atributos tipados como Atleta na classe Resultado
+Resultado "0..*" --> "1" Atleta : posição no ranking >
+
+' =============================================================
+' ENUMS → ENTIDADES
+' =============================================================
+
+Usuario    --> TipoUsuario      : tipo >
+Competicao --> StatusCompeticao : status >
+Inscricao  --> StatusInscricao  : status >
+
+' =============================================================
+' NOTAS — Regras de Negócio Críticas
+' =============================================================
+
+note top of Usuario
+  Representa o usuário padrão (público).
+  Administrador, Atleta e Juiz
+  são especializações com dados próprios.
+end note
+
+note right of Atleta
+  Um atleta só pode representar
+  um único país por modalidade.
+  A restrição é garantida via Inscricao.
+end note
+
+
+@enduml
