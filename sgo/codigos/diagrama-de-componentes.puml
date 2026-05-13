@@ -1,0 +1,255 @@
+@startuml diagrama-de-componentes-sgo
+
+title Diagrama de Componentes\nSistema de Gestão das Olimpíadas (SGO)
+
+' =============================================================
+' LAYOUT
+' =============================================================
+top to bottom direction
+
+skinparam linetype ortho
+skinparam nodesep 90
+skinparam ranksep 110
+skinparam shadowing false
+skinparam roundCorner 8
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam backgroundColor #FAFAFA
+
+' =============================================================
+' ESTILO
+' =============================================================
+skinparam component {
+  BackgroundColor #EAF4FB
+  BorderColor #2176AE
+  FontColor #1A1A2E
+  BorderThickness 1.5
+}
+
+skinparam database {
+  BackgroundColor #FFF3E0
+  BorderColor #E65100
+}
+
+skinparam interface {
+  BackgroundColor #E8F5E9
+  BorderColor #2E7D32
+}
+
+skinparam package {
+  BorderThickness 2
+  FontStyle bold
+}
+
+skinparam frame {
+  BorderThickness 2
+}
+
+skinparam arrow {
+  Color #616161
+  FontColor #424242
+  FontSize 10
+}
+
+hide stereotype
+
+' =============================================================
+' SPRITES
+' =============================================================
+!include <tupadr3/common>
+!include <tupadr3/devicons2/postgresql>
+!include <tupadr3/devicons2/redis>
+!include <tupadr3/material/smartphone>
+!include <tupadr3/material/computer>
+!include <tupadr3/material/dns>
+!define PNGURL https://raw.githubusercontent.com/plantuml-stdlib/gilbarbara-plantuml-sprites/master/pngs
+
+' =============================================================
+' CLIENTES
+' =============================================================
+package "Clientes" #E3F2FD {
+
+together {
+
+MATERIAL_COMPUTER(WEB, "Web App", component, #1565C0)
+
+MATERIAL_SMARTPHONE(MOBILE, "Mobile App", component, #1565C0)
+
+}
+
+}
+
+' =============================================================
+' API
+' =============================================================
+package "Camada de API" #ffbae9 {
+
+MATERIAL_DNS(GW, "API Gateway", component, #a63381)
+
+}
+
+' =============================================================
+' CONTAINER PRINCIPAL
+' =============================================================
+package "<img:PNGURL/docker.png>" #E8F5E9 {
+
+' =============================================================
+' MÓDULOS
+' =============================================================
+frame "Módulos de Negócio" as MOD_NEG #F1F8E9 {
+
+together {
+
+
+
+package "Competições" #FAFAFA {
+
+component COMP_MOD [
+  Módulo de
+  Competições
+]
+
+interface "ICompAPI" as ICompAPI
+
+COMP_MOD -- ICompAPI : REST
+}
+package "Inscrições" #FAFAFA {
+
+component INSC_MOD [
+  Módulo de
+  Inscrições
+]
+
+interface "IInscAPI" as IInscAPI
+
+INSC_MOD -- IInscAPI : REST
+}
+
+
+package "Resultados" #FAFAFA {
+
+component RES_MOD [
+  Módulo de
+  Resultados
+]
+
+interface "IResAPI" as IResAPI
+
+RES_MOD -- IResAPI : REST
+}
+
+package "Alocação" #FAFAFA {
+
+component ALLOC_MOD [
+  Módulo de
+  Alocação
+]
+
+interface "IAllocAPI" as IAllocAPI
+
+ALLOC_MOD -- IAllocAPI : REST
+}
+package "Relatórios" #FAFAFA {
+
+component REP_MOD [
+  Módulo de
+  Relatórios
+]
+
+interface "IRepAPI" as IRepAPI
+
+REP_MOD -- IRepAPI : REST
+}
+
+
+package "Autenticação" #FAFAFA {
+
+component AUTH_MOD [
+  Módulo de
+  Autenticação
+]
+
+interface "IAuthAPI" as IAuthAPI
+
+AUTH_MOD -- IAuthAPI : REST
+}
+}
+
+}
+
+' =============================================================
+' INFRAESTRUTURA
+' =============================================================
+frame "Infraestrutura" as INFRA #FFF3E0 {
+
+DEV2_POSTGRESQL(DB, "PostgreSQL", database, #E65100)
+
+interface "IdbAPI" as IdbAPI
+
+DB -- IdbAPI : TCP/IP
+
+}
+
+}
+
+' =============================================================
+' MÓDULOS → BANCO
+' =============================================================
+COMP_MOD --( IdbAPI
+INSC_MOD --( IdbAPI
+RES_MOD --( IdbAPI
+REP_MOD --( IdbAPI
+ALLOC_MOD --( IdbAPI
+AUTH_MOD --( IdbAPI
+
+
+' =============================================================
+' HIERARQUIA VISUAL
+' =============================================================
+WEB -[hidden]down-> GW
+
+GW -[hidden]down-> AUTH_MOD
+
+AUTH_MOD -[hidden]down-> DB
+
+' =============================================================
+' CLIENTES → GATEWAY
+' =============================================================
+WEB <--> GW : HTTP
+MOBILE <--> GW : HTTP
+
+' =============================================================
+' GATEWAY → INTERFACES PÚBLICAS
+' =============================================================
+GW --( IAuthAPI : REST
+GW --( IAllocAPI : REST
+GW --( IRepAPI : REST
+GW --( ICompAPI : REST
+GW --( IInscAPI : REST
+GW --( IResAPI : REST
+
+' =============================================================
+' DEPENDÊNCIAS INTERNAS ENTRE MÓDULOS
+' =============================================================
+INSC_MOD --( ICompAPI 
+
+ALLOC_MOD --( ICompAPI 
+
+RES_MOD --( IInscAPI 
+
+RES_MOD --( ICompAPI 
+
+REP_MOD --( IResAPI
+
+' =============================================================
+' LEGENDA
+' =============================================================
+
+legend bottom
+  |= Notação           |= Tipo de Relação        |= Descrição                                        |
+  | A --O Interface     | Interface fornecida     | Componente A expõe um contrato (lollipop)          |
+  | A --C Interface    | Interface requerida     | Componente A consome um contrato (socket)          |
+endlegend
+
+
+@enduml
