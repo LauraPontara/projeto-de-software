@@ -1,4 +1,4 @@
-@startuml
+@startuml diagrama-de-caso-de-uso-sgo
 !theme aws-orange
 
 title Diagrama de Caso de Uso\nSistema de Gestão das Olimpíadas (SGO)
@@ -43,75 +43,121 @@ left to right direction
 
 ' === ATORES ===
 actor "Administrador" as Admin #D6E8F7
-actor "Juiz" as Juiz #D6E8F7
-actor "Usuário" as User #EAF4FB
-actor "Atleta" as Atl #D6E8F7
+actor "Juiz"          as Juiz  #D6E8F7
+actor "Atleta"        as Atl   #D6E8F7
+actor "Usuário"       as User  #EAF4FB
 
-' Hierarquia: Admin e Juiz herdam de Usuário
+' Hierarquia: todos herdam de Usuário
 Admin --|> User
-Juiz --|> User
-Atl --|> User
+Juiz  --|> User
+Atl   --|> User
 
 ' === FRONTEIRA DO SISTEMA ===
 rectangle "Sistema de Gestão das Olimpíadas (SGO)" {
 
-  ' --- UC01: Cadastrar Competição (US01) ---
-  usecase "UC01 - Cadastrar\nCompetição" as UC01 #BBDEFB
+  ' -------------------------------------------------------
+  ' AUTENTICAÇÃO (US09, US10)
+  ' -------------------------------------------------------
+  usecase "UC01 - Fazer Login\nno Sistema" as UC01 #BBDEFB
+  usecase "UC02 - Recuperar Senha" as UC02 #E3F2FD
 
-  ' --- UC02: Alocar Local (US03) ---
-  usecase "UC02 - Alocar Local\npara Competição" as UC02 #BBDEFB
+  ' -------------------------------------------------------
+  ' GESTÃO DE USUÁRIOS (US11, US19)
+  ' -------------------------------------------------------
+  usecase "UC03 - Gerenciar\nCadastro de Atleta" as UC03 #BBDEFB
+  usecase "UC04 - Gerenciar Juiz" as UC04 #BBDEFB
 
-  ' --- UC03: Inscrever Atleta (US02) ---
-  usecase "UC03 - Inscrever Atleta\nem Competição" as UC03 #BBDEFB
+  ' -------------------------------------------------------
+  ' GESTÃO DE LOCAIS (US15, US16)
+  ' -------------------------------------------------------
+  usecase "UC05 - Cadastrar Local" as UC05 #BBDEFB
+  usecase "UC06 - Consultar\nDisponibilidade de Local" as UC06 #BBDEFB
 
-  ' --- UC05: Cancelar Inscrição (extend de UC03) ---
-  usecase "UC05 - Cancelar\nInscrição de Atleta" as UC05 #BBDEFB
+  ' -------------------------------------------------------
+  ' GESTÃO DE COMPETIÇÕES (US01, US03, US04)
+  ' -------------------------------------------------------
+  usecase "UC07 - Cadastrar\nCompetição" as UC07 #BBDEFB
+  usecase "UC08 - Alocar Local\npara Competição" as UC08 #BBDEFB
+  usecase "UC09 - Cancelar\nCompetição" as UC09 #BBDEFB
 
-  ' --- UC06: Registrar Resultado (US04) ---
-  usecase "UC06 - Registrar\nResultado da Competição" as UC06 #BBDEFB
+  ' -------------------------------------------------------
+  ' INSCRIÇÕES (US02, US04 cancelamento)
+  ' -------------------------------------------------------
+  usecase "UC10 - Inscrever Atleta\nem Competição" as UC10 #BBDEFB
+  usecase "UC11 - Cancelar\nInscrição de Atleta" as UC11 #BBDEFB
 
-  ' --- UC08: Consultar Relatório de Medalhas ---
-  usecase "UC08 - Consultar Relatório\nde Medalhas" as UC08 #BBDEFB
+  ' -------------------------------------------------------
+  ' RESULTADOS (US05, US17)
+  ' -------------------------------------------------------
+  usecase "UC12 - Registrar\nResultado da Competição" as UC12 #BBDEFB
+  usecase "UC13 - Editar Resultado da Competição" as UC13 #E3F2FD
 
-  ' --- UC09: Consultar Competições por Local (US05) ---
-  usecase "UC09 - Consultar Competições\npor Local" as UC09 #BBDEFB
+  ' -------------------------------------------------------
+  ' RELATÓRIOS E CONSULTAS (US06, US07, US08, US18)
+  ' -------------------------------------------------------
+  usecase "UC14 - Consultar Relatório\nde Medalhas" as UC14 #BBDEFB
+  usecase "UC15 - Exportar Relatório\nde Medalhas" as UC15 #E3F2FD
+  usecase "UC16 - Consultar Competições\npor Local" as UC16 #BBDEFB
+  usecase "UC17 - Consultar Competições\nde um Atleta" as UC17 #BBDEFB
 
-  ' --- UC10: Consultar Competições de um Atleta (US06) ---
-  usecase "UC10 - Consultar Competições\nde um Atleta" as UC10 #BBDEFB
-
-  ' --- UC11: Exportar Relatório de Medalhas ---
-  usecase "UC11 - Exportar Relatório de Medalhas" as UC11  #E3F2FD
-
-  ' --- UC12: Cancelar Competição ---
-  usecase "UC12 - Cancelar competição" as UC12  #BBDEFB
+  
 
 }
 
 ' === ASSOCIAÇÕES ATOR → CASO DE USO ===
-Admin --> UC01
+
+' Autenticação — todos os usuários
+User  --> UC01
+User  --> UC02
+
+' Gestão de usuários
 Atl   --> UC03
-Juiz  --> UC06
-User  --> UC08
-User  --> UC09
-User  --> UC10
-Atl --> UC05
+Admin --> UC03
+Admin --> UC04
+
+' Gestão de locais
 Admin --> UC05
-Admin --> UC12
+
+' Gestão de competições
+Admin --> UC07
+Admin --> UC09
+
+' Inscrições
+Atl   --> UC10
+Atl   --> UC11
+Admin --> UC11
+
+' Resultados
+Juiz  --> UC12
+Admin --> UC13
+
+' Relatórios e consultas
+User  --> UC14
+User  --> UC16
+User  --> UC17
+
+' === Notificações ===
+UC12 --> Atl
+UC11 --> Atl
+UC09 --> Atl
 
 ' === INCLUDE — chamadas obrigatórias ===
-UC01 .> UC02 : <<include>>
+UC07 .> UC08  : <<include>>
+UC08 .> UC06  : <<include>>
+UC09 .> UC11  : <<include>>
 
 ' === EXTEND — chamadas opcionais/condicionais ===
-UC11 .> UC08 : <<extend>>
+UC15 .> UC14  : <<extend>>
 
 ' === LEGENDA ===
-legend right
-  |= Notação         |= Significado             |
-  | →              | Associação               |
-  | ⇢ <<include>>    | Inclusão obrigatória     |
-  | ⇢ <<extend>>     | Extensão opcional        |
-  | ┄▷          | Generalização de ator    |
-  | Azul escuro| Casos de uso principais |
-  | Azul claro  | Casos de uso auxiliares  |
+legend bottom
+  |= Notação              |= Significado                              |
+  | →                   | Associação (ator participa do UC)         |
+  | ⇢ <<include>>         | Inclusão obrigatória (sempre executado)   |
+  | ⇢ <<extend>>          | Extensão opcional (condicional)           |
+  | ┄▷               | Generalização de ator (herança)           |
+  |<back:#BBDEFB> Azul escuro </back>| Casos de uso principais                   |
+  |<back:#E3F2FD> Azul claro  </back>| Casos de uso auxiliares / sistêmicos      |
 endlegend
+
 @enduml
