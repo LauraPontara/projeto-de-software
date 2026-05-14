@@ -87,10 +87,4 @@ mapper ..> dto   : produz >
 ' Service delega mapeamento ao Mapper
 service ..> mapper : delega >
 
-' Model usa enumerações de domínio
-model ..> enum : usa >
-
-' Service usa utilitários auxiliares
-service ..> utils : usa >
-
 @enduml
