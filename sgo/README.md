@@ -295,9 +295,7 @@ Este projeto é desenvolvido no contexto da disciplina de **Projeto de Software*
 
 ### Diagrama de Implantação
 
-> 🚧 Diagrama em construção — será inserido em breve.
-
-<!-- <img width="700px" src="https://github.com/lauracampospl/sistema-gestao-olimpiadas/blob/main/imagens/diagrama-de-implantacao.png"/> -->
+<img width="700px" src="../sgo/imagens/diagrama-de-implantacao.png"/>
 
 ---
 ### Diagrama de Sequência
