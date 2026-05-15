@@ -24,6 +24,7 @@ O **SGO — Sistema de Gestão das Olimpíadas** é um sistema modelado para coo
   - [Diagrama de Classes e de Pacotes](#diagrama-de-classes-e-de-pacotes)
   - [Diagrama de Componentes](#diagrama-de-componentes)
   - [Diagrama de Implantação](#diagrama-de-implantação)
+  - [Diagrama de Sequência](#diagrama-de-sequência)
 - [Estrutura do Repositório](#-estrutura-do-repositório)
 - [Documentação Utilizada](#-documentação-utilizada)
 - [Autora](#-autora)
@@ -299,6 +300,10 @@ Este projeto é desenvolvido no contexto da disciplina de **Projeto de Software*
 <!-- <img width="700px" src="https://github.com/lauracampospl/sistema-gestao-olimpiadas/blob/main/imagens/diagrama-de-implantacao.png"/> -->
 
 ---
+### Diagrama de Sequência
+<img width="700px" src="../sgo/imagens/diagrama-de-sequencia.png"/>
+
+---
 
 ## 📁 Estrutura do Repositório
 
@@ -312,6 +317,7 @@ sgo/
 │   ├── diagrama-de-classes.png
 │   ├── diagrama-de-pacotes.png
 │   ├── diagrama-de-componentes.png
+│   ├── diagrama-de-sequencia.png
 │   └── diagrama-de-implantacao.png
 │
 └── codigos/
@@ -319,6 +325,7 @@ sgo/
     ├── diagrama-de-classes.puml
     ├── diagrama-de-pacotes.puml
     ├── diagrama-de-componentes.puml
+    ├── diagrama-de-sequencia.puml
     └── diagrama-de-implantacao.puml
 ```
 

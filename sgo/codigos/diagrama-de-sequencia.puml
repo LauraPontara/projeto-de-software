@@ -1,0 +1,443 @@
+@startuml diagrama-de-sequencia-sgo
+
+title Diagrama de Sequência — Visão Geral\nSistema de Gestão das Olimpíadas (SGO)
+
+' =============================================================
+' CONFIGURAÇÕES
+' =============================================================
+hide footbox
+
+skinparam backgroundColor        #FAFAFA
+skinparam shadowing              false
+skinparam defaultFontName        Arial
+skinparam defaultFontSize        12
+skinparam sequenceMessageAlign   center
+skinparam sequenceArrowThickness 1.5
+skinparam roundcorner             5
+skinparam maxmessagesize         160
+skinparam actorStyle             awesome
+
+skinparam actor {
+  BackgroundColor #D6E8F7
+  BorderColor     #1A5276
+  FontColor       #1A1A2E
+  FontStyle       bold
+}
+
+skinparam boundary {
+  BackgroundColor #BBDEFB
+  BorderColor     #1565C0
+  FontColor       #0D3C6E
+  FontStyle       bold
+}
+
+skinparam control {
+  BackgroundColor #C8E6C9
+  BorderColor     #2E7D32
+  FontColor       #1B5E20
+  FontStyle       bold
+}
+
+skinparam database {
+  BackgroundColor #FFE0B2
+  BorderColor     #E65100
+  FontColor       #BF360C
+  FontStyle       bold
+}
+
+skinparam queue {
+  BackgroundColor #F3E5F5
+  BorderColor     #7B1FA2
+  FontColor       #4A148C
+  FontStyle       bold
+}
+
+skinparam sequence {
+  ArrowColor               #2176AE
+  ArrowFontColor           #1A5276
+  ArrowFontSize            11
+  LifeLineBorderColor      #2176AE
+  LifeLineBackgroundColor  #EAF4FB
+  NoteBackgroundColor      #FFFDE7
+  NoteBorderColor          #F9A825
+  NoteFontColor            #4A4A4A
+  DividerBackgroundColor   #BBDEFB
+  DividerBorderColor       #1A5276
+  DividerFontColor         #1A5276
+  DividerFontStyle         bold
+  GroupBackgroundColor     #F0F7FF
+  GroupBorderColor         #1A5276
+  GroupFontColor           #1A5276
+  GroupBodyBackgroundColor #FAFEFF
+  BoxBackgroundColor       #F8F9FA
+  BoxBorderColor           #1A5276
+  BoxFontColor             #1A5276
+  BoxFontStyle             bold
+}
+
+skinparam note {
+  BackgroundColor #FFFDE7
+  BorderColor     #F9A825
+  FontColor       #4A4A4A
+}
+
+' =============================================================
+' PARTICIPANTES
+' =============================================================
+
+box "Usuários" #E3F2FD
+  actor "Administrador" as ADM
+  actor "Atleta"        as ATL
+  actor "Juiz"          as JUZ
+end box
+
+box "Apresentação" #E8EAF6
+  boundary "Web App" as UI
+end box
+
+box "API" #F8EFF8
+  control "API Gateway" as GW
+end box
+
+box "Serviços de Negócio" #E8F5E9
+  control "AuthService"   as AUTH
+  control "CompService"   as COMP
+  control "AllocService"  as ALLOC
+  control "InscService"   as INSC
+  control "ResultService" as RES
+  control "ReportService" as REP
+end box
+
+box "Mensageria" #F3E5F5
+  queue   "Fila de Resultados"  as RES_QUEUE
+  queue   "Fila de Competições" as COMP_QUEUE
+  queue   "Fila de Inscrições"  as INSC_QUEUE
+  control "NotifWorker"         as WRK
+end box
+
+box "Serviços Externos" #F9FBE7
+  boundary "API de envio de e-mails" as SMTP
+end box
+
+box "Dados" #FFF3E0
+  database "PostgreSQL" as DB
+  database "Redis"      as REDIS
+end box
+
+' =============================================================
+' UC01 — FAZER LOGIN (US09)
+' =============================================================
+== UC01 — Fazer Login ==
+
+ADM -> UI : 1.1 informarCredenciais(email, senha)
+activate UI
+UI  -> GW : 1.2 autenticar(email, senha)
+activate GW
+GW  -> AUTH : 1.3 autenticar(email, senha)
+activate AUTH
+
+AUTH -> DB : 1.4 buscarUsuarioPorEmail(email)
+activate DB
+DB  --> AUTH : 1.5 usuario(senhaHash)
+deactivate DB
+
+AUTH -> AUTH : 1.6 verificarSenha(senha, hash)
+
+alt credenciais inválidas
+  AUTH --> GW : erroCredenciaisInvalidas()
+  GW   --> UI : erroCredenciaisInvalidas()
+  UI   --> ADM : exibirErroDeLogin()
+else credenciais válidas
+  AUTH -> REDIS : 1.7 salvarSessao(userId, perfil, ttl=30min)
+  activate REDIS
+  REDIS --> AUTH : 1.8 sessaoSalva()
+  deactivate REDIS
+  AUTH --> GW : 1.9 tokenJWT(userId, perfil)
+  GW   --> UI : 1.10 tokenJWT
+  UI   --> ADM : 1.11 redirecionarParaDashboard(perfil)
+end
+deactivate AUTH
+deactivate GW
+deactivate UI
+
+' =============================================================
+' UC07 + UC08 — CADASTRAR COMPETIÇÃO E ALOCAR LOCAL (US01+US03)
+' =============================================================
+== UC07 + UC08 — Cadastrar Competição e Alocar Local ==
+
+ADM -> UI : 2.1 preencherDadosDaCompeticao(modalidade, dataHora, localId)
+activate UI
+UI  -> GW : 2.2 cadastrarCompeticao(modalidade, dataHora, localId)
+activate GW
+GW  -> COMP : 2.3 cadastrar(modalidade, dataHora, localId)
+activate COMP
+
+COMP -> ALLOC : 2.4 verificarDisponibilidade(localId, dataHora)
+activate ALLOC
+ALLOC -> DB : 2.5 buscarCompeticoesNoHorario(localId, dataHora)
+activate DB
+DB --> ALLOC : 2.6 competicoesNoHorario
+deactivate DB
+
+alt local ocupado no horário solicitado
+  ALLOC --> COMP : erroConflitoDeHorario(localId, dataHora)
+  COMP  --> GW : erroLocalIndisponivel(localId)
+  GW    --> UI : erroLocalIndisponivel(localId)
+  UI    --> ADM : alertarConflitoDeHorario(localId, dataHora)
+else local disponível
+  ALLOC --> COMP : 2.7 localDisponivel()
+
+  COMP -> DB : 2.8 salvarCompeticao(modalidade, dataHora, localId, status=ABERTA_INSCRICOES)
+  activate DB
+  DB --> COMP : 2.9 competicaoCriada(competicaoId)
+  deactivate DB
+
+  COMP --> GW : 2.10 competicaoCriada(competicaoId)
+  GW   --> UI : 2.11 competicaoCriada(competicaoId)
+  UI   --> ADM : 2.12 exibirConfirmacao(competicaoId)
+end
+deactivate ALLOC
+deactivate COMP
+deactivate GW
+deactivate UI
+
+' =============================================================
+' UC10 — INSCREVER ATLETA (US02)
+' =============================================================
+== UC10 — Inscrever Atleta em Competição ==
+
+ATL -> UI : 3.1 selecionarCompeticaoEConfirmar(competicaoId)
+activate UI
+UI  -> GW : 3.2 inscreverAtleta(atletaId, competicaoId, paisId)
+activate GW
+GW  -> INSC : 3.3 inscrever(atletaId, competicaoId, paisId)
+activate INSC
+
+INSC -> COMP : 3.4 buscarCompeticao(competicaoId)
+activate COMP
+COMP -> DB : 3.5 buscarCompeticaoPorId(competicaoId)
+activate DB
+DB --> COMP : 3.6 competicao
+deactivate DB
+COMP --> INSC : 3.7 competicao(status)
+deactivate COMP
+
+alt competição não está ABERTA_INSCRICOES
+  INSC --> GW : erroCompeticaoFechada(statusAtual)
+  GW   --> UI : erroCompeticaoFechada(statusAtual)
+  UI   --> ATL : exibirMensagemDeErro(mensagem)
+else competição aberta
+  INSC -> DB : 3.8 verificarInscricaoDuplicada(atletaId, competicaoId)
+  activate DB
+  DB --> INSC : 3.9 resultadoVerificacao
+  deactivate DB
+
+  alt atleta já inscrito nesta competição
+    INSC --> GW : erroInscricaoDuplicada(atletaId, competicaoId)
+    GW   --> UI : erroInscricaoDuplicada()
+    UI   --> ATL : exibirMensagemDeErro(mensagem)
+  else atleta não inscrito
+    INSC -> DB : 3.10 verificarPaisNaModalidade(atletaId, modalidade)
+    activate DB
+    DB --> INSC : 3.11 inscricoesNaModalidade
+    deactivate DB
+
+    alt atleta já representa outro país nesta modalidade
+      INSC --> GW : erroPaisConflitante(paisAtual, paisSolicitado)
+      GW   --> UI : erroPaisConflitante()
+      UI   --> ATL : exibirMensagemDeErro(mensagem)
+    else país ok
+      INSC -> DB : 3.12 salvarInscricao(atletaId, competicaoId, paisId, status=ATIVA)
+      activate DB
+      DB --> INSC : 3.13 inscricaoCriada(inscricaoId)
+      deactivate DB
+
+      INSC --> GW : 3.14 inscricaoCriada(inscricaoId)
+      GW   --> UI : 3.15 inscricaoCriada(inscricaoId)
+      UI   --> ATL : 3.16 exibirConfirmacaoDaInscricao(inscricaoId)
+    end
+  end
+end
+deactivate INSC
+deactivate GW
+deactivate UI
+
+' =============================================================
+' UC12 — REGISTRAR RESULTADO + NOTIFICAÇÃO ASSÍNCRONA (US05+US12)
+' =============================================================
+== UC12 — Registrar Resultado e Notificar Atletas ==
+
+JUZ -> UI : 4.1 informarResultado(competicaoId, 1°colocado, 2°colocado, 3°colocado)
+activate UI
+UI  -> GW : 4.2 registrarResultado(competicaoId, colocados)
+activate GW
+GW  -> RES : 4.3 registrar(competicaoId, colocados)
+activate RES
+
+RES -> DB : 4.4 buscarCompeticaoPorId(competicaoId)
+activate DB
+DB --> RES : 4.5 competicao(status)
+deactivate DB
+
+alt competição não realizada
+  RES --> GW : erroCompeticaoNaoRealizada()
+  GW  --> UI : erroCompeticaoNaoRealizada()
+  UI  --> JUZ : exibirMensagemDeErro(mensagem)
+else competição realizada
+  RES -> DB : 4.6 salvarResultado(competicaoId, colocados, alteravel=false)
+  activate DB
+  DB --> RES : 4.7 resultadoPersistido(resultadoId)
+  deactivate DB
+
+  RES ->> RES_QUEUE : 4.8 publish "resultado.registrado" {competicaoId, colocados}
+
+  RES --> GW : 4.9 resultadoCriado(resultadoId)
+  GW  --> UI : 4.10 resultadoCriado(resultadoId)
+  UI  --> JUZ : 4.11 exibirConfirmacao(resultadoId)
+end
+deactivate RES
+deactivate GW
+deactivate UI
+
+...processamento assíncrono (Fila de Resultados)...
+
+WRK ->> RES_QUEUE : 4.12 consume "resultado.registrado"
+activate WRK
+
+WRK -> DB : 4.13 buscarAtletasDaCompeticao(competicaoId)
+activate DB
+DB --> WRK : 4.14 atletasInscritos
+deactivate DB
+
+loop para cada atleta inscrito
+  WRK ->> SMTP : 4.15 enviarEmailDeResultado(atletaId, resultadoId)
+  activate SMTP
+  SMTP -->> ATL : 4.16 resultadoPublicado(competicaoId, colocacao)
+  deactivate SMTP
+end
+
+deactivate WRK
+
+' =============================================================
+' UC09 — CANCELAR COMPETIÇÃO + CASCATA (US04+US13+US14)
+' =============================================================
+== UC09 — Cancelar Competição e Notificações em Cascata ==
+
+ADM -> UI : 5.1 solicitarCancelamento(competicaoId)
+activate UI
+UI  -> GW : 5.2 cancelarCompeticao(competicaoId)
+activate GW
+GW  -> COMP : 5.3 cancelar(competicaoId)
+activate COMP
+
+COMP -> DB : 5.4 buscarCompeticaoPorId(competicaoId)
+activate DB
+DB --> COMP : 5.5 competicao(status)
+deactivate DB
+
+alt status = ENCERRADA ou resultado já registrado
+  COMP --> GW : erroNaoCancelavel(motivo)
+  GW   --> UI : erroNaoCancelavel(motivo)
+  UI   --> ADM : exibirErro(motivo)
+else cancelamento permitido
+  COMP -> DB : 5.6 atualizarStatusCompeticao(competicaoId, status=CANCELADA)
+  activate DB
+  DB --> COMP : 5.7 statusAtualizado()
+  deactivate DB
+
+  COMP -> INSC : 5.8 cancelarPorCompeticao(competicaoId)
+  activate INSC
+  INSC -> DB : 5.9 atualizarInscricoesCanceladas(competicaoId)
+  activate DB
+  DB   --> INSC : 5.10 inscricoesAtualizadas()
+  deactivate DB
+  INSC ->> INSC_QUEUE : 5.11 publish "inscricao.cancelada" {atletaIds, competicaoId}
+  INSC --> COMP : 5.12 inscricoesCanceladas()
+  deactivate INSC
+
+  COMP ->> COMP_QUEUE : 5.13 publish "competicao.cancelada" {competicaoId}
+
+  COMP --> GW : 5.14 competicaoCancelada(competicaoId)
+  GW   --> UI : 5.15 competicaoCancelada(competicaoId)
+  UI   --> ADM : 5.16 exibirConfirmacao(competicaoId)
+end
+deactivate COMP
+deactivate GW
+deactivate UI
+
+...notificação em cascata — Fila de Competições...
+
+WRK ->> COMP_QUEUE : 5.17 consume "competicao.cancelada"
+activate WRK
+
+WRK -> DB : 5.18 buscarAtletasDaCompeticao(competicaoId)
+activate DB
+DB --> WRK : 5.19 atletasAfetados
+deactivate DB
+
+loop para cada atleta afetado
+  WRK ->> SMTP : 5.20 enviarEmailCancelamentoCompeticao(atletaId, competicaoId)
+  activate SMTP
+  SMTP -->> ATL : 5.21 notificacaoCancelamentoCompeticao(competicaoId)
+  deactivate SMTP
+end
+
+deactivate WRK
+
+...notificação em cascata — Fila de Inscrições...
+
+WRK ->> INSC_QUEUE : 5.22 consume "inscricao.cancelada"
+activate WRK
+
+loop para cada inscrição cancelada
+  WRK ->> SMTP : 5.23 enviarEmailCancelamentoInscricao(inscricaoId)
+  activate SMTP
+  SMTP -->> ATL : 5.24 notificacaoCancelamentoInscricao(inscricaoId)
+  deactivate SMTP
+end
+
+deactivate WRK
+
+' =============================================================
+' UC14 — CONSULTAR RELATÓRIO DE MEDALHAS COM CACHE (US06)
+' =============================================================
+== UC14 — Consultar Relatório de Medalhas ==
+
+ADM -> UI : 6.1 acessarRelatorioMedalhas()
+activate UI
+UI  -> GW : 6.2 consultarRelatorioMedalhas()
+activate GW
+GW  -> REP : 6.3 gerarRelatorio()
+activate REP
+
+REP -> REDIS : 6.4 buscarCache(chave="relatorio-medalhas")
+activate REDIS
+REDIS --> REP : 6.5 dadosCache
+deactivate REDIS
+
+alt cache hit — relatório em cache disponível
+  REP --> GW : 6.6 relatorioMedalhas(dadosCache)
+  GW  --> UI : 6.7 relatorioMedalhas
+  UI  --> ADM : 6.8 exibirQuadroDeMedalhas(relatorio)
+else cache miss — buscar no banco
+  REP -> DB : 6.9 consultarMedalhasPorPais()
+  activate DB
+  DB --> REP : 6.10 dadosMedalhas
+  deactivate DB
+
+  REP -> REP : 6.11 ordenarPorOuros(desempate: pratas, bronzes)
+
+  REP -> REDIS : 6.12 salvarCache(chave="relatorio-medalhas", dados, ttl)
+  activate REDIS
+  REDIS --> REP : 6.13 cacheSalvo()
+  deactivate REDIS
+
+  REP --> GW : 6.14 relatorioMedalhas(dados)
+  GW  --> UI : 6.15 relatorioMedalhas
+  UI  --> ADM : 6.16 exibirQuadroDeMedalhas(relatorio)
+end
+deactivate REP
+deactivate GW
+deactivate UI
+
+@enduml
