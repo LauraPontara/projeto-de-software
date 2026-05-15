@@ -25,6 +25,14 @@ skinparam class {
   BackgroundColor<<Enum>>    #F3E5F5
   BorderColor<<Enum>>        #7B1FA2
   FontColor<<Enum>>          #4A148C
+
+  BackgroundColor<<Log>>     #FFF8E1
+  BorderColor<<Log>>         #F9A825
+  FontColor<<Log>>           #4A4A00
+
+  BackgroundColor<<Token>>   #F1F8E9
+  BorderColor<<Token>>       #558B2F
+  FontColor<<Token>>         #1B5E20
 }
 
 skinparam package {
@@ -64,52 +72,90 @@ enum StatusInscricao <<Enum>> {
   CANCELADA
 }
 
+enum TipoNotificacao <<Enum>> {
+  RESULTADO_PUBLICADO
+  INSCRICAO_CANCELADA
+  COMPETICAO_CANCELADA
+}
+
+' =============================================================
+' INTERFACES
+' =============================================================
+
+interface Cancelavel {
+  + cancelar()    : void
+  + isCancelado() : Boolean
+}
+
 ' =============================================================
 ' HIERARQUIA DE USUÁRIOS
 ' =============================================================
 
-' Classe base concreta — representa o usuário comum (público)
-' e serve de base para os papéis especializados
 class Usuario <<Entity>> {
-  - id    : Long
-  - nome  : String
-  - email : String
-  - senha : String
-  - tipo  : TipoUsuario
+  - id             : Long
+  - nome           : String
+  - email          : String
+  - senha          : String
+  - tipo           : TipoUsuario
   .. Getters ..
-  + getId()    : Long
-  + getNome()  : String
-  + getEmail() : String
-  + getTipo()  : TipoUsuario
+  + getId()        : Long
+  + getNome()      : String
+  + getEmail()     : String
+  + getTipo()      : TipoUsuario
 }
 
-' Administrador — papel que gerencia o sistema
 class Administrador <<Entity>> {
-  - nivelAcesso : Integer
+  - nivelAcesso    : Integer
   .. Getters ..
   + getNivelAcesso() : Integer
 }
 
-' Atleta — possui dados esportivos específicos
 class Atleta <<Entity>> {
   - dataNascimento : Date
   - documento      : String
+  - paisOrigem     : Pais
   .. Getters ..
   + getDataNascimento() : Date
   + getDocumento()      : String
+  + getPaisOrigem()     : Pais
 }
 
-' Juiz — possui credencial que o habilita a registrar resultados
 class Juiz <<Entity>> {
-  - credencial : String
+  - credencial     : String
+  - ativo          : Boolean
   .. Getters ..
   + getCredencial() : String
+  + isAtivo()       : Boolean
+  == Regras de Negócio ==
+  + desativar()     : void
+  + reativar()      : void
 }
 
-' Herança: especialização de Usuario
+' Herança
 Usuario <|-- Administrador
 Usuario <|-- Atleta
 Usuario <|-- Juiz
+
+' =============================================================
+' AUTENTICAÇÃO (US09, US10)
+' =============================================================
+
+class TokenRecuperacaoSenha <<Token>> {
+  - id         : Long
+  - token      : String
+  - expiracao  : DateTime
+  - utilizado  : Boolean
+  .. Getters ..
+  + getToken()      : String
+  + getExpiracao()  : DateTime
+  + isUtilizado()   : Boolean
+  == Regras de Negócio ==
+  + isValido()      : Boolean
+  + invalidar()     : void
+}
+
+' Token pertence a um usuário (composição — não existe sem o usuário)
+Usuario "1" *-- "0..*" TokenRecuperacaoSenha : solicita >
 
 ' =============================================================
 ' ENTIDADES DE DOMÍNIO
@@ -129,6 +175,21 @@ class Pais <<Entity>> {
   + totalBronzes() : Integer
 }
 
+class Local <<Entity>> {
+  - id         : Long
+  - nome       : String
+  - endereco   : String
+  - capacidade : Integer
+  .. Getters ..
+  + getId()        : Long
+  + getNome()      : String
+  + getEndereco()  : String
+  + getCapacidade(): Integer
+  == Regras de Negócio ==
+  + verificarDisponibilidade(dataHora : DateTime) : Boolean
+  + getAgenda()                                   : List<Competicao>
+}
+
 class Competicao <<Entity>> {
   - id         : Long
   - modalidade : String
@@ -142,51 +203,31 @@ class Competicao <<Entity>> {
   == Regras de Negócio ==
   + isAbertaParaInscricoes() : Boolean
   + isRealizada()            : Boolean
-  + cancelar()               : void
 }
 
-class Local <<Entity>> {
-  - id         : Long
-  - nome       : String
-  - endereco   : String
-  - capacidade : Integer
-  .. Getters ..
-  + getId()       : Long
-  + getNome()     : String
-  + getEndereco() : String
-  == Regras de Negócio ==
-  + verificarDisponibilidade(dataHora : DateTime) : Boolean
-  + getAgenda()                                   : List<Competicao>
-}
-
-' Inscricao: classe de associação entre Atleta, Competicao e Pais
-' Carrega os dados e comportamentos próprios da inscrição
 class Inscricao <<Entity>> {
-  - id              : Long
-  - dataInscricao   : Date
-  - status          : StatusInscricao
+  - id            : Long
+  - dataInscricao : Date
+  - status        : StatusInscricao
   .. Getters ..
   + getId()            : Long
   + getDataInscricao() : Date
   + getStatus()        : StatusInscricao
   == Regras de Negócio ==
-  + cancelar()  : void
   + isAtiva()   : Boolean
 }
 
-' Resultado: registra os três colocados de uma competição
-' Os atributos de posição tornam desnecessário um enum TipoMedalha no relacionamento
 class Resultado <<Entity>> {
-  - id              : Long
-  - dataRegistro    : DateTime
-  - alteravel       : Boolean
-  - primeiroLugar   : Atleta
-  - segundoLugar    : Atleta
-  - terceiroLugar   : Atleta
+  - id            : Long
+  - dataRegistro  : DateTime
+  - alteravel     : Boolean
+  - primeiroLugar : Atleta
+  - segundoLugar  : Atleta
+  - terceiroLugar : Atleta
   .. Getters ..
-  + getId()           : Long
-  + getDataRegistro() : DateTime
-  + isAlteravel()     : Boolean
+  + getId()             : Long
+  + getDataRegistro()   : DateTime
+  + isAlteravel()       : Boolean
   + getPrimeiroLugar()  : Atleta
   + getSegundoLugar()   : Atleta
   + getTerceiroLugar()  : Atleta
@@ -197,17 +238,69 @@ class Resultado <<Entity>> {
 }
 
 ' =============================================================
-' RELACIONAMENTOS
+' AUDITORIA DE RESULTADO (US17)
 ' =============================================================
 
-' Competição é realizada em um Local (associação — ambos existem independentemente)
+class LogAlteracaoResultado <<Log>> {
+  - id                : Long
+  - dataAlteracao     : DateTime
+  - responsavel       : Administrador
+  - descricaoAlteracao: String
+  .. Getters ..
+  + getId()                 : Long
+  + getDataAlteracao()      : DateTime
+  + getResponsavel()        : Administrador
+  + getDescricaoAlteracao() : String
+}
+
+' Log pertence ao resultado (composição)
+Resultado "1" *-- "0..*" LogAlteracaoResultado : auditado por >
+
+' =============================================================
+' NOTIFICAÇÕES (US12, US13, US14)
+' =============================================================
+
+class Notificacao <<Entity>> {
+  - id          : Long
+  - tipo        : TipoNotificacao
+  - mensagem    : String
+  - dataEnvio   : DateTime
+  - enviada     : Boolean
+  .. Getters ..
+  + getId()       : Long
+  + getTipo()     : TipoNotificacao
+  + getMensagem() : String
+  + getDataEnvio(): DateTime
+  + isEnviada()   : Boolean
+  == Regras de Negócio ==
+  + enviar()      : void
+}
+
+' Notificação é enviada a um usuário
+Notificacao "0..*" --> "1" Usuario : destinatário >
+
+' Notificação é originada por uma competição
+Notificacao "0..*" --> "0..1" Competicao : referente a >
+
+' =============================================================
+' RELACIONAMENTOS PRINCIPAIS
+' =============================================================
+
+' Atleta pertence a um país de origem
+Atleta "0..*" --> "1" Pais : representa >
+
+' Competição é realizada em um Local
 Competicao "0..*" --> "1" Local : realizada em >
 
-' Inscrição pertence a uma Competição (composição — inscrição não existe sem a competição)
+' Inscrição pertence a uma Competição
 Competicao "1" *-- "0..*" Inscricao : contém >
 
-' Resultado pertence a uma Competição (composição — resultado não existe sem a competição)
+' Resultado pertence a uma Competição
 Competicao "1" *-- "0..1" Resultado : possui >
+
+' Implementação da interface Cancelavel
+Competicao ..|> Cancelavel
+Inscricao  ..|> Cancelavel
 
 ' Inscrição referencia o Atleta inscrito
 Inscricao "0..*" --> "1" Atleta : do atleta >
@@ -215,33 +308,45 @@ Inscricao "0..*" --> "1" Atleta : do atleta >
 ' Inscrição registra o País que o Atleta representa naquela competição
 Inscricao "0..*" --> "1" Pais : representando >
 
-' Resultado referencia os três atletas medalhistas via atributos diretos (primeiroLugar, segundoLugar, terceiroLugar)
-' As associações são representadas pelos próprios atributos tipados como Atleta na classe Resultado
+' Resultado referencia os três atletas medalhistas
 Resultado "0..*" --> "1" Atleta : posição no ranking >
+
+' Log referencia o administrador responsável
+LogAlteracaoResultado "0..*" --> "1" Administrador : realizado por >
 
 ' =============================================================
 ' ENUMS → ENTIDADES
 ' =============================================================
 
-Usuario    --> TipoUsuario      : tipo >
-Competicao --> StatusCompeticao : status >
-Inscricao  --> StatusInscricao  : status >
+Usuario    --> TipoUsuario       : tipo >
+Competicao --> StatusCompeticao  : status >
+Inscricao  --> StatusInscricao   : status >
+Notificacao --> TipoNotificacao  : tipo >
 
 ' =============================================================
-' NOTAS — Regras de Negócio Críticas
+' NOTAS
 ' =============================================================
 
 note top of Usuario
-  Representa o usuário padrão (público).
+  Classe base para todos os perfis.
   Administrador, Atleta e Juiz
   são especializações com dados próprios.
 end note
 
-note right of Atleta
-  Um atleta só pode representar
-  um único país por modalidade.
-  A restrição é garantida via Inscricao.
-end note
+' =============================================================
+' LEGENDA
+' =============================================================
 
+legend bottom
+  |= Notação   |= Tipo                       |= Significado                                            |
+  | ───▷      | Herança (Generalização)      | Subclasse especializa a superclasse                     |
+  | ───>       | Associação                   | Referência direcional entre classes                     |
+  | ◆──       | Composição                   | Parte pertence ao todo; ciclo de vida dependente        |
+  | ◇──       | Agregação                    | Parte associada ao todo; ciclo de vida independente     |
+  | ╌╌╌▷      | Implementação de interface   | Classe concreta realiza o contrato da interface         |
+  |<back:#DCEEFB>  C  </back>| Classe       | Entidade de domínio do sistema                          |
+  |<back:#EAF4FB>  I  </back>| Interface    | Contrato de comportamento a ser implementado            |
+  |<back:#F3E5F5>  E  </back>| Enumeração   | Conjunto fechado de valores constantes                  |
+endlegend
 
 @enduml
