@@ -5,11 +5,10 @@ title Diagrama de Componentes\nSistema de Gestão das Olimpíadas (SGO)
 ' =============================================================
 ' LAYOUT
 ' =============================================================
-top to bottom direction
+left to right direction
 
-skinparam linetype ortho
-skinparam nodesep 90
-skinparam ranksep 110
+skinparam nodesep 40
+skinparam ranksep 90
 skinparam shadowing false
 skinparam roundCorner 8
 skinparam defaultFontName Arial
@@ -34,6 +33,17 @@ skinparam database {
 skinparam interface {
   BackgroundColor #E8F5E9
   BorderColor #2E7D32
+}
+
+skinparam queue {
+  BackgroundColor #F3E5F5
+  BorderColor #7B1FA2
+  FontColor #4A148C
+}
+
+skinparam cloud {
+  BackgroundColor #F9FBE7
+  BorderColor #827717
 }
 
 skinparam package {
@@ -62,30 +72,22 @@ hide stereotype
 !include <tupadr3/material/smartphone>
 !include <tupadr3/material/computer>
 !include <tupadr3/material/dns>
+!include <tupadr3/material/email>
 !define PNGURL https://raw.githubusercontent.com/plantuml-stdlib/gilbarbara-plantuml-sprites/master/pngs
 
 ' =============================================================
 ' CLIENTES
 ' =============================================================
-package "Clientes" #E3F2FD {
-
-together {
-
-MATERIAL_COMPUTER(WEB, "Web App", component, #1565C0)
-
-MATERIAL_SMARTPHONE(MOBILE, "Mobile App", component, #1565C0)
-
-}
-
+package "Clientes" as CLIENTES #E3F2FD {
+  MATERIAL_COMPUTER(WEB, "Web App", component, #1565C0)
+  MATERIAL_SMARTPHONE(MOBILE, "Mobile App", component, #1565C0)
 }
 
 ' =============================================================
 ' API
 ' =============================================================
 package "Camada de API" #ffbae9 {
-
-MATERIAL_DNS(GW, "API Gateway", component, #a63381)
-
+  MATERIAL_DNS(GW, "API Gateway", component, #a63381)
 }
 
 ' =============================================================
@@ -94,86 +96,103 @@ MATERIAL_DNS(GW, "API Gateway", component, #a63381)
 package "<img:PNGURL/docker.png>" #E8F5E9 {
 
 ' =============================================================
-' MÓDULOS
+' MÓDULOS DE NEGÓCIO
 ' =============================================================
 frame "Módulos de Negócio" as MOD_NEG #F1F8E9 {
 
 together {
 
+package "Autenticação" #FAFAFA {
+  interface "IAuthAPI" as IAuthAPI
+  component AUTH_MOD [
+    Módulo de
+    Autenticação
+  ]
+  IAuthAPI -- AUTH_MOD : REST
+}
 
+package "Usuários" #FAFAFA {
+  interface "IUserAPI" as IUserAPI
+  component USER_MOD [
+    Módulo de
+    Usuários
+  ]
+  IUserAPI -- USER_MOD : REST
+}
 
 package "Competições" #FAFAFA {
-
-component COMP_MOD [
-  Módulo de
-  Competições
-]
-
-interface "ICompAPI" as ICompAPI
-
-COMP_MOD -- ICompAPI : REST
+  interface "ICompAPI" as ICompAPI
+  component COMP_MOD [
+    Módulo de
+    Competições
+  ]
+  ICompAPI -- COMP_MOD : REST
 }
+
 package "Inscrições" #FAFAFA {
-
-component INSC_MOD [
-  Módulo de
-  Inscrições
-]
-
-interface "IInscAPI" as IInscAPI
-
-INSC_MOD -- IInscAPI : REST
+  interface "IInscAPI" as IInscAPI
+  component INSC_MOD [
+    Módulo de
+    Inscrições
+  ]
+  IInscAPI -- INSC_MOD : REST
 }
-
 
 package "Resultados" #FAFAFA {
-
-component RES_MOD [
-  Módulo de
-  Resultados
-]
-
-interface "IResAPI" as IResAPI
-
-RES_MOD -- IResAPI : REST
+  interface "IResAPI" as IResAPI
+  component RES_MOD [
+    Módulo de
+    Resultados
+  ]
+  IResAPI -- RES_MOD : REST
 }
 
 package "Alocação" #FAFAFA {
-
-component ALLOC_MOD [
-  Módulo de
-  Alocação
-]
-
-interface "IAllocAPI" as IAllocAPI
-
-ALLOC_MOD -- IAllocAPI : REST
+  interface "IAllocAPI" as IAllocAPI
+  component ALLOC_MOD [
+    Módulo de
+    Alocação
+  ]
+  IAllocAPI -- ALLOC_MOD : REST
 }
+
 package "Relatórios" #FAFAFA {
-
-component REP_MOD [
-  Módulo de
-  Relatórios
-]
-
-interface "IRepAPI" as IRepAPI
-
-REP_MOD -- IRepAPI : REST
+  interface "IRepAPI" as IRepAPI
+  component REP_MOD [
+    Módulo de
+    Relatórios
+  ]
+  IRepAPI -- REP_MOD : REST
 }
 
-
-package "Autenticação" #FAFAFA {
-
-component AUTH_MOD [
-  Módulo de
-  Autenticação
-]
-
-interface "IAuthAPI" as IAuthAPI
-
-AUTH_MOD -- IAuthAPI : REST
+package "Notificações" #FAFAFA {
+  interface "INotifAPI" as INotifAPI
+  component NOTIF_MOD [
+    Módulo de
+    Notificações
+  ]
+  INotifAPI -- NOTIF_MOD : REST
 }
+
 }
+
+}
+
+' =============================================================
+' MENSAGERIA (US04, US12, US13, US14)
+' =============================================================
+frame "Mensageria" as MSG #F8F0FF {
+
+  queue "Fila de Resultados" as RES_QUEUE
+
+  queue "Fila de Competições" as COMP_QUEUE
+
+  queue "Fila de Inscrições" as INSC_QUEUE
+
+  component NOTIF_WORKER [
+    Worker de
+    Notificações
+  ]
 
 }
 
@@ -182,74 +201,100 @@ AUTH_MOD -- IAuthAPI : REST
 ' =============================================================
 frame "Infraestrutura" as INFRA #FFF3E0 {
 
-DEV2_POSTGRESQL(DB, "PostgreSQL", database, #E65100)
+  DEV2_POSTGRESQL(DB, "PostgreSQL", database, #E65100)
+  DEV2_REDIS(REDIS, "Redis", database, #DC382D)
 
-interface "IdbAPI" as IdbAPI
+  interface "IdbAPI" as IdbAPI
+  interface "ICacheAPI" as ICacheAPI
 
-DB -- IdbAPI : TCP/IP
+  DB -- IdbAPI : TCP/IP
+  REDIS -- ICacheAPI : TCP/IP
 
 }
 
 }
 
 ' =============================================================
-' MÓDULOS → BANCO
+' SERVIÇO EXTERNO DE E-MAIL
 ' =============================================================
-COMP_MOD --( IdbAPI
-INSC_MOD --( IdbAPI
-RES_MOD --( IdbAPI
-REP_MOD --( IdbAPI
-ALLOC_MOD --( IdbAPI
-AUTH_MOD --( IdbAPI
-
-
-' =============================================================
-' HIERARQUIA VISUAL
-' =============================================================
-WEB -[hidden]down-> GW
-
-GW -[hidden]down-> AUTH_MOD
-
-AUTH_MOD -[hidden]down-> DB
+MATERIAL_EMAIL(SMTP_SVC, "Serviço de E-mail", cloud, #827717)
 
 ' =============================================================
 ' CLIENTES → GATEWAY
 ' =============================================================
-WEB <--> GW : HTTP
-MOBILE <--> GW : HTTP
+WEB --> GW : HTTP
+MOBILE --> GW : HTTP
 
 ' =============================================================
-' GATEWAY → INTERFACES PÚBLICAS
+' GATEWAY → MÓDULOS (via interfaces)
 ' =============================================================
 GW --( IAuthAPI : REST
-GW --( IAllocAPI : REST
-GW --( IRepAPI : REST
+GW --( IUserAPI : REST
 GW --( ICompAPI : REST
 GW --( IInscAPI : REST
 GW --( IResAPI : REST
+GW --( IAllocAPI : REST
+GW --( IRepAPI : REST
+GW --( INotifAPI : REST
+
+' =============================================================
+' MÓDULOS → BANCO
+' =============================================================
+AUTH_MOD --( IdbAPI
+USER_MOD --( IdbAPI
+COMP_MOD --( IdbAPI
+INSC_MOD --( IdbAPI
+RES_MOD --( IdbAPI
+ALLOC_MOD --( IdbAPI
+REP_MOD --( IdbAPI
+NOTIF_MOD --( IdbAPI
+
+' =============================================================
+' MÓDULOS → REDIS (sessão, token e cache)
+' =============================================================
+AUTH_MOD --( ICacheAPI
+REP_MOD --( ICacheAPI
+
+' =============================================================
+' MÓDULOS → FILAS (publicação de eventos)
+' =============================================================
+COMP_MOD --> COMP_QUEUE : HTTP
+INSC_MOD --> INSC_QUEUE : HTTP
+RES_MOD --> RES_QUEUE : HTTP
+
+' =============================================================
+' WORKER → FILAS e SMTP
+' =============================================================
+NOTIF_WORKER ..> COMP_QUEUE : HTTP
+NOTIF_WORKER ..> INSC_QUEUE : HTTP
+NOTIF_WORKER ..> RES_QUEUE : HTTP
+NOTIF_WORKER --> SMTP_SVC : HTTP
+
+' =============================================================
+' SMTP → CLIENTES (entrega das notificações)
+' =============================================================
+SMTP_SVC --> CLIENTES : SMTP
 
 ' =============================================================
 ' DEPENDÊNCIAS INTERNAS ENTRE MÓDULOS
 ' =============================================================
-INSC_MOD --( ICompAPI 
-
-ALLOC_MOD --( ICompAPI 
-
-RES_MOD --( IInscAPI 
-
-RES_MOD --( ICompAPI 
-
-REP_MOD --( IResAPI
+INSC_MOD ..> COMP_MOD : usa
+ALLOC_MOD ..> COMP_MOD : usa
+RES_MOD ..> INSC_MOD : usa
+RES_MOD ..> COMP_MOD : usa
+REP_MOD ..> RES_MOD : usa
 
 ' =============================================================
 ' LEGENDA
 ' =============================================================
-
 legend bottom
-  |= Notação           |= Tipo de Relação        |= Descrição                                        |
-  | A --O Interface     | Interface fornecida     | Componente A expõe um contrato (lollipop)          |
-  | A --C Interface    | Interface requerida     | Componente A consome um contrato (socket)          |
+  |= Notação                  |= Tipo de Relação         |= Descrição                                         |
+  | A --O Interface             | Interface fornecida      | Componente A expõe um contrato (lollipop)           |
+  | A --C Interface             | Interface requerida      | Componente A consome um contrato (socket)           |
+  | A ..> B : usa               | Dependência direta       | Módulo depende internamente de outro módulo         |
+  | A --> Fila : publish        | Publicação em fila       | Módulo publica evento na fila de mensagens          |
+  | Worker ..> Fila : consume   | Consumo de fila          | Worker consome e processa eventos da fila           |
+  | A --( ICacheAPI             | Cache / Sessão           | Acesso a cache ou armazenamento de sessão/token     |
 endlegend
-
 
 @enduml
