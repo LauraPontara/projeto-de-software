@@ -1,297 +1,350 @@
 ﻿@startuml diagrama-de-implantacao-sgo
 
 title Diagrama de Implantação\nSistema de Gestão das Olimpíadas (SGO)
+' =============================================================
+' LAYOUT
+' =============================================================
+left to right direction
+
+skinparam nodesep 40
+skinparam ranksep 90
+skinparam shadowing false
+skinparam roundCorner 8
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam backgroundColor #FAFAFA
 
 ' =============================================================
-' SPRITES / LOGOS
+' ESTILO
 ' =============================================================
-!include <logos/nginx>
-!include <logos/postgresql>
-!include <logos/redis>
-!include <logos/react>
-!include <logos/docker>
-!include <logos/rabbitmq>
-!include <logos/grafana>
-!include <logos/prometheus>
-!include <tupadr3/common>
-!include <tupadr3/font-awesome/envelope>
-!include <tupadr3/font-awesome/mobile>
-!include <tupadr3/font-awesome/desktop>
-
-' =============================================================
-' SKINPARAM
-' =============================================================
-skinparam backgroundColor   #FAFAFA
-skinparam shadowing         false
-skinparam defaultFontName   Arial
-skinparam defaultFontSize   12
-skinparam roundCorner       8
-skinparam defaultTextAlignment center
-
-skinparam node {
-  BackgroundColor #EAF4FB
-  BorderColor     #2176AE
-  FontColor       #1A1A2E
-  FontStyle       bold
-  BorderThickness 2
-}
-
-skinparam cloud {
-  BackgroundColor #FFF9C4
-  BorderColor     #F57F17
-  FontColor       #5D4037
-  FontStyle       bold
-}
-
-skinparam database {
-  BackgroundColor #FFE0B2
-  BorderColor     #E65100
-  FontColor       #BF360C
-  FontStyle       bold
-}
-
 skinparam component {
-  BackgroundColor #C8E6C9
-  BorderColor     #2E7D32
-  FontColor       #1B5E20
-  FontStyle       bold
-}
-
-skinparam artifact {
-  BackgroundColor #DCEEFB
-  BorderColor     #1A5276
-  FontColor       #1A1A2E
-}
-
-skinparam frame {
-  BackgroundColor #F8F9FA
-  BorderColor     #1A5276
-  FontColor       #1A5276
-  FontStyle       bold
-  BorderThickness 2
-}
-
-skinparam rectangle {
-  BackgroundColor #F0F7FF
-  BorderColor     #90A4AE
-  FontColor       #37474F
+  BackgroundColor #EAF4FB
+  BorderColor #2176AE
+  FontColor #1A1A2E
   BorderThickness 1.5
 }
 
-skinparam arrow {
-  Color     #2176AE
-  FontColor #37474F
-  FontSize  10
+skinparam database {
+  BackgroundColor #FFF3E0
+  BorderColor #E65100
 }
 
-skinparam note {
-  BackgroundColor #FFFDE7
-  BorderColor     #F9A825
-  FontColor       #4A4A4A
+skinparam interface {
+  BackgroundColor #E8F5E9
+  BorderColor #2E7D32
 }
 
 skinparam queue {
   BackgroundColor #F3E5F5
-  BorderColor     #7B1FA2
-  FontColor       #4A148C
+  BorderColor #7B1FA2
+  FontColor #4A148C
+}
+
+skinparam cloud {
+  BackgroundColor #F9FBE7
+  BorderColor #827717
+}
+
+skinparam package {
+  BorderThickness 2
+  FontStyle bold
+}
+
+skinparam frame {
+  BorderThickness 2
+}
+
+skinparam arrow {
+  Color #616161
+  FontColor #424242
+  FontSize 10
+}
+
+hide stereotype
+
+' =============================================================
+' SPRITES — stdlib embutida
+' =============================================================
+!include <tupadr3/common>
+!include <tupadr3/devicons2/postgresql>
+!include <tupadr3/devicons2/redis>
+!include <tupadr3/material/smartphone>
+!include <tupadr3/material/computer>
+!include <tupadr3/material/dns>
+!include <tupadr3/material/email>
+
+!include <logos/nginx>
+!include <logos/nodejs>
+!include <logos/nextjs>
+!include <logos/react>
+!include <logos/docker>
+!include <logos/rabbitmq>
+!include <logos/prometheus>
+!include <logos/grafana>
+!include <logos/sendgrid>
+
+' =============================================================
+' CLIENTES
+' =============================================================
+package "Clientes" as CLIENTES #E3F2FD {
+  MATERIAL_COMPUTER(WEB, "Web App\n<$nextjs,color=#000000>", component, #1565C0)
+  MATERIAL_SMARTPHONE(MOBILE, "Mobile App\n<$react,color=#16ccff>", component, #1565C0)
 }
 
 ' =============================================================
-' DISPOSITIVOS CLIENTE
+' API
 ' =============================================================
-frame "Dispositivos Cliente" {
-  node "Navegador\n<$react{scale=0.4}>\n<<Next.js>>" as BROWSER
-  node "Smartphone\n<$react{scale=0.4}>\n<<React Native>>" as SMARTPHONE
+package "Camada de API" #ffbae9 {
+  MATERIAL_DNS(GW, "API Gateway\n<$nginx,color=#009639>", component, #a63381)
 }
 
 ' =============================================================
-' INTERNET
+' RAILWAY — hospedagem
 ' =============================================================
-cloud "Internet" as INTERNET
+package "<img:https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/railway-infrastructure-platform-icon.png{scale=0.07}> Railway <<hospedagem>>" as RAILWAY #E1F5FE {
 
 ' =============================================================
-' HOSTING FRONTEND
+' CONTAINER PRINCIPAL
 ' =============================================================
-cloud "Vercel\n<<Edge Network / CDN>>" as VERCEL {
-  artifact "sgo-web\n<$react{scale=0.4}>\n<<Next.js>>" as NEXT_APP
+package "<$docker,color=#2496ED>" #E8F5E9 {
+
+' =============================================================
+' MÓDULOS DE NEGÓCIO
+' =============================================================
+frame "Módulos de Negócio" as MOD_NEG #F1F8E9 {
+
+together {
+
+package "Autenticação" #FAFAFA {
+  interface "IAuthAPI" as IAuthAPI
+  component AUTH_MOD [
+    <$nodejs,color=#339933>
+    Módulo de
+    Autenticação
+  ]
+  IAuthAPI -- AUTH_MOD : REST
 }
 
-cloud "App Store\n/ Google Play" as STORES {
-  artifact "SGO Mobile\n<$react{scale=0.4}>\n<<React Native>>" as RN_APP
+package "Usuários" #FAFAFA {
+  interface "IUserAPI" as IUserAPI
+  component USER_MOD [
+    <$nodejs,color=#339933>
+    Módulo de
+    Usuários
+  ]
+  IUserAPI -- USER_MOD : REST
+}
+
+package "Competições" #FAFAFA {
+  interface "ICompAPI" as ICompAPI
+  component COMP_MOD [
+    <$nodejs,color=#339933>
+    Módulo de
+    Competições
+  ]
+  ICompAPI -- COMP_MOD : REST
+}
+
+package "Inscrições" #FAFAFA {
+  interface "IInscAPI" as IInscAPI
+  component INSC_MOD [
+    <$nodejs,color=#339933>
+    Módulo de
+    Inscrições
+  ]
+  IInscAPI -- INSC_MOD : REST
+}
+
+package "Resultados" #FAFAFA {
+  interface "IResAPI" as IResAPI
+  component RES_MOD [
+    <$nodejs,color=#339933>
+    Módulo de
+    Resultados
+  ]
+  IResAPI -- RES_MOD : REST
+}
+
+package "Alocação" #FAFAFA {
+  interface "IAllocAPI" as IAllocAPI
+  component ALLOC_MOD [
+    <$nodejs,color=#339933>
+    Módulo de
+    Alocação
+  ]
+  IAllocAPI -- ALLOC_MOD : REST
+}
+
+package "Relatórios" #FAFAFA {
+  interface "IRepAPI" as IRepAPI
+  component REP_MOD [
+    <$nodejs,color=#339933>
+    Módulo de
+    Relatórios
+  ]
+  IRepAPI -- REP_MOD : REST
+}
+
+package "Notificações" #FAFAFA {
+  interface "INotifAPI" as INotifAPI
+  component NOTIF_MOD [
+    <$nodejs,color=#339933>
+    Módulo de
+    Notificações
+  ]
+  INotifAPI -- NOTIF_MOD : REST
+}
+
+}
+
 }
 
 ' =============================================================
-' INFRAESTRUTURA CLOUD  —  Railway
+' MENSAGERIA
 ' =============================================================
-frame "Infraestrutura Cloud SGO  <<Railway>>" as INFRA #E1F5FE {
+frame "Mensageria" as MSG #f1e2ff {
 
-  ' --- Zona de Entrada ---
-  rectangle "Zona de Entrada" #EAF4FB {
-    node "Load Balancer\n<$nginx{scale=0.4}>\n<<NGINX :443>>" as LB
-  }
+  queue "<$rabbitmq,color=#DE7B03>\nFila de Resultados" as RES_QUEUE
 
-  ' --- Zona de Aplicação ---
-  rectangle "Zona de Aplicação" #C8E6C9 {
+  queue "<$rabbitmq,color=#DE7B03>\nFila de Competições" as COMP_QUEUE
 
-    node "API Gateway\n<$nginx{scale=0.4}>\n<<NGINX :8080>>" as GW
+  queue "<$rabbitmq,color=#DE7B03>\nFila de Inscrições" as INSC_QUEUE
 
-    frame "Serviços de Negócio  <$docker{scale=0.4}>" as SVC_FRAME #F1F8E9 {
-      together {
-        node "Autenticação\n<<Node.js :3001>>" as AUTH_C
-        node "Usuários\n<<Node.js :3002>>"     as USER_C
-        node "Competições\n<<Node.js :3003>>"  as COMP_C
-        node "Inscrições\n<<Node.js :3004>>"   as INSC_C
-      }
-      together {
-        node "Resultados\n<<Node.js :3005>>"   as RES_C
-        node "Alocação\n<<Node.js :3006>>"     as ALLOC_C
-        node "Relatórios\n<<Node.js :3007>>"   as REP_C
-        node "Notificações\n<<Node.js :3008>>" as NOTIF_C
-      }
-      node "Worker de Notificações\n<<Node.js>>" as WORKER_C
-    }
-  }
+  component NOTIF_WORKER [
+    <$nodejs,color=#339933>
+    Worker de
+    Notificações
+  ]
 
-  ' --- Zona de Mensageria ---
-  rectangle "Zona de Mensageria" #F3E5F5 {
-    node "RabbitMQ\n<$rabbitmq{scale=0.4}>\n<<:5672 | UI :15672>>" as RABBIT
-    queue "fila.resultados"  as Q_RES
-    queue "fila.competicoes" as Q_COMP
-    queue "fila.inscricoes"  as Q_INSC
-    RABBIT -- Q_RES
-    RABBIT -- Q_COMP
-    RABBIT -- Q_INSC
-  }
+}
 
-  ' --- Zona de Dados ---
-  rectangle "Zona de Dados" #FFE0B2 {
-    database "PostgreSQL\n<$postgresql{scale=0.4}>\n<<:5432>>" as DB
-    database "Redis\n<$redis{scale=0.4}>\n<<:6379>>" as CACHE
-  }
+' =============================================================
+' INFRAESTRUTURA
+' =============================================================
+frame "Infraestrutura" as INFRA #FFF3E0 {
 
-  ' --- Monitoramento ---
-  rectangle "Monitoramento" #FFF9C4 {
-    node "Prometheus\n<$prometheus{scale=0.4}>\n<<:9090>>" as PROM
-    node "Grafana\n<$grafana{scale=0.4}>\n<<:3000>>"       as GRAF
-    PROM --> GRAF : dados
-  }
+  DEV2_POSTGRESQL(DB, "PostgreSQL", database, #E65100)
+  DEV2_REDIS(REDIS, "Redis", database, #DC382D)
+
+  interface "IdbAPI" as IdbAPI
+  interface "ICacheAPI" as ICacheAPI
+
+  DB -- IdbAPI : TCP/IP
+  REDIS -- ICacheAPI : TCP/IP
+
+}
+
+' =============================================================
+' MONITORAMENTO
+' =============================================================
+frame "Monitoramento" as MON #FFF9C4 {
+
+  component PROM [
+   <$prometheus,color=#E6522C>
+    Prometheus
+  ]
+
+  component GRAF [
+   <$grafana,color=#F46800>
+    Grafana
+  ]
+
+  PROM --> GRAF : HTTP
+
+}
+
+}
 
 }
 
 ' =============================================================
 ' SERVIÇO EXTERNO DE E-MAIL
 ' =============================================================
-cloud "SendGrid\n<<API de E-mail>>" as SENDGRID {
-  component "Email API\n<<REST :443>>" as EMAIL_API
-}
+cloud "<$sendgrid,color=#1A82E2>\nEnvio de e-mail" as SMTP_SVC
 
 ' =============================================================
-' DISPOSITIVOS → INTERNET
+' CLIENTES → GATEWAY
 ' =============================================================
-BROWSER    ..> INTERNET : HTTPS
-SMARTPHONE ..> INTERNET : HTTPS
+WEB --> GW : HTTP
+MOBILE --> GW : HTTP
 
 ' =============================================================
-' INTERNET → FRONTENDS / STORES
+' GATEWAY → MÓDULOS (via interfaces)
 ' =============================================================
-INTERNET ..> VERCEL : HTTPS :443
-INTERNET ..> STORES : download
+GW --( IAuthAPI : REST
+GW --( IUserAPI : REST
+GW --( ICompAPI : REST
+GW --( IInscAPI : REST
+GW --( IResAPI : REST
+GW --( IAllocAPI : REST
+GW --( IRepAPI : REST
+GW --( INotifAPI : REST
 
 ' =============================================================
-' FRONTENDS → LOAD BALANCER
+' MÓDULOS → BANCO
 ' =============================================================
-NEXT_APP --> LB : HTTPS :443
-RN_APP   --> LB : HTTPS :443
+AUTH_MOD --( IdbAPI
+USER_MOD --( IdbAPI
+COMP_MOD --( IdbAPI
+INSC_MOD --( IdbAPI
+RES_MOD --( IdbAPI
+ALLOC_MOD --( IdbAPI
+REP_MOD --( IdbAPI
+NOTIF_MOD --( IdbAPI
 
 ' =============================================================
-' LOAD BALANCER → GATEWAY
+' MÓDULOS → REDIS
 ' =============================================================
-LB --> GW : HTTP :8080
+AUTH_MOD --( ICacheAPI
+REP_MOD --( ICacheAPI
 
 ' =============================================================
-' GATEWAY → SERVIÇOS  (REST)
+' MÓDULOS → FILAS
 ' =============================================================
-GW --> AUTH_C  : REST
-GW --> USER_C  : REST
-GW --> COMP_C  : REST
-GW --> INSC_C  : REST
-GW --> RES_C   : REST
-GW --> ALLOC_C : REST
-GW --> REP_C   : REST
-GW --> NOTIF_C : REST
+COMP_MOD --> COMP_QUEUE : AMQP
+INSC_MOD --> INSC_QUEUE : AMQP
+RES_MOD --> RES_QUEUE : AMQP
 
 ' =============================================================
-' SERVIÇOS → BANCO DE DADOS  (JDBC)
+' WORKER → FILAS e SMTP
 ' =============================================================
-SVC_FRAME --> DB : JDBC :5432
+NOTIF_WORKER ..> COMP_QUEUE : AMQP
+NOTIF_WORKER ..> INSC_QUEUE : AMQP
+NOTIF_WORKER ..> RES_QUEUE : AMQP
+NOTIF_WORKER --> SMTP_SVC : HTTPS
 
 ' =============================================================
-' SERVIÇOS → REDIS  (TCP)
+' SMTP → CLIENTES
 ' =============================================================
-AUTH_C --> CACHE : TCP :6379
-REP_C  --> CACHE : TCP :6379
+SMTP_SVC --> CLIENTES : SMTP
 
 ' =============================================================
-' SERVIÇOS → FILAS  (publicação AMQP)
+' DEPENDÊNCIAS INTERNAS
 ' =============================================================
-COMP_C --> Q_COMP : AMQP
-INSC_C --> Q_INSC : AMQP
-RES_C  --> Q_RES  : AMQP
+INSC_MOD ..> COMP_MOD : usa
+ALLOC_MOD ..> COMP_MOD : usa
+RES_MOD ..> INSC_MOD : usa
+RES_MOD ..> COMP_MOD : usa
+REP_MOD ..> RES_MOD : usa
 
 ' =============================================================
-' WORKER — CONSUMO DE FILAS E ENVIO DE E-MAIL
+' MONITORAMENTO → COMPONENTES
 ' =============================================================
-WORKER_C ..> Q_RES  : AMQP consume
-WORKER_C ..> Q_COMP : AMQP consume
-WORKER_C ..> Q_INSC : AMQP consume
-WORKER_C --> SENDGRID : HTTPS (API)
-
-' =============================================================
-' MONITORAMENTO (Prometheus scrape)
-' =============================================================
-PROM ..> GW     : scrape :8080/metrics
-PROM ..> DB     : scrape :9187/metrics
-PROM ..> RABBIT : scrape :15692/metrics
-
-' =============================================================
-' NOTAS
-' =============================================================
-note right of LB
-  SSL Termination.
-  Distribui carga entre
-  instâncias do API Gateway.
-end note
-
-note bottom of RABBIT
-  3 exchanges/filas:
-  resultados, competições,
-  inscrições.
-end note
-
-note right of SENDGRID
-  Serviço externo de
-  envio de e-mails
-  transacionais.
-end note
+PROM ..> GW : HTTP
+PROM ..> DB : HTTP
+PROM ..> INSC_QUEUE : HTTP
 
 ' =============================================================
 ' LEGENDA
 ' =============================================================
 legend bottom
-  |= Elemento           |= Significado                               |
-  | Cubo (node)         | Servidor / Contêiner Docker               |
-  | Nuvem (cloud)       | Serviço cloud / ambiente externo          |
-  | Cilindro (database) | Banco de dados / cache                    |
-  | Fila (queue)        | Exchange / fila de mensagens (RabbitMQ)   |
-  | Artefato            | Aplicação implantada                      |
-  | ──►                | Chamada direcional com protocolo           |
-  | · · ►              | Comunicação via rede externa / consume     |
-  |<back:#EAF4FB> Azul claro  </back>| Servidores e contêineres    |
-  |<back:#C8E6C9> Verde       </back>| Zona de aplicação            |
-  |<back:#FFE0B2> Laranja     </back>| Banco de dados / cache       |
-  |<back:#F3E5F5> Roxo claro  </back>| Mensageria (RabbitMQ)        |
-  |<back:#FFF9C4> Amarelo     </back>| Monitoramento / cloud        |
-  |<back:#E1F5FE> Azul suave  </back>| Infraestrutura Railway       |
+  |= Notação                    |= Tipo de Relação         |= Descrição                                          |
+  | A --O Interface             | Interface fornecida      | Componente A expõe um contrato (lollipop)           |
+  | A --C Interface             | Interface requerida      | Componente A consome um contrato (socket)           |
+  | A ..> B : usa               | Dependência direta       | Módulo depende internamente de outro módulo         |
+  | A --> Fila : AMQP           | Publicação em fila       | Módulo publica evento na fila de mensagens          |
+  | Worker ..> Fila : AMQP      | Consumo de fila          | Worker consome e processa eventos da fila           |
+  | A --( ICacheAPI             | Cache / Sessão           | Acesso a cache ou armazenamento de sessão/token     |
 endlegend
 
 @enduml
