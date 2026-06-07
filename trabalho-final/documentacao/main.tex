@@ -1,0 +1,234 @@
+% ============================================================
+%  Documentação de Projeto — Template LaTeX  (iteração 5)
+%  Compile com pdfLaTeX no Overleaf
+% ============================================================
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Margens: 1 polegada = 2.54cm todos os lados
+% header distance from top of page = 720 twips = 0.5in
+\usepackage[
+  a4paper,
+  top=2.54cm, bottom=2.54cm,
+  left=2.54cm, right=2.54cm,
+  headheight=15pt, headsep=0.46cm
+]{geometry}
+
+\usepackage{mathptmx}   % Times New Roman
+\usepackage{xcolor}
+
+% Cabeçalho: Times bold itálico 10pt, direita, sem linha
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\fontsize{10}{12}\selectfont\bfseries\itshape
+  Documentação de Projeto para o Sistema \textless{}nome do sistema\textgreater{}
+  \enspace Página \thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{capa}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}}
+
+% Parágrafo: sem indentação, sem parskip automático
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% Corpo de texto: ragged right (NÃO justificado — igual ao original)
+\raggedright
+
+% Headings: H1=18pt bold (before=24pt after=12pt), H2=14pt bold (14/14)
+\usepackage{titlesec}
+\titleformat{\section}{\fontsize{18}{22}\selectfont\bfseries}{\thesection.}{1em}{}
+\titlespacing*{\section}{0pt}{24pt}{12pt}
+\titleformat{\subsection}{\fontsize{14}{17}\selectfont\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{14pt}{14pt}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{10pt}{6pt}
+\setcounter{secnumdepth}{3}
+
+% Sumário: "Tabela de Conteúdo" 18pt bold
+% Seções 11pt bold, subseções 11pt normal
+% Indentação subseções = 360 twips = 0.635cm
+% Sem dots; número de seção com ponto
+\usepackage{tocloft}
+\renewcommand{\contentsname}{Tabela de Conteúdo}
+\renewcommand{\cfttoctitlefont}{\fontsize{18}{22}\selectfont\bfseries}
+\renewcommand{\cftaftertoctitle}{\par}
+\setlength{\cftbeforetoctitleskip}{6pt}
+\setlength{\cftaftertoctitleskip}{10pt}
+
+\renewcommand{\cftsecfont}{\fontsize{11}{13}\selectfont\bfseries}
+\renewcommand{\cftsecpagefont}{\fontsize{11}{13}\selectfont\bfseries}
+\setlength{\cftsecindent}{0pt}
+\setlength{\cftsecnumwidth}{1.5em}
+\setlength{\cftbeforesecskip}{3pt}
+\renewcommand{\cftsecaftersnum}{.}
+\renewcommand{\cftsecleader}{\hfill}
+\renewcommand{\cftsecdotsep}{\cftnodots}
+
+\renewcommand{\cftsubsecfont}{\fontsize{11}{13}\selectfont\normalfont}
+\renewcommand{\cftsubsecpagefont}{\fontsize{11}{13}\selectfont\normalfont}
+\setlength{\cftsubsecindent}{0.635cm}
+\setlength{\cftsubsecnumwidth}{2em}
+\setlength{\cftbeforesubsecskip}{3pt}
+\renewcommand{\cftsubsecleader}{\hfill}
+\renewcommand{\cftsubsecdotsep}{\cftnodots}
+
+\usepackage{tabularx}
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\usepackage[hidelinks]{hyperref}
+
+% ============================================================
+\begin{document}
+
+% ══════════════════════════════════════════════════════════════
+%  CAPA — vbox com posições absolutas pixel-perfeitas
+%  Medidas do original (px→pt @ 120dpi): 1px = 0.6pt
+% ══════════════════════════════════════════════════════════════
+\thispagestyle{capa}
+\setcounter{page}{1}
+
+% vbox ocupa toda a altura do texto; \vskip posiciona cada elemento
+% \hbox to \textwidth{\hfil CONTENT} = alinhamento à direita
+\noindent\vbox to \textheight{%
+  % linha horizontal: começa 22.8pt abaixo da margem
+  \vskip 22.8pt
+  \hbox{\rule{\textwidth}{2.5pt}}%
+  % "Documentação de Projeto" 32pt: gap=42.6pt depois da linha
+  \vskip 42.6pt
+  \hbox to \textwidth{\hfil
+    {\fontsize{32}{38}\selectfont\bfseries Documentação de Projeto}}%
+  % "para o sistema" 20pt: gap=40.8pt (corrigido pela profundidade da fonte 32pt)
+  \vskip 40.8pt
+  \hbox to \textwidth{\hfil
+    {\fontsize{20}{24}\selectfont\bfseries para o sistema}}%
+  % "<Nome do Sistema>" 32pt: gap=27.0pt
+  \vskip 27.0pt
+  \hbox to \textwidth{\hfil
+    {\fontsize{32}{38}\selectfont\bfseries
+      \textless\textcolor{red}{Nome do Sistema}\textgreater}}%
+  % "Versão 1.0" 14pt: gap=43.2pt
+  \vskip 43.2pt
+  \hbox to \textwidth{\hfil
+    {\fontsize{14}{17}\selectfont\bfseries Versão 1.0}}%
+  % autores linha 1, 12pt: gap=34.8pt
+  \vskip 34.8pt
+  \hbox to \textwidth{\hfil
+    {\fontsize{12}{14}\selectfont
+      Projeto de sistema elaborado pelo(s) aluno(s) AAAA}}%
+  % autores linha 2: gap=0.0pt
+  \vskip 0.0pt
+  \hbox to \textwidth{\hfil
+    {\fontsize{12}{14}\selectfont
+      como parte da disciplina \textbf{Projeto de Software}.}}%
+  % "<data de criação>" 14pt: gap=44.4pt
+  \vskip 44.4pt
+  \hbox to \textwidth{\hfil
+    {\fontsize{14}{17}\selectfont\bfseries
+      \textless\textcolor{red}{data de criação}\textgreater}}%
+  \vfil
+}
+
+\newpage
+
+% ══════════════════════════════════════════════════════════════
+%  SUMÁRIO + HISTÓRICO (página 2)
+% ══════════════════════════════════════════════════════════════
+\setcounter{page}{2}
+
+\tableofcontents
+
+% Espaço antes do Histórico (~2 blank lines of 12pt = 24pt + before H1 = 24pt)
+\vspace{18pt}
+
+% "Histórico de Revisões" estilo H1 manual
+\vspace{24pt}
+{\fontsize{18}{22}\selectfont\bfseries Histórico de Revisões}\par
+\vspace{12pt}
+
+\begin{tabularx}{\textwidth}{|L{3.2cm}|L{2.2cm}|X|L{2cm}|}
+  \hline
+  \textbf{Nome} & \textbf{Data} & \textbf{Razões para Mudança} & \textbf{Versão} \\
+  \hline
+  & & & \\[14pt]
+  \hline
+  & & & \\[14pt]
+  \hline
+\end{tabularx}
+
+\newpage
+\setcounter{page}{1}
+
+% ══════════════════════════════════════════════════════════════
+%  SEÇÕES
+% ══════════════════════════════════════════════════════════════
+\section{Introdução}
+
+Este documento agrega: 1) a elaboração e revisão de modelos de domínio e
+2) modelos de projeto para o sistema \textless\textcolor{red}{nome do sistema}\textgreater.
+A referência principal para a descrição geral do problema, domínio e requisitos
+do sistema é o documento de especificação que descreve a visão de domínio do sistema.
+
+\section{Modelos de Usuário e Requisitos}
+
+\subsection{Descrição de Atores}
+
+Nesta subseção é apresentado descrição de cada um dos atores que interagem com o sistema.
+
+\subsection{Modelo de Casos de Uso e Histórias de Usuários}
+
+Nesta subseção é apresentado o diagrama de casos de uso do sistema. Para cada um deles,
+utilize um ID que possa servir de referência no restante do documento.
+Por exemplo UC-01 para o Caso de Uso 01.
+
+\subsection{Diagrama de Sequência do Sistema e Contrato de Operações}
+
+Nesta subseção é apresentado o diagrama de sequência do sistema de pelo menos, 3 Casos
+de Uso ou Histórias de Usuário descritos na Seção 2.3.
+
+\vspace{6pt}
+Formato para cada contrato de operação
+
+\vspace{4pt}
+\begin{tabularx}{\textwidth}{|L{4cm}|X|}
+  \hline
+  \textbf{Contrato}             & \\[6pt] \hline
+  \textbf{Operação}             & \\[6pt] \hline
+  \textbf{Referências cruzadas} & \\[6pt] \hline
+  \textbf{Pré-condições}        & \\[6pt] \hline
+  \textbf{Pós-condições}        & \\[6pt] \hline
+\end{tabularx}
+
+\section{Modelos de Projeto}
+
+\subsection{Arquitetura}
+
+Pode ser descrita com um diagrama apropriado da UML ou \quad C4 Model
+
+\subsection{Diagrama de Componentes e Implantação.}
+
+Diagramas de componentes do sistema. Diagrama de implantação mostrando onde os
+componentes estarão alocados para a execução.
+
+\subsection{Diagrama de Classes}
+
+Diagrama de classes do sistema.
+
+\subsection{Diagramas de Sequência}
+
+Diagramas de sequência para realização de casos de uso.
+
+\subsection{Diagramas de Comunicação}
+
+Diagramas de comunicação para realização de casos de uso.
+
+\subsection{Diagramas de Estados}
+
+Diagramas de estados do sistema.
+
+\section{Modelos de Dados}
+
+Deve-se apresentar os esquemas de banco de dados e as estratégias de mapeamento
+entre as representações de objetos e não-objetos.
+
+\end{document}

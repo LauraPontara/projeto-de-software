@@ -1,1 +1,9 @@
 .claude/
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.synctex(busy)
