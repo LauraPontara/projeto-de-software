@@ -7,17 +7,17 @@
 
 ---
 
-# 🏷️ Nome do Projeto 👨‍💻
+# 🏷️ Elo 👨‍💻
 
 > [!NOTE]
-> Breve descrição do projeto. **Foque no principal valor/benefício.**  
+> Plataforma SaaS de gestão de comunidades para creators — gerencie membros, eventos, campanhas e acompanhe a saúde da sua comunidade em um único lugar.  
 > Crie uma **logo** para o projeto que represente a aplicação em questão.
 
 <table>
   <tr>
     <td width="800px">
       <div align="justify">
-        Este <b>README.md</b> apresenta um template organizado, ideal para servir como referência acadêmica e profissional em projetos de desenvolvimento, desde trabalhos da faculdade até projetos desenvolvidos para etapas técnicas de processos seletivos. Ele reúne as <i>seções essenciais</i> recomendadas pelo <a href="https://github.com/joaopauloaramuni">Prof. Dr. João Paulo Aramuni</a>, permitindo <i>organização clara</i>, <i>documentação eficiente</i> e <i>padronização</i> entre diferentes trabalhos. O objetivo deste esqueleto é <b>facilitar a construção de projetos bem documentados</b>, oferecendo um <i>guia completo</i> que inclui <b>boas práticas</b>, instruções de execução, tecnologias utilizadas, arquitetura, estruturas de pastas, testes, links úteis e orientações para colaboração. Esse template ajuda estudantes a desenvolverem <b>documentação de qualidade profissional</b> desde os primeiros períodos, promovendo <i>clareza</i>, <i>reprodutibilidade</i> e <i>padronização</i> nos projetos.
+        O <b>Elo</b> é uma plataforma SaaS de gestão de comunidades voltada para creators e community managers. Ela permite que organizadores criem e gerenciem suas comunidades, publiquem eventos com venda de ingressos, administrem membros, executem campanhas e acompanhem o engajamento e a saúde das suas comunidades por meio de insights em tempo real. Este trabalho documenta a <i>arquitetura de software</i> do Elo como projeto final da disciplina <b>Projeto de Software</b> do curso de <b>Engenharia de Software da PUC Minas</b>, apresentando diagramas UML, decisões arquiteturais e modelagem do domínio. O nome "Elo" é fictício e utilizado para fins acadêmicos — a arquitetura documentada é baseada em um sistema real em produção.
       </div>
     </td>
     <td>
@@ -34,14 +34,14 @@
 
 ### Exemplos de badges básicos:
 
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/joaopauloaramuni/joaopauloaramuni/main.yml?branch=main)](https://github.com/joaopauloaramuni/joaopauloaramuni/actions/workflows/main.yml)
-[![Test Coverage](https://codecov.io/gh/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software/branch/main/graph/badge.svg)](https://codecov.io/gh/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software)
-[![Versão](https://img.shields.io/badge/Versão-v1.0.0-blue)](https://github.com/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software/releases)
-[![Licença](https://img.shields.io/github/license/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software)](#licença)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/LauraPontara/projeto-de-software/main.yml?branch=main)](https://github.com/LauraPontara/projeto-de-software/actions/workflows/main.yml)
+[![Test Coverage](https://codecov.io/gh/LauraPontara/projeto-de-software/branch/main/graph/badge.svg)](https://codecov.io/gh/LauraPontara/projeto-de-software)
+[![Versão](https://img.shields.io/badge/Versão-v1.0.0-blue)](https://github.com/LauraPontara/projeto-de-software/releases)
+[![Licença](https://img.shields.io/github/license/LauraPontara/projeto-de-software)](#licença)
 
 ### Outros exemplos de badges:
 
-[![Versão](https://img.shields.io/badge/Versão-v1.0.0-blue?style=for-the-badge)](https://github.com/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software/releases) ![React](https://img.shields.io/badge/React-19.1.1-007ec6?style=for-the-badge&logo=react&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-7.1.2-007ec6?style=for-the-badge&logo=vite&logoColor=white) ![Java](https://img.shields.io/badge/Java-17-007ec6?style=for-the-badge&logo=openjdk&logoColor=white) ![Maven](https://img.shields.io/badge/Maven-3.9.9-007ec6?style=for-the-badge&logo=apachemaven&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.3.5-007ec6?style=for-the-badge&logo=springboot&logoColor=white) ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-3.1.1-007ec6?style=for-the-badge&logo=thymeleaf&logoColor=white) ![GitHub repo size](https://img.shields.io/github/repo-size/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software?style=for-the-badge&logo=files) ![GitHub directory file count](https://img.shields.io/github/directory-file-count/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software?style=for-the-badge&logo=files) ![GitHub stars](https://img.shields.io/github/stars/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software?style=for-the-badge&logo=github) ![GitHub forks](https://img.shields.io/github/forks/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software?style=for-the-badge&logo=git) ![GitHub language count](https://img.shields.io/github/languages/count/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software?style=for-the-badge&logo=python) ![GitHub license](https://img.shields.io/github/license/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software?style=for-the-badge&color=007ec6&logo=opensourceinitiative) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software?style=for-the-badge&color=007ec6&logo=gitkraken) ![GitHub last commit](https://img.shields.io/github/last-commit/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software?style=for-the-badge&logo=clockify) ![Vercel](https://vercelbadge.vercel.app/api/joaopauloaramuni/joaopauloaramuni-portfolio?style=for-the-badge) ![Views Counter](https://views-counter.vercel.app/badge?pageId=https%3A%2F%2Fgithub%2Ecom%2Fjoaopauloaramuni%2Flaboratorio-de-desenvolvimento-de-software&leftColor=555555&rightColor=007ec6&type=total&label=RepoViews)
+[![Versão](https://img.shields.io/badge/Versão-v1.0.0-blue?style=for-the-badge)](https://github.com/LauraPontara/projeto-de-software/releases) ![Next.js](https://img.shields.io/badge/Next.js-16-007ec6?style=for-the-badge&logo=nextdotjs&logoColor=white) ![React](https://img.shields.io/badge/React-19-007ec6?style=for-the-badge&logo=react&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-5-007ec6?style=for-the-badge&logo=typescript&logoColor=white) ![Fastify](https://img.shields.io/badge/Fastify-5-007ec6?style=for-the-badge&logo=fastify&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-24-007ec6?style=for-the-badge&logo=nodedotjs&logoColor=white) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-007ec6?style=for-the-badge&logo=postgresql&logoColor=white) ![GitHub repo size](https://img.shields.io/github/repo-size/LauraPontara/projeto-de-software?style=for-the-badge&logo=files) ![GitHub last commit](https://img.shields.io/github/last-commit/LauraPontara/projeto-de-software?style=for-the-badge&logo=clockify)
 
 ---
 
@@ -55,16 +55,16 @@
 - [Instalação e Execução](#-instalação-e-execução)
   - [Pré-requisitos](#pré-requisitos)
   - [Variáveis de Ambiente](#-variáveis-de-ambiente)
-     - [1 Back-end (Spring Boot)](#1-back-end-spring-boot)
-     - [2 Front-end (React, Vite)](#2-front-end-react-vite)
+     - [1 Back-end (Fastify)](#1-back-end-fastify)
+     - [2 Front-end (Next.js)](#2-front-end-nextjs)
      - [3 Exemplos de Variáveis de Ambiente na Vercel](#3-exemplos-de-variáveis-de-ambiente-na-vercel)
   - [Instalação de Dependências](#-instalação-de-dependências)
-    - [Front-end (React)](#front-end-react)
-    - [Back-end (Spring Boot)](#back-end-spring-boot)
+    - [Front-end (Next.js)](#front-end-nextjs)
+    - [Back-end (Fastify)](#back-end-fastify)
   - [Inicialização do Banco de Dados (PostgreSQL)](#-inicialização-do-banco-de-dados-postgresql)
   - [Como Executar a Aplicação](#-como-executar-a-aplicação)
-    - [Terminal 1: Back-end (Spring Boot)](#terminal-1-back-end-spring-boot)
-    - [Terminal 2: Front-end (React, Vite)](#terminal-2-front-end-react-vite)
+    - [Terminal 1: Back-end (Fastify)](#terminal-1-back-end-fastify)
+    - [Terminal 2: Front-end (Next.js)](#terminal-2-front-end-nextjs)
     - [Execução Local Completa com Docker Compose (Incluindo Banco de Dados)](#-execução-local-completa-com-docker-compose-incluindo-banco-de-dados)
     - [Passos para build, inicialização e execução](#-passos-para-build-inicialização-e-execução)
 - [Deploy](#-deploy)
@@ -93,37 +93,32 @@
 ---
 
 ## 📝 Sobre o Projeto
-Nesta seção, descreva de forma clara e objetiva **o propósito do seu projeto**, explicando:
 
-- **Por que ele existe** — qual motivação levou à sua criação.  
-- **Qual problema ele resolve** — que dor, necessidade ou oportunidade ele atende.  
-- **Qual o contexto** — acadêmico, profissional, pessoal, experimental, etc.  
-- **Onde ele pode ser utilizado** — cenários reais ou simulados.  
+O **Elo** é uma plataforma SaaS de gestão de comunidades voltada para creators e community managers (GCs). O sistema resolve um problema central enfrentado por criadores de conteúdo e organizadores de eventos: a **fragmentação das ferramentas de gestão**. Com o Elo, todas as operações — desde a criação do evento até o check-in no dia, passando pelo gerenciamento de membros e campanhas — acontecem em um único ecossistema integrado.
 
-Procure responder perguntas como:
-- *Qual foi a ideia inicial do projeto?*
-- *O que ele entrega de valor ao usuário?*
-- *Por que alguém utilizaria ou contribuiria com esse projeto?*
-- *O que o torna relevante ou interessante?*
+A plataforma é composta por três superfícies principais:
 
-Escreva de forma objetiva, mas completa, para que qualquer pessoa entenda rapidamente **o que é** e **por que importa**.
+- **Gestor Elo** — painel privado para creators gerenciarem suas comunidades, eventos, membros e campanhas, além de acessar insights sobre engajamento e saúde da comunidade.
+- **Checkout Elo** — aplicação pública para listagem de eventos, RSVP e compra de ingressos com pagamento via PIX e cartão de crédito.
+- **Backoffice Elo** — painel administrativo interno para operação, suporte e moderação da plataforma.
+
+Este trabalho documenta a **arquitetura de software** do Elo como projeto final da disciplina **Projeto de Software** do curso de **Engenharia de Software da PUC Minas**, apresentando diagramas UML (casos de uso, sequência, componentes, implantação), decisões arquiteturais e modelagem do domínio.
 
 > [!NOTE]
-> Esta seção segue boas práticas de documentação profissional e deve ser ajustada conforme o tipo e o objetivo do seu projeto.
+> O nome "Elo" é fictício e utilizado para fins acadêmicos, preservando a identidade da empresa. A arquitetura documentada é baseada em um sistema real em produção.
 
 ---
 
 ## ✨ Funcionalidades Principais
-Liste as funcionalidades de forma clara e objetiva.
 
-- 🔐 **Autenticação Segura:** Login, Cadastro e Recuperação de Senha.
-- 📈 **Painel de Controle:** Visualização de dados em tempo real com gráficos.
-- ⚙️ **Gerenciamento de CRUD:** Criação, Leitura, Atualização e Deleção de recursos (e.g., Usuários, Itens, Posts).
-- 📊 **Relatórios Exportáveis:** Exportação de dados em PDF, CSV ou Excel.
-- 🌐 **Internacionalização (i18n):** Suporte a múltiplos idiomas.
-- 🧵 **Logs e Monitoramento:** Registro detalhado de atividades e análise de desempenho.
-- 🔄 **Integração com APIs Externas:** Conexão com serviços de terceiros (pagamentos, mapas, autenticação, etc.).
-- 📨 **Sistema de Notificações:** Envio de alertas por e-mail, push ou notificações internas.
+- 🏘️ **Gestão de Comunidades:** Criação e gerenciamento de comunidades com controle de membros, papéis e privacidade.
+- 🎟️ **Eventos e Ingressos:** Criação de eventos com múltiplos lotes de ingressos, RSVP e check-in digital.
+- 💳 **Pagamentos Integrados:** Venda de ingressos via PIX e cartão de crédito com integração a gateway de pagamento.
+- 📣 **Campanhas:** Criação e gerenciamento de campanhas de comunicação e engajamento para membros da comunidade.
+- 📊 **Insights de Comunidade:** Painel com métricas de engajamento, crescimento de membros e saúde da comunidade em tempo real.
+- 🔔 **Sistema de Notificações:** Envio de alertas por e-mail e notificações push.
+- 🔐 **Autenticação Segura:** Login, cadastro e controle de acesso baseado em papéis com JWT.
+- ⚙️ **Painel Administrativo:** Backoffice interno para operação e suporte da plataforma.
 
 ---
 
@@ -133,47 +128,57 @@ As seguintes ferramentas, frameworks e bibliotecas foram utilizados na construç
 
 ### 💻 Front-end
 
-* **Framework/Biblioteca:** [Ex: React v18, Vue.js v3, Angular v17]
-* **Linguagem/Superset:** [Ex: TypeScript, JavaScript ES6+]
-* **Estilização:** [Ex: Tailwind CSS, Sass, Styled Components, Material UI]
-* **Gerenciamento de Estado:** [Ex: Redux Toolkit, Zustand, Context API]
-* **Build Tool:** [Ex: Vite, Webpack]
+* **Framework:** [Next.js v16](https://nextjs.org/) (App Router + Server Components + ISR)
+* **Biblioteca UI:** [React v19](https://react.dev/)
+* **Linguagem:** [TypeScript 5](https://www.typescriptlang.org/) (strict mode)
+* **Estilização:** [Tailwind CSS v4](https://tailwindcss.com/)
+* **Design System:** Grass (baseado em [Radix UI](https://www.radix-ui.com/) + Tailwind)
+* **Gerenciamento de Estado:** [Zustand v5](https://zustand-demo.pmnd.rs/)
+* **Fetch Client-side:** [React Query v5](https://tanstack.com/query/latest)
+* **Formulários/Validação:** [React Hook Form](https://react-hook-form.com/) + [Zod v4](https://zod.dev/)
+* **Gerenciador de Pacotes:** npm
 
 ### 🖥️ Back-end
 
-* **Linguagem/Runtime:** [Ex: Java 17 (JDK), Node.js v20, Python 3.11]
-* **Framework:** [Ex: Spring Boot 3.x, NestJS, Express, Django]
-* **Banco de Dados:** [Ex: PostgreSQL, MySQL, MongoDB]
-* **ORM / Query Builder:** [Ex: Hibernate/JPA, Prisma, TypeORM]
-* **Autenticação:** [Ex: JWT, OAuth2, Spring Security]
+* **Runtime:** [Node.js 24](https://nodejs.org/)
+* **Framework HTTP:** [Fastify v5](https://fastify.dev/)
+* **Linguagem:** [TypeScript 5](https://www.typescriptlang.org/)
+* **ORM / Migrations:** [Drizzle ORM](https://orm.drizzle.team/) + Drizzle Kit
+* **Banco de Dados:** [PostgreSQL 17](https://www.postgresql.org/)
+* **Autenticação:** JWT via [Supabase Auth](https://supabase.com/docs/guides/auth) (`jose`)
+* **Validação:** [Zod v4](https://zod.dev/)
+* **Pagamentos:** Gateway de pagamento — PIX + Cartão de Crédito
+* **E-mail:** [Resend](https://resend.com/)
+* **Injeção de Dependência:** [tsyringe](https://github.com/microsoft/tsyringe)
+* **Testes:** [Vitest](https://vitest.dev/)
+* **Linting / Formatação:** [Biome](https://biomejs.dev/)
+* **Build:** tsup (ESM)
+* **Gerenciador de Pacotes:** pnpm
 
 ### 📱 Mobile (Opcional)
 
-* **Framework:** [Ex: React Native, Flutter, Kotlin Multiplatform]
-* **Ferramentas:** [Ex: Expo, Android Studio, Xcode]
+* **Framework:** [React Native](https://reactnative.dev/) + [Expo](https://expo.dev/)
+* **Design System:** Grass Mobile (React Native + Tailwind)
 
 ### ⚙️ Infraestrutura & DevOps
 
-* **Containerização:** [Ex: Docker, Docker Compose]
-* **Orquestração:** [Ex: Kubernetes (K8s)]
-* **Cloud:** [Ex: AWS (EC2, RDS, S3), Vercel, Heroku, Google Cloud]
-* **CI/CD:** [Ex: GitHub Actions, Jenkins, SonarQube]
+* **Banco Gerenciado:** [Supabase](https://supabase.com/) (PostgreSQL + Auth + Storage)
+* **Containerização:** [Docker](https://www.docker.com/) + Docker Compose
+* **Cloud:** [Google Cloud Run](https://cloud.google.com/run) (Back-end em container)
+* **CI/CD:** [GitHub Actions](https://github.com/features/actions)
 
 ---
 
 ## 🏗 Arquitetura
 
-Descreva aqui a **arquitetura completa do sistema**, explicando como as camadas, módulos e componentes foram organizados. Informe também **por que** essa arquitetura foi escolhida e **quais problemas ela ajuda a resolver**.
+O Elo adota uma arquitetura baseada em **serviços desacoplados**, onde cada superfície (Gestor, Checkout, Backoffice) é uma aplicação Next.js independente que se comunica com um backend centralizado (Fastify API). O banco de dados PostgreSQL é gerenciado via Supabase, que também provê autenticação e storage. O backend é implantado em containers no Google Cloud Run.
 
-Você pode incluir:
-
-- **Visão geral da arquitetura** (ex.: camadas, módulos, microsserviços, monólito modular, hexagonal, MVC etc.)
-- **Principais componentes** e o papel de cada um
-- **Padrões de design adotados** (ex.: Repository, Service Layer, DTOs, Factory, Observer)
-- **Fluxo de dados** entre as partes do sistema
-- **Tecnologias utilizadas em cada camada**
-- **Decisões arquiteturais importantes**
-- **Trade-offs** ou limitações relevantes
+Principais padrões adotados:
+- **Repository pattern** via Drizzle ORM para isolamento do acesso a dados.
+- **Service Layer** para encapsulamento das regras de negócio.
+- **DTOs e validação com Zod** em todas as bordas da API.
+- **Row-Level Security (RLS)** no Supabase para controle de acesso por tenant.
+- **Server Components** no Next.js para leitura de dados sem expor tokens ao cliente.
 
 ### Exemplos de diagramas
 
@@ -186,7 +191,7 @@ Para melhor visualização e entendimento da estrutura do sistema, os diagramas 
 | **Modelo de Dados (Entidades)** | **Fluxo de Autenticação** |
 | <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Diagrama de Entidade-Relacionamento (DER)" width="120px" height="120px"> | <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Diagrama de Sequência de Login" width="120px" height="120px"> |
 | **Infraestrutura (Cloud)** | **API Gateway (Rotas)** |
-| <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Diagrama de Deploy na AWS/Vercel" width="120px" height="120px"> | <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Mapa de Endpoints da API" width="120px" height="120px"> |
+| <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Diagrama de Deploy na Google Cloud" width="120px" height="120px"> | <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Mapa de Endpoints da API" width="120px" height="120px"> |
 
 ---
 
@@ -195,9 +200,9 @@ Para melhor visualização e entendimento da estrutura do sistema, os diagramas 
 ### Pré-requisitos
 Certifique-se de que o usuário tenha o ambiente configurado.
 
-* **Java JDK:** Versão **17** ou superior (Necessário para o **Back-end Spring Boot**)
-* **Node.js:** Versão LTS (v18.x ou superior) (Necessário para o **Front-end React**)
-* **Gerenciador de Pacotes:** npm ou yarn
+* **Node.js:** Versão **20 LTS** ou superior
+* **pnpm:** Versão **9+** (Back-end)
+* **npm:** Versão **10+** (Front-ends)
 * **Docker** (Opcional, mas **altamente recomendado** para rodar o Banco de Dados)
 
 ---
@@ -206,27 +211,28 @@ Certifique-se de que o usuário tenha o ambiente configurado.
 
 Crie arquivos `.env` específicos e/ou configure as variáveis de ambiente no seu sistema para cada parte da aplicação.
 
-#### 1 Back-end (Spring Boot)
+#### 1 Back-end (Fastify)
 
-Configure estas variáveis como **variáveis de ambiente do sistema** ou em um arquivo de configuração do Spring (ex: `application.properties`/`application.yml`).
-
-| Variável | Descrição | Exemplo |
-| :--- | :--- | :--- |
-| `SERVER_PORT` | Porta onde o Back-end será executado. | `8080` |
-| `SPRING_DATASOURCE_URL` | URL de conexão JDBC (PostgreSQL). | `jdbc:postgresql://localhost:5432/meubanco` |
-| `SPRING_DATASOURCE_USERNAME` | Usuário do banco de dados. | `postgres` |
-| `SPRING_DATASOURCE_PASSWORD` | Senha do banco de dados. | `senha-segura-123` |
-| `JWT_SECRET` | Chave secreta para assinatura de tokens (Opcional). | `chave_super_segura_base64` |
-
-#### 2 Front-end (React, Vite)
-
-Crie um arquivo **`.env`** na raiz da pasta `/frontend` e use o prefixo `VITE_` (ou `REACT_APP_` se estiver usando CRA) para expor as variáveis ao *bundle* da aplicação.
+Configure estas variáveis em um arquivo **`.env`** na raiz do back-end.
 
 | Variável | Descrição | Exemplo |
 | :--- | :--- | :--- |
-| `VITE_API_URL` | URL base do endpoint do Backend Spring Boot. | `http://localhost:8080/api` |
-| `VITE_EMAILJS_PUBLIC_KEY` | Chave pública para serviços de e-mail (Exemplo). | `sua_public_key_aqui` |
-| `VITE_GOOGLE_MAPS_KEY` | Chave de API para serviços de mapas (Opcional). | `AIzaSy...` |
+| `NODE_ENV` | Ambiente de execução. | `development` |
+| `AUTH_JWT_SECRET` | Chave secreta JWT do projeto Supabase (base64). | `<base64-do-jwt-secret>` |
+| `DATABASE_URL` | URL de conexão PostgreSQL. | `postgresql://user:pass@localhost:5432/elo` |
+| `PAYMENT_API_KEY` | Chave de API do gateway de pagamento (sandbox ou produção). | `<api-key>` |
+| `RESEND_API_KEY` | Chave de API do Resend para envio de e-mails. | `re_<chave>` |
+
+#### 2 Front-end (Next.js)
+
+Crie um arquivo **`.env.local`** na raiz de cada aplicação front-end.
+
+| Variável | Descrição | Exemplo |
+| :--- | :--- | :--- |
+| `NEXT_PUBLIC_SUPABASE_URL` | URL do projeto Supabase. | `https://<id>.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Chave anônima do Supabase. | `eyJ...` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Chave de serviço (server-only). | `eyJ...` |
+| `NEXT_PUBLIC_API_URL` | URL base do back-end Fastify. | `http://localhost:3000` |
 
 ---
 
@@ -240,18 +246,19 @@ Aqui estão exemplos comuns utilizadas em aplicações front-end e full-stack:
 ##### **Exemplo 1 – Front-end com Next.js usando API externa**
 
 ```
-NEXT_PUBLIC_API_URL=https://meu-backend.vercel.app/api
-NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=G-seu_google_analytics_id_aqui
+NEXT_PUBLIC_API_URL=https://meu-backend.run.app
+NEXT_PUBLIC_SUPABASE_URL=https://<id>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 ```
 
 ---
 
-##### **Exemplo 2 – Aplicação Full-stack (Next.js + Prisma + PostgreSQL)**
+##### **Exemplo 2 – Aplicação Full-stack (Next.js + Supabase + PostgreSQL)**
 
 ```
-DATABASE_URL=postgresql://admin:senha-super-segura@ep-meu-banco.aws.neon.tech:5432/verceldb
-NEXTAUTH_SECRET=uma_chave_muito_longa_e_segura
-NEXTAUTH_URL=https://meu-sistema.vercel.app
+DATABASE_URL=postgresql://admin:senha@host:5432/elo
+SUPABASE_SERVICE_ROLE_KEY=eyJ...
+AUTH_JWT_SECRET=<base64>
 ```
 
 ---
@@ -259,23 +266,21 @@ NEXTAUTH_URL=https://meu-sistema.vercel.app
 ##### **Exemplo 3 – Integração com APIs externas**
 
 ```
-STRIPE_SECRET_KEY=sk_live_seu_stripe_key_aqui
-OPENAI_API_KEY=sk-sua_openai_key_aqui
-SENDGRID_API_KEY=SG.sua_sendgrid_key_aqui
+PAYMENT_API_KEY=<api-key-gateway>
+RESEND_API_KEY=re_<chave>
 ```
 
 ---
 
-##### **Exemplo 4 – Frontend com Vite (EmailJS)**
+##### **Exemplo 4 – Frontend com Next.js (variáveis públicas)**
 
 ```
-VITE_EMAILJS_SERVICE_ID=seu_service_id_aqui
-VITE_EMAILJS_TEMPLATE_ID_FOR_ME=seu_template_id_for_me_aqui
-VITE_EMAILJS_TEMPLATE_ID_FOR_SENDER=seu_template_id_for_sender_aqui
-VITE_EMAILJS_PUBLIC_KEY=sua_public_key_aqui
+NEXT_PUBLIC_SUPABASE_URL=https://<id>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+NEXT_PUBLIC_API_URL=https://elo-api.run.app
 ```
 
-> **Obs:** As variáveis de ambiente em projetos **Vite** precisam começar com `VITE_` para que o Vite as reconheça e as inclua no *bundle* do frontend; variáveis sem esse prefixo não ficam disponíveis no código do cliente.
+> **Obs:** As variáveis prefixadas com `NEXT_PUBLIC_` são expostas ao bundle do cliente. Variáveis sem esse prefixo ficam disponíveis apenas no servidor (Server Components e API Routes).
 
 ---
 
@@ -284,127 +289,116 @@ Para adicionar essas variáveis:
 1.  Acesse a página de Environment Variables do seu projeto no Vercel (ex.: `https://vercel.com/<seu-usuario>/<seu-projeto>/settings/environment-variables`)
 2.  Clique em **"Add"** para adicionar cada variável com o nome e valor correspondente.
 
-Alternativamente, se estiver desenvolvendo localmente, crie um arquivo **`.env.local`** dentro da pasta **`frontend`** do seu projeto com o seguinte conteúdo:
+Alternativamente, se estiver desenvolvendo localmente, crie um arquivo **`.env.local`** dentro da pasta de cada aplicação front-end com o seguinte conteúdo:
 
 ```
-# Variável essencial para conectar ao Back-end Spring Boot rodando localmente (normalmente na porta 8080)
-VITE_API_URL=http://localhost:8080/api
+# URL do back-end rodando localmente
+NEXT_PUBLIC_API_URL=http://localhost:3000
 
-# Variáveis para integrações externas de serviço de e-mail
-VITE_EMAILJS_SERVICE_ID=seu_service_id_aqui
-VITE_EMAILJS_TEMPLATE_ID_FOR_ME=seu_template_id_for_me_aqui
-VITE_EMAILJS_TEMPLATE_ID_FOR_SENDER=seu_template_id_for_sender_aqui
-VITE_EMAILJS_PUBLIC_KEY=sua_public_key_aqui
-
-# Outras chaves de serviço
-VITE_GOOGLE_MAPS_KEY=AIzaSy...
+# Configuração do Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://<id>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+SUPABASE_SERVICE_ROLE_KEY=eyJ...
 ```
 
-> 💡 **Localização:** Garanta que este arquivo esteja em **`/frontend/.env.local`** para que o **Vite** consiga carregá-lo e disponibilizar as variáveis para o Front-end durante o desenvolvimento.
+> 💡 **Localização:** Garanta que este arquivo esteja na raiz de cada aplicação Next.js (ex: `/gestor/.env.local`) para que o Next.js o carregue corretamente.
 
 ### 📦 Instalação de Dependências
 
 Clone o repositório e instale as dependências.
 
-1.  **Clone o Repositório:**
+1.  **Clone o Repositório:**
 
 ```bash
-git clone <URL_DO_SEU_REPOSITÓRIO>
-cd <pasta-do-projeto>
+git clone https://github.com/LauraPontara/projeto-de-software
+cd projeto-de-software
 ```
 
-2.  **Instale as Dependências (Monorepo):**
+2.  **Instale as Dependências:**
 
-Como o projeto está dividido, você precisa instalar as dependências separadamente para o Front-end (React, usando NPM/Yarn) e garantir que o Back-end (Spring Boot, usando Maven/Gradle Wrapper) tenha suas dependências resolvidas.
+Como o projeto é composto por múltiplas aplicações, instale as dependências de cada uma separadamente.
 
-#### Front-end (React)
+#### Front-end (Next.js)
 
-Acesse a pasta do Front-end e instale as dependências do Node.js:
+Acesse a pasta de cada front-end e instale com npm:
 
 ```bash
-cd frontend
+cd gestor
 npm install
-# ou
-yarn install
-cd .. # Retorna para a raiz
+cd ../checkout
+npm install
+cd ../backoffice
+npm install
 ```
 
-#### Back-end (Spring Boot)
+#### Back-end (Fastify)
 
-O Spring Boot utiliza o **Maven Wrapper** (`./mvnw`) ou **Gradle Wrapper** (`./gradlew`) para gerenciar dependências. Execute o comando de instalação/build limpo antes de rodar.
+O back-end utiliza **pnpm**:
 
-* **Usando Maven (`pom.xml`):**
-    ```bash
-    cd backend
-    ./mvnw clean install
-    cd ..
-    ```
-
-* **Usando Gradle (`build.gradle`):**
-    ```bash
-    cd backend
-    ./gradlew clean build
-    cd ..
-    ```
+```bash
+cd elo-api
+pnpm install
+```
 
 ---
 
 ### 💾 Inicialização do Banco de Dados (PostgreSQL)
 
-O projeto utiliza **PostgreSQL**. A forma mais fácil de inicializar o banco é via Docker (para execução sem `docker-compose`):
+O projeto utiliza **PostgreSQL** gerenciado pelo Supabase. Para desenvolvimento local, suba o banco via Docker Compose:
 
-1. **Rode o Container do PostgreSQL:**  
-   (Certifique-se que o Docker está em execução)
+1. **Suba o Container do PostgreSQL:**
 
 ```bash
-docker run --name minha_db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=senha-segura-123 -e POSTGRES_DB=nome_do_banco -p 5432:5432 -d postgres:16
+docker compose up -d
 ```
 
-2. **Execute as Migrações:**  
-   O Back-end **Spring Boot** geralmente gerencia o schema do banco de dados automaticamente no startup (via Hibernate `ddl-auto`) ou utilizando ferramentas como **Flyway** ou **Liquibase**.
+2. **Execute as Migrações:**
 
-* **Se o Spring Boot gerencia o schema (padrão):** Nenhuma ação manual é necessária, basta rodar o Back-end (veja a próxima seção).
-* **Se usar Flyway/Liquibase via Maven:**
-    ```bash
-    cd backend
-    ./mvnw flyway:migrate
-    # ou
-    ./mvnw liquibase:update
-    ```
+```bash
+cd elo-api
+pnpm migration:push
+```
+
+3. **(Opcional) Popular banco com dados de desenvolvimento:**
+
+```bash
+pnpm db:seed
+```
+
 ---
 
 ### ⚡ Como Executar a Aplicação
 Execute a aplicação em modo de desenvolvimento em **dois terminais separados**.
 
-#### Terminal 1: Back-end (Spring Boot)
-
-Inicie a API do Spring Boot. Ela tentará se conectar ao banco de dados rodando no Docker.
+#### Terminal 1: Back-end (Fastify)
 
 ```bash
-cd backend
-./mvnw spring-boot:run
+cd elo-api
+pnpm dev
 ```
-🚀 *O Back-end estará disponível em **http://localhost:8080**.*
+🚀 *O Back-end estará disponível em **http://localhost:3000**. Documentação Swagger em **http://localhost:3000/docs**.*
 
 ---
 
-#### Terminal 2: Front-end (React, Vite)
-
-Inicie o servidor de desenvolvimento do Front-end.
+#### Terminal 2: Front-end (Next.js)
 
 ```bash
-cd frontend
+cd gestor
 npm run dev
-# ou
-yarn dev
 ```
-🎨 *O Front-end estará disponível em **http://localhost:5173** (ou a porta configurada no Vite/CRA).*
+🎨 *O Gestor estará disponível em **http://localhost:3009**.*
+
+```bash
+cd checkout
+npm run dev
+```
+🎨 *O Checkout estará disponível em **http://localhost:3000**.*
 
 ---
 
 #### 🐳 Execução Local Completa com Docker Compose (Incluindo Banco de Dados)
 
-Para uma execução local que inclui o serviço de Back-end (**Spring Boot**), Front-end (**React**) e o banco de dados **PostgreSQL**, usaremos o **`docker-compose`** para orquestração.
+Para uma execução local que inclui o serviço de Back-end (**Fastify**), Front-end (**Next.js**) e o banco de dados **PostgreSQL**, usaremos o **`docker-compose`** para orquestração.
 
 Antes de tudo, certifique-se de que o **Docker Desktop** (no Mac/Windows) ou o **serviço Docker** (em Linux) está em execução.
 
@@ -422,7 +416,7 @@ sudo systemctl start docker
 1. Acesse a pasta raiz do projeto (onde o arquivo `docker-compose.yml` está localizado):
 
 ```bash
-cd /caminho/do/projeto/nome-do-projeto
+cd /caminho/do/projeto/elo
 ```
 
 2. Suba todos os serviços (Back-end, Front-end e Banco de Dados) definidos no `docker-compose.yml`:
@@ -441,16 +435,13 @@ docker ps
 ```
 
 4. **Execute as Migrações do Banco de Dados:**
-   O Back-end **Spring Boot** geralmente gerencia o schema do banco de dados (via Flyway/Liquibase ou Hibernate) na **inicialização do serviço**.
 
-* **Verificação:** Se o serviço de Back-end (`backend` ou `api`) for o responsável pelas migrações, verifique os logs para confirmar se o processo foi concluído.
-    ```bash
-    docker logs <nome_do_container_backend>
-    ```
-* *Atenção:* O comando `npm run db:migrate` é exclusivo para Node.js e **não** deve ser usado.
+```bash
+docker logs <nome_do_container_backend>
+```
 
 5. Abra no navegador:
-   O Front-end deve estar acessível na porta configurada no `docker-compose` (Exemplo: <http://localhost:3000> ou <http://localhost:5173>)
+   O Front-end deve estar acessível na porta configurada no `docker-compose` (Exemplo: <http://localhost:3009>)
 
 6. Para parar e remover todos os containers, redes e volumes (exceto volumes nomeados):
 
@@ -458,44 +449,37 @@ docker ps
 docker-compose down
 ```
 
-✅ **Em resumo:** Usar **`docker-compose`** simplifica a execução do ambiente completo, isolando as dependências de **Java (Spring Boot)** e **Node.js (React)** e garantindo que o PostgreSQL esteja disponível.
+✅ **Em resumo:** Usar **`docker-compose`** simplifica a execução do ambiente completo, isolando as dependências de **Node.js (Fastify)** e **Next.js (React)** e garantindo que o PostgreSQL esteja disponível.
 
 ---
 
 ## 🚀 Deploy
 Instruções claras para deploy em produção.
 
-1.  **Build do Projeto:**
-    Execute o build separadamente para os dois artefatos (JAR para o Back-end e arquivos estáticos para o Front-end).
+1.  **Build do Projeto:**
 
 ```bash
-# 1. Build do Front-end (React/Vite) - Gera a pasta /dist com arquivos estáticos
-cd frontend
+# 1. Build do Front-end (Next.js) - Gera os artefatos de produção
+cd gestor
 npm run build
 
-# 2. Build do Back-end (Spring Boot/Maven) - Gera o arquivo .jar executável em /target
-cd ../backend
-./mvnw clean package
+# 2. Build do Back-end (Fastify/tsup) - Gera o bundle ESM em /dist
+cd ../elo-api
+pnpm build
 ```
 
-2.  **Configuração do Ambiente de Produção:** Defina as variáveis de ambiente no seu provedor (e.g., Vercel, Railway, Heroku, DigitalOcean).
+2.  **Configuração do Ambiente de Produção:** Defina as variáveis de ambiente no seu provedor (Google Cloud Run para o back-end, Vercel para os front-ends).
 
-> 🔑 **Variáveis Cruciais:** Certifique-se de configurar as variáveis de **conexão com o banco de dados** (`SPRING_DATASOURCE_URL`, etc.) para o Back-end e a **URL da API de produção** (`VITE_API_URL`) para o Front-end.
+> 🔑 **Variáveis Cruciais:** Certifique-se de configurar `DATABASE_URL`, `AUTH_JWT_SECRET` e `PAYMENT_API_KEY` para o back-end, e `NEXT_PUBLIC_API_URL` e as chaves do Supabase para os front-ends.
 
-3.  **Execução em Produção:**
-    A forma de execução depende do seu provedor, mas geralmente envolve o seguinte:
+3.  **Execução em Produção:**
 
 ```bash
-# ☕ Execução do Back-end Spring Boot (Java JAR)
-# Este comando inicia a API usando o artefato JAR gerado.
-java -jar backend/target/nome-do-do-projeto-0.0.1-SNAPSHOT.jar
+# 🟢 Execução do Back-end Fastify (Node.js ESM)
+node dist/index.js
 
-# 🟢 Execução do Front-end (React/Vite)
-# O Front-end (arquivos estáticos) não é executado via Node, mas servido por um servidor web.
-# Exemplo de servidor de arquivos estáticos (usando Nginx, Vercel, Netlify, etc.)
-# Para simular a produção localmente ou rodar em uma VPS simples, use o pacote 'serve':
-npm install -g serve
-serve -s frontend/dist
+# 🟢 Execução do Front-end (Next.js - via Vercel ou servidor Node)
+npm run start
 ```
 
 ---
@@ -508,75 +492,50 @@ Descreva o propósito das pastas principais.
 .
 ├── .editorconfig                # ✍️ Padronização de estilo de código.
 ├── .env.local                   # 🔒 Variáveis SENSÍVEIS do ambiente LOCAL (não versionado).
-├── .env.test                    # 🧪 Variáveis de ambiente para TESTES AUTOMATIZADOS.
-├── .env.staging                 # ☁️ Variáveis de ambiente para STAGING/HOMOLOGAÇÃO.
 ├── .env.example                 # 🧩 Exemplo de TODAS as variáveis necessárias (sem valores sensíveis).
-├── .gitignore                   # 🧹 Ignora arquivos/pastas não versionadas (.env, node_modules, target, etc.).
-├── .vscode/                     # ⚙️ Configurações de ambiente da IDE (opcional).
+├── .gitignore                   # 🧹 Ignora arquivos/pastas não versionadas (.env, node_modules, dist, etc.).
 ├── .github/                     # 🤖 CI/CD (Actions), templates de Issues e Pull Requests.
 ├── README.md                    # 📘 Documentação principal do projeto.
-├── CONTRIBUTING.md              # 🤝 Guia de contribuição.
-├── LICENSE                      # ⚖️ Licença do projeto.
-├── docker-compose.yml           # 🐳 Orquestração dos containers (front/back/db/etc).
-├── docker-compose.override.yml  # 🐳 Configurações extras apenas para desenvolvimento.
 │
-├── /frontend                    # 📁 Aplicação React
-│   ├── .env.example             # 🧩 Variáveis de ambiente do Front-end.
-│   ├── Dockerfile               # 🐳 Docker build do Front-end.
-│   ├── .eslintrc.js             # ✨ Regras do ESLint.
-│   ├── .prettierrc              # 🎨 Configuração do Prettier.
-│   ├── /public                  # 📂 Arquivos estáticos e index.html.
-│   ├── /src                     # 📂 Código-fonte React
-│   │   ├── /components          # 🧱 Componentes reutilizáveis (UI).
-│   │   ├── /pages               # 📄 Páginas/rotas da aplicação.
-│   │   ├── /services            # 🔌 Serviços e chamadas HTTP.
-│   │   ├── /hooks               # 🎣 Hooks personalizados.
-│   │   ├── /styles              # 🎨 Estilos globais, temas, Design System.
-│   │   ├── /assets              # 🖼️ Recursos estáticos importados
-│   │   │   ├── /images          # 🖼️ Imagens.
-│   │   │   ├── /icons           # 💡 Ícones.
-│   │   │   └── /fonts           # ✒️ Fontes personalizadas.
-│   │   └── /utils               # 🛠️ Funções utilitárias.
-│   ├── package.json             # 📦 Dependências e scripts.
-│   └── yarn.lock / package-lock.json # 🔒 Lockfile das dependências.
-│
-├── /backend                     # 📁 Aplicação Spring Boot
+├── /elo-api                     # 📁 Back-end Fastify
 │   ├── .env.example             # 🧩 Variáveis de ambiente do Back-end.
 │   ├── Dockerfile               # 🐳 Docker build do Back-end.
-│   │
-│   ├── /src/main/java           # 📂 Código-fonte Java
-│   │   └── /com/exemplo/app
-│   │       ├── /controller      # 🎮 Endpoints REST.
-│   │       ├── /service         # ⚙️ Regras e lógica de negócio.
-│   │       ├── /repository      # 🗄️ Repositórios (JPA/Hibernate).
-│   │       ├── /model           # 🧬 Entidades persistentes (JPA).
-│   │       ├── /domain          # 🌐 Objetos de Domínio puro (sem anotações).
-│   │       ├── /dto             # ✉️ Data Transfer Objects.
-│   │       ├── /config          # 🔧 Configurações gerais (DB, Swagger, CORS, etc.).
-│   │       ├── /exception       # 💥 Exceptions e handlers globais.
-│   │       └── /security        # 🛡️ Autenticação e Autorização (Spring Security).
-│   │
-│   ├── /src/main/resources      # 📂 Recursos do Spring Boot
-│   │   ├── application.yml         # ⚙️ Configuração principal da aplicação
-│   │   ├── application-dev.yml     # 🧪 Configurações específicas do ambiente de DESENVOLVIMENTO
-│   │   ├── application-prod.yml    # 🚀 Configurações específicas para PRODUÇÃO
-│   │   ├── application-test.yml    # 🧪 Configurações usadas nos testes automatizados
-│   │   ├── /static                # 🌐 Arquivos estáticos (HTML/CSS/JS).
-│   │   ├── /templates             # 🖼️ Templates Thymeleaf/Freemarker.
-│   │   ├── /messages              # 🌎 Arquivos de internacionalização (i18n).
-│   │   └── /db                    # 💾 Scripts de banco usados pela aplicação
-│   │       └── /migration         # 📜 Migrações do banco (Flyway/Liquibase).
-│   │
-│   ├── /src/test/java            # 🧪 Testes unitários e de integração.
-│   └── pom.xml / build.gradle    # 🛠️ Build e dependências.
+│   ├── /src
+│   │   ├── /routes              # 🎮 Endpoints REST (Fastify plugins).
+│   │   ├── /services            # ⚙️ Regras e lógica de negócio.
+│   │   ├── /repositories        # 🗄️ Acesso ao banco via Drizzle ORM.
+│   │   ├── /schemas             # ✅ Validação com Zod.
+│   │   ├── /domain              # 🌐 Entidades e tipos de domínio.
+│   │   └── /infra               # 🔧 DB, Auth, pagamentos, e-mail.
+│   ├── /drizzle                 # 💾 Migrations e schema do banco.
+│   ├── package.json
+│   └── pnpm-lock.yaml
 │
-├── /scripts                      # 📜 Scripts de automação
-│   ├── dev.sh                    # 🚀 Ambiente de desenvolvimento completo.
-│   ├── build_all.sh              # 🛠️ Build geral (front + back).
-│   └── deploy.sh                 # ☁️ Deploy em produção/homologação.
+├── /gestor                      # 📁 Front-end Next.js — Painel do creator
+│   ├── /src
+│   │   ├── /app                 # 📄 Rotas Next.js (Server Components).
+│   │   ├── /pages               # 📄 Orquestradores Client (flat).
+│   │   ├── /components          # 🧱 UI compartilhada entre domínios.
+│   │   ├── /features            # 🏘️ UI de domínio específico.
+│   │   ├── /queries             # 🔍 Leituras Supabase server-only.
+│   │   ├── /mutations           # ✏️ Escritas Supabase client-side.
+│   │   ├── /stores              # 🗃️ Stores Zustand.
+│   │   └── /types               # 🧬 Tipos de domínio.
+│   └── package.json
 │
-├── /docs                         # 📚 Documentação, arquitetura, modelos C4, Swagger/OpenAPI.
-└── /tests                        # 🧪 Testes End-to-End (Cypress/Playwright).
+├── /checkout                    # 📁 Front-end Next.js — Compra pública de ingressos
+│   ├── /src
+│   │   ├── /app                 # 📄 Rotas Next.js.
+│   │   ├── /features            # 🛒 Checkout, seleção de ingressos, pagamento.
+│   │   └── /components/ui       # 🧱 Primitivos de UI.
+│   └── package.json
+│
+├── /backoffice                  # 📁 Front-end Next.js — Painel administrativo interno
+│   └── package.json
+│
+└── /grass                       # 📁 Design System (pnpm monorepo)
+    ├── /packages/web            # 🎨 Componentes React (Radix + Tailwind).
+    └── /packages/mobile         # 📱 Componentes React Native.
 ```
 
 ---
@@ -614,10 +573,10 @@ Para melhor visualização, as telas principais estão organizadas lado a lado.
 | :---: | :---: |
 | **Página Inicial (Home)** | **Página de Login** |
 | <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Tela Inicial da Aplicação Web" width="120px" height="120px"> | <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Tela de Login" width="120px" height="120px"> |
-| **Cadastro de Clientes** | **Cadastro de Produtos** |
-| <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Tela de Cadastro de Clientes" width="120px" height="120px"> | <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Tela de Cadastro de Produtos" width="120px" height="120px"> |
-| **Dashboard (Visão Geral)** | **Página Admin / Configurações** |
-| <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Tela de Dashboard" width="120px" height="120px"> | <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Tela Administrativa" width="120px" height="120px"> |
+| **Gestor — Painel da Comunidade** | **Checkout — Compra de Ingressos** |
+| <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Painel do Gestor" width="120px" height="120px"> | <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Fluxo de Checkout" width="120px" height="120px"> |
+| **Dashboard (Insights)** | **Backoffice / Admin** |
+| <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Dashboard de Insights" width="120px" height="120px"> | <img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" alt="Painel Administrativo" width="120px" height="120px"> |
 
 ### 💻 Exemplo de Saída no Terminal (para Back-end, API, CLI)
 
@@ -628,8 +587,8 @@ Caso o projeto seja focado em serviços de Back-end (API, microserviço, CLI), u
 Mostra uma chamada simples para um endpoint da API (ex: GET de listagem).
 
 ```bash
-# Chama o endpoint de listagem de usuários com o token de autenticação
-curl -X GET 'http://localhost:3000/api/v1/users' \
+# Chama o endpoint de listagem de eventos com o token de autenticação
+curl -X GET 'http://localhost:3000/api/v1/events' \
      -H 'Authorization: Bearer <seu-jwt-token>'
 ```
 
@@ -637,18 +596,18 @@ curl -X GET 'http://localhost:3000/api/v1/users' \
 ```json
 {
   "total": 2,
-  "users": [
+  "events": [
     {
       "id": "1a2b3c",
-      "name": "Prof. Aramuni",
-      "email": "contato@exemplo.com",
-      "status": "active"
+      "title": "Meetup de Comunidade",
+      "date": "2026-07-15T19:00:00Z",
+      "status": "published"
     },
     {
       "id": "4d5e6f",
-      "name": "Colaborador Teste",
-      "email": "teste@exemplo.com",
-      "status": "inactive"
+      "title": "Workshop de Creators",
+      "date": "2026-08-01T14:00:00Z",
+      "status": "draft"
     }
   ]
 }
@@ -661,17 +620,17 @@ curl -X GET 'http://localhost:3000/api/v1/users' \
 Mostra como executar uma ferramenta de linha de comando ou um script de manutenção do projeto (ex: rodar migrações ou um job agendado).
 
 ```bash
-# Executa a ferramenta de validação de Schema
-npm run cli validate:schema --target=production
+# Executa as migrações do banco de dados
+pnpm migration:push
 ```
 
 **Saída Esperada:**
 ```text
-[INFO] Iniciando validação do banco de dados...
-[SUCCESS] 15/15 tabelas verificadas.
-[WARNING] Coluna 'descricao' na tabela 'produtos' é nullable.
-[SUCCESS] Validação concluída. Nenhum erro crítico encontrado.
-Tempo de execução: 1.25s
+[INFO] Conectando ao banco de dados...
+[SUCCESS] Conexão estabelecida.
+[INFO] Aplicando migrações pendentes...
+[SUCCESS] 3 migrações aplicadas com sucesso.
+Tempo de execução: 0.87s
 ```
 
 ---
@@ -682,9 +641,9 @@ Tempo de execução: 1.25s
 Para rodar os testes da unidade e integração:
 
 ```
-npm run test
+pnpm test
 ```
-*Ferramenta utilizada: Jest, Vitest, Mocha, etc.*
+*Ferramenta utilizada: Vitest*
 
 ### Testes End-to-End (E2E)
 Para rodar os testes de ponta a ponta (E2E):
@@ -700,12 +659,15 @@ npm run test:e2e
 
 Liste aqui links para documentação técnica, referências de bibliotecas complexas ou guias de estilo que foram cruciais para o projeto.
 
-* 📖 **Framework/Biblioteca (Front-end):** [Documentação Oficial do **React**](https://react.dev/reference/react)
-* 📖 **Build Tool (Front-end):** [Guia de Configuração do **Vite**](https://vitejs.dev/config/)
-* 📖 **Framework (Back-end):** [Documentação Oficial do **Spring Boot**](https://docs.spring.io/spring-boot/docs/current/reference/html/)
-* 📖 **Containerização:** [Documentação de Referência do **Docker**](https://docs.docker.com/)
+* 📖 **Framework (Front-end):** [Documentação Oficial do **Next.js**](https://nextjs.org/docs)
+* 📖 **Biblioteca UI:** [Documentação Oficial do **React**](https://react.dev/reference/react)
+* 📖 **Framework (Back-end):** [Documentação Oficial do **Fastify**](https://fastify.dev/docs/latest/)
+* 📖 **ORM:** [Documentação do **Drizzle ORM**](https://orm.drizzle.team/docs/overview)
+* 📖 **Banco de Dados:** [Documentação do **Supabase**](https://supabase.com/docs)
+* 📖 **Estilização:** [Documentação do **Tailwind CSS**](https://tailwindcss.com/docs)
+* 📖 **Gerenciamento de Estado:** [Documentação do **Zustand**](https://zustand.docs.pmnd.rs/)
+* 📖 **Validação:** [Documentação do **Zod**](https://zod.dev/)
 * 📖 **Guia de Estilo:** [**Conventional Commits** (Padrão de Mensagens)](https://www.conventionalcommits.org/en/v1.0.0/)
-* 📖 **Documentação Interna:** [Design System do Projeto](./docs/design-system.md)
 
 ---
 
@@ -714,8 +676,7 @@ Liste os principais contribuidores. Você pode usar links para seus perfis.
 
 | 👤 Nome | 🖼️ Foto | :octocat: GitHub | 💼 LinkedIn | 📤 Gmail |
 |---------|----------|-----------------|-------------|-----------|
-| Nome 1  | <div align="center"><img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" width="70px" height="70px"></div> | <div align="center"><a href="https://github.com/user1"><img src="https://joaopauloaramuni.github.io/image/github6.png" width="50px" height="50px"></a></div> | <div align="center"><a href="https://www.linkedin.com/in/user1"><img src="https://joaopauloaramuni.github.io/image/linkedin2.png" width="50px" height="50px"></a></div> | <div align="center"><a href="mailto:user1@gmail.com"><img src="https://joaopauloaramuni.github.io/image/gmail3.png" width="50px" height="50px"></a></div> |
-| Nome 2  | <div align="center"><img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" width="70px" height="70px"></div> | <div align="center"><a href="https://github.com/user2"><img src="https://joaopauloaramuni.github.io/image/github6.png" width="50px" height="50px"></a></div> | <div align="center"><a href="https://www.linkedin.com/in/user2"><img src="https://joaopauloaramuni.github.io/image/linkedin2.png" width="50px" height="50px"></a></div> | <div align="center"><a href="mailto:user2@gmail.com"><img src="https://joaopauloaramuni.github.io/image/gmail3.png" width="50px" height="50px"></a></div> |
+| Laura Pontara  | <div align="center"><img src="https://joaopauloaramuni.github.io/image/aramunilogo.png" width="70px" height="70px"></div> | <div align="center"><a href="https://github.com/LauraPontara"><img src="https://joaopauloaramuni.github.io/image/github6.png" width="50px" height="50px"></a></div> | <div align="center"><a href="https://www.linkedin.com/in/lauraPontara"><img src="https://joaopauloaramuni.github.io/image/linkedin2.png" width="50px" height="50px"></a></div> | <div align="center"><a href="mailto:lauracampospl@gmail.com"><img src="https://joaopauloaramuni.github.io/image/gmail3.png" width="50px" height="50px"></a></div> |
 
 > [!TIP]
 > 💡 **Dica:** Escolha uma foto profissional, preferencialmente de rosto, evitando imagens com baixa qualidade, filtros excessivos ou elementos distrativos.
