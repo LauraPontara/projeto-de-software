@@ -1,0 +1,54 @@
+@startuml ssd-criar-evento
+!include _estilo-comum.puml
+
+title Diagrama de Sequência do Sistema\nUC08 - Criar Evento com Lotes de Ingressos
+
+hide footbox
+skinparam sequenceMessageAlign center
+skinparam sequenceArrowThickness 1.5
+skinparam maxmessagesize 220
+skinparam actorStyle awesome
+
+skinparam sequence {
+  ArrowColor              #2176AE
+  ArrowFontColor          #1A5276
+  LifeLineBorderColor     #2176AE
+  LifeLineBackgroundColor #EAF4FB
+  GroupBackgroundColor    #F0F7FF
+  GroupBorderColor        #1A5276
+  GroupFontColor          #1A5276
+}
+
+actor "Creator" as CRE
+participant ":Plataforma Elo" as SYS
+
+CRE -> SYS : 1. criarEvento(communityId, titulo, descricao, local, inicio, fim, capacidade)
+activate SYS
+alt creator não é dono/admin da comunidade
+  SYS --> CRE : erroNaoAutorizado()
+else autorizado
+  SYS --> CRE : eventoCriado(eventId, status=RASCUNHO)
+end
+deactivate SYS
+
+loop para cada lote de ingressos
+  CRE -> SYS : 2. adicionarLote(eventId, nome, preco, quantidade, inicioVendas, fimVendas)
+  activate SYS
+  alt datas de venda inválidas
+    SYS --> CRE : erroPeriodoInvalido()
+  else lote válido
+    SYS --> CRE : loteAdicionado(loteId)
+  end
+  deactivate SYS
+end
+
+CRE -> SYS : 3. publicarEvento(eventId)
+activate SYS
+alt evento sem lotes ou dados incompletos
+  SYS --> CRE : erroEventoIncompleto(pendencias)
+else evento pronto
+  SYS --> CRE : eventoPublicado(eventId, status=PUBLICADO, urlPublica)
+end
+deactivate SYS
+
+@enduml

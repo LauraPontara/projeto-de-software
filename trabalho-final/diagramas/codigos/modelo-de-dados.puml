@@ -1,0 +1,148 @@
+@startuml modelo-de-dados
+!include _estilo-comum.puml
+
+title Modelo de Dados - Esquema Relacional (PostgreSQL)\nPlataforma Elo
+
+skinparam linetype ortho
+hide circle
+skinparam class {
+  BackgroundColor #EAF4FB
+  BorderColor     #2176AE
+  HeaderBackgroundColor #BBDEFB
+}
+
+entity "usuario" as usuario {
+  *id : uuid <<PK>>
+  --
+  *nome : varchar
+  *email : varchar <<unique>>
+  avatar_url : text
+  *criado_em : timestamptz
+}
+
+entity "comunidade" as comunidade {
+  *id : uuid <<PK>>
+  --
+  *owner_id : uuid <<FK usuario>>
+  *nome : varchar
+  *slug : varchar <<unique>>
+  descricao : text
+  *privacidade : privacidade_enum
+  *criado_em : timestamptz
+}
+
+entity "membro" as membro {
+  *id : uuid <<PK>>
+  --
+  *comunidade_id : uuid <<FK>>
+  *usuario_id : uuid <<FK>>
+  *papel : papel_enum
+  *status : status_membro_enum
+  *entrou_em : timestamptz
+}
+
+entity "evento" as evento {
+  *id : uuid <<PK>>
+  --
+  *comunidade_id : uuid <<FK>>
+  *titulo : varchar
+  descricao : text
+  local : varchar
+  *inicio : timestamptz
+  *fim : timestamptz
+  capacidade : int
+  *status : status_evento_enum
+}
+
+entity "lote" as lote {
+  *id : uuid <<PK>>
+  --
+  *evento_id : uuid <<FK>>
+  *nome : varchar
+  *preco : numeric(10,2)
+  *quantidade_total : int
+  *quantidade_vendida : int
+  inicio_vendas : timestamptz
+  fim_vendas : timestamptz
+}
+
+entity "pedido" as pedido {
+  *id : uuid <<PK>>
+  --
+  *evento_id : uuid <<FK>>
+  comprador_id : uuid <<FK usuario>>
+  *comprador_nome : varchar
+  *comprador_email : varchar
+  *status : status_pedido_enum
+  *total : numeric(10,2)
+  *criado_em : timestamptz
+}
+
+entity "item_pedido" as item {
+  *id : uuid <<PK>>
+  --
+  *pedido_id : uuid <<FK>>
+  *lote_id : uuid <<FK>>
+  *quantidade : int
+  *preco_unitario : numeric(10,2)
+}
+
+entity "pagamento" as pagamento {
+  *id : uuid <<PK>>
+  --
+  *pedido_id : uuid <<FK>> <<unique>>
+  *metodo : metodo_pagto_enum
+  *status : status_pedido_enum
+  *valor : numeric(10,2)
+  gateway_txn_id : varchar
+  confirmado_em : timestamptz
+}
+
+entity "ingresso" as ingresso {
+  *id : uuid <<PK>>
+  --
+  *pedido_id : uuid <<FK>>
+  *lote_id : uuid <<FK>>
+  *participante_nome : varchar
+  *qr_code : varchar <<unique>>
+  *status : status_ingresso_enum
+  checkin_em : timestamptz
+}
+
+entity "campanha" as campanha {
+  *id : uuid <<PK>>
+  --
+  *comunidade_id : uuid <<FK>>
+  *titulo : varchar
+  conteudo : text
+  *canal : canal_enum
+  segmento : varchar
+  *status : varchar
+  agendado_em : timestamptz
+}
+
+entity "notificacao" as notificacao {
+  *id : uuid <<PK>>
+  --
+  *usuario_id : uuid <<FK>>
+  *tipo : varchar
+  conteudo : text
+  *lida : boolean
+  *criado_em : timestamptz
+}
+
+usuario    ||--o{ comunidade   : possui
+usuario    ||--o{ membro       : é
+comunidade ||--o{ membro       : tem
+comunidade ||--o{ evento       : organiza
+comunidade ||--o{ campanha     : promove
+evento     ||--o{ lote         : oferece
+evento     ||--o{ pedido       : recebe
+pedido     ||--o{ item         : contém
+lote       ||--o{ item         : referenciado
+pedido     ||--|| pagamento    : liquida
+pedido     ||--o{ ingresso     : gera
+lote       ||--o{ ingresso     : pertence
+usuario    ||--o{ notificacao  : recebe
+
+@enduml

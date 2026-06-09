@@ -1,0 +1,37 @@
+@startuml estados-pedido
+!include _estilo-comum.puml
+
+title Diagrama de Estados - Pedido e Ingresso\nPlataforma Elo
+
+skinparam state {
+  BackgroundColor #EAF4FB
+  BorderColor     #2176AE
+  FontColor       #1A1A2E
+}
+
+' ===================== PEDIDO =====================
+state "Ciclo de Vida do Pedido" as PEDIDO {
+  [*] --> PENDENTE : iniciarPedido()
+  PENDENTE --> PAGO       : pagamentoConfirmado()\n(webhook)
+  PENDENTE --> CANCELADO  : expirar()\n[timeout] / pagamentoRecusado()
+  PAGO --> REEMBOLSADO    : reembolsar()\n[evento cancelado ou solicitação]
+  PAGO --> [*]
+  CANCELADO --> [*]
+  REEMBOLSADO --> [*]
+}
+
+' ===================== INGRESSO =====================
+state "Ciclo de Vida do Ingresso" as INGRESSO {
+  [*] --> VALIDO : emitido\n[após pedido PAGO]
+  VALIDO --> UTILIZADO : check-in()\n(UC17)
+  VALIDO --> CANCELADO_I : reembolso/cancelamento
+  UTILIZADO --> [*]
+  CANCELADO_I --> [*]
+}
+
+note bottom of PEDIDO
+  O pedido só gera ingressos ao
+  transitar para PAGO.
+end note
+
+@enduml

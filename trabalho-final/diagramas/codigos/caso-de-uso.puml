@@ -1,0 +1,138 @@
+@startuml caso-de-uso
+!include _estilo-comum.puml
+
+title Diagrama de Casos de Uso\nPlataforma Elo - Gestão de Comunidades
+
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+
+' ============================================================
+' ATORES
+' ============================================================
+actor "Usuário"          as USER #EAF4FB
+actor "Creator (Gestor)" as CRE  #D6E8F7
+actor "Membro"           as MEM  #D6E8F7
+actor "Comprador"        as BUY  #D6E8F7
+
+actor "Gateway de\nPagamento" as PAY  #FFE0B2
+actor "Serviço de\nE-mail"    as MAIL #FFE0B2
+actor "Supabase Auth"         as AUTH #FFE0B2
+
+CRE --|> USER
+MEM --|> USER
+
+' ============================================================
+' FRONTEIRA DO SISTEMA - agrupada por épico
+' ============================================================
+rectangle "Plataforma Elo" {
+
+  frame " " as ROW1 #FAFAFA {
+    package "Conta e Acesso" #F4FAFF {
+      usecase "UC01 - Cadastrar-se"        as UC01 #BBDEFB
+      usecase "UC02 - Fazer Login"         as UC02 #BBDEFB
+      usecase "UC03 - Recuperar Senha"     as UC03 #E3F2FD
+    }
+
+    package "Comunidades" #F4FAFF {
+      usecase "UC04 - Criar Comunidade"        as UC04 #BBDEFB
+      usecase "UC05 - Gerenciar Membros"       as UC05 #BBDEFB
+      usecase "UC06 - Configurar Privacidade"  as UC06 #E3F2FD
+      usecase "UC07 - Solicitar/Aprovar Entrada" as UC07 #BBDEFB
+    }
+
+    package "Eventos" #F4FAFF {
+      usecase "UC08 - Criar Evento com Lotes"  as UC08 #BBDEFB
+      usecase "UC09 - Publicar Evento"         as UC09 #BBDEFB
+      usecase "UC10 - Cancelar Evento"         as UC10 #BBDEFB
+      usecase "UC11 - Listar Eventos Públicos" as UC11 #BBDEFB
+      usecase "UC12 - Fazer RSVP"              as UC12 #BBDEFB
+    }
+  }
+
+  frame "  " as ROW2 #FAFAFA {
+    package "Ingressos e Pagamento" #F4FAFF {
+      usecase "UC13 - Comprar Ingresso"        as UC13 #BBDEFB
+      usecase "UC14 - Processar Pagamento"     as UC14 #E3F2FD
+      usecase "UC15 - Emitir Ingresso/E-mail"  as UC15 #E3F2FD
+      usecase "UC16 - Solicitar Reembolso"     as UC16 #BBDEFB
+    }
+
+    package "Check-in" #F4FAFF {
+      usecase "UC17 - Realizar Check-in Digital" as UC17 #BBDEFB
+    }
+
+    package "Campanhas" #F4FAFF {
+      usecase "UC18 - Criar Campanha"    as UC18 #BBDEFB
+      usecase "UC19 - Disparar Campanha" as UC19 #BBDEFB
+    }
+
+    package "Insights" #F4FAFF {
+      usecase "UC20 - Consultar Dashboard" as UC20 #BBDEFB
+      usecase "UC21 - Exportar Relatório"  as UC21 #E3F2FD
+    }
+  }
+
+  ROW1 -[hidden]down- ROW2
+}
+
+' ============================================================
+' ASSOCIAÇÕES ATOR -> CASO DE USO
+' ============================================================
+USER --> UC02
+USER --> UC03
+CRE  --> UC01
+
+CRE --> UC04
+CRE --> UC05
+CRE --> UC06
+MEM --> UC07
+CRE --> UC07
+
+CRE --> UC08
+CRE --> UC09
+CRE --> UC10
+BUY --> UC11
+MEM --> UC12
+BUY --> UC13
+BUY --> UC16
+
+CRE --> UC17
+
+CRE --> UC18
+CRE --> UC19
+
+CRE --> UC20
+CRE --> UC21
+
+' Atores de sistema
+UC02 --> AUTH
+UC01 --> AUTH
+UC14 --> PAY
+UC16 --> PAY
+UC15 --> MAIL
+UC19 --> MAIL
+
+' ============================================================
+' INCLUDE / EXTEND
+' ============================================================
+UC13 .> UC14 : <<include>>
+UC13 .> UC15 : <<include>>
+UC08 .> UC09 : <<extend>>
+UC10 .> UC16 : <<include>>
+UC07 .> UC06 : <<extend>>
+
+' ============================================================
+' LEGENDA
+' ============================================================
+legend bottom
+  |= Notação              |= Significado                              |
+  | -->                   | Associação (ator participa do UC)         |
+  | ..> <<include>>       | Inclusão obrigatória                      |
+  | ..> <<extend>>        | Extensão condicional                      |
+  | --|>                  | Generalização de ator (herança)           |
+  |<back:#BBDEFB> Azul escuro </back>| Casos de uso principais        |
+  |<back:#E3F2FD> Azul claro  </back>| Casos de uso auxiliares/sistêmicos |
+  |<back:#FFE0B2> Laranja </back>| Ator de sistema (serviço externo)     |
+endlegend
+
+@enduml

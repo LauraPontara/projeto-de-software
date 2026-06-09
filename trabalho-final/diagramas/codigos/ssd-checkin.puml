@@ -1,0 +1,43 @@
+@startuml ssd-checkin
+!include _estilo-comum.puml
+
+title Diagrama de Sequência do Sistema\nUC17 - Realizar Check-in Digital
+
+hide footbox
+skinparam sequenceMessageAlign center
+skinparam sequenceArrowThickness 1.5
+skinparam maxmessagesize 220
+skinparam actorStyle awesome
+
+skinparam sequence {
+  ArrowColor              #2176AE
+  ArrowFontColor          #1A5276
+  LifeLineBorderColor     #2176AE
+  LifeLineBackgroundColor #EAF4FB
+  GroupBackgroundColor    #F0F7FF
+  GroupBorderColor        #1A5276
+  GroupFontColor          #1A5276
+}
+
+actor "Creator" as CRE
+participant ":Plataforma Elo" as SYS
+
+CRE -> SYS : 1. abrirCheckin(eventId)
+activate SYS
+SYS --> CRE : painelCheckin(totalIngressos, presentes=0)
+deactivate SYS
+
+loop para cada participante na entrada
+  CRE -> SYS : 2. validarIngresso(eventId, qrCode)
+  activate SYS
+  alt QR inválido ou de outro evento
+    SYS --> CRE : ingressoInvalido()
+  else ingresso já utilizado
+    SYS --> CRE : ingressoJaUtilizado(checkinEm, participante)
+  else ingresso válido
+    SYS --> CRE : checkinConfirmado(participante, lote, horario)
+  end
+  deactivate SYS
+end
+
+@enduml

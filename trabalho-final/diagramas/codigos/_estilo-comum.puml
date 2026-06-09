@@ -1,0 +1,103 @@
+' ============================================================
+'  Estilo comum - Documentação Elo
+'  Paleta azul Elo. Incluir com:  !include _estilo-comum.puml
+'  (arquivo sem @startuml - apenas diretivas de skinparam)
+' ============================================================
+
+skinparam backgroundColor #FAFAFA
+skinparam shadowing       false
+skinparam roundCorner     8
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep         40
+skinparam ranksep         70
+
+skinparam actor {
+  BackgroundColor #D6E8F7
+  BorderColor     #1A5276
+  FontColor       #1A1A2E
+  FontStyle       bold
+}
+
+skinparam usecase {
+  BackgroundColor #EAF4FB
+  BorderColor     #2176AE
+  FontColor       #1A1A2E
+  BorderThickness 1.5
+}
+
+skinparam rectangle {
+  BackgroundColor #F0F7FF
+  BorderColor     #1A5276
+  BorderThickness 2.5
+  FontColor       #1A5276
+  FontStyle       bold
+  FontSize        14
+}
+
+skinparam component {
+  BackgroundColor #EAF4FB
+  BorderColor     #2176AE
+  FontColor       #1A1A2E
+  BorderThickness 1.5
+}
+
+skinparam database {
+  BackgroundColor #FFF3E0
+  BorderColor     #E65100
+}
+
+skinparam interface {
+  BackgroundColor #E8F5E9
+  BorderColor     #2E7D32
+}
+
+skinparam queue {
+  BackgroundColor #F3E5F5
+  BorderColor     #7B1FA2
+  FontColor       #4A148C
+}
+
+skinparam cloud {
+  BackgroundColor #F9FBE7
+  BorderColor     #827717
+}
+
+skinparam node {
+  BackgroundColor #F0F7FF
+  BorderColor     #1A5276
+  BorderThickness 1.5
+  FontColor       #1A5276
+}
+
+skinparam package {
+  BorderThickness 2
+  FontStyle       bold
+}
+
+skinparam frame {
+  BorderThickness 2
+}
+
+skinparam arrow {
+  Color     #616161
+  FontColor #424242
+  FontSize  10
+}
+
+skinparam class {
+  BackgroundColor #EAF4FB
+  BorderColor     #2176AE
+  FontColor       #1A1A2E
+  AttributeFontColor #1A1A2E
+  BorderThickness 1.2
+}
+
+skinparam state {
+  BackgroundColor #EAF4FB
+  BorderColor     #2176AE
+  FontColor       #1A1A2E
+  BorderThickness 1.2
+  StartColor      #1A5276
+  EndColor        #1A5276
+}

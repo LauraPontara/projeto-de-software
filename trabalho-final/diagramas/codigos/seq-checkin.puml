@@ -1,0 +1,99 @@
+@startuml seq-checkin
+!include _estilo-comum.puml
+
+title Diagrama de Sequência (Realização)\nUC17 - Realizar Check-in Digital
+
+hide footbox
+skinparam sequenceMessageAlign center
+skinparam sequenceArrowThickness 1.5
+skinparam maxmessagesize 200
+skinparam actorStyle awesome
+
+skinparam sequence {
+  ArrowColor              #2176AE
+  ArrowFontColor          #1A5276
+  ArrowFontSize           11
+  LifeLineBorderColor     #2176AE
+  LifeLineBackgroundColor #EAF4FB
+  GroupBackgroundColor    #F0F7FF
+  GroupBorderColor        #1A5276
+  GroupFontColor          #1A5276
+  BoxBackgroundColor      #F8F9FA
+  BoxBorderColor          #1A5276
+  BoxFontColor            #1A5276
+}
+skinparam boundary {
+  BackgroundColor #BBDEFB
+  BorderColor     #1565C0
+}
+skinparam control {
+  BackgroundColor #C8E6C9
+  BorderColor     #2E7D32
+}
+skinparam database {
+  BackgroundColor #FFE0B2
+  BorderColor     #E65100
+}
+
+actor "Creator" as CRE
+
+box "Apresentação" #E8EAF6
+  boundary "Gestor - Scanner\n(Next.js)" as UI
+end box
+box "API" #E8F5E9
+  control "Elo API\n(Router + Auth)" as API
+end box
+box "Serviços de Negócio" #E8F5E9
+  control "CheckinService" as CHK
+  control "TicketService"  as TCK
+end box
+box "Dados" #FFF3E0
+  database "PostgreSQL" as DB
+end box
+
+CRE -> UI : 1. abrirCheckin(eventId)
+activate UI
+UI -> API : 2. GET /events/{id}/checkin/summary
+activate API
+API --> UI : painel(total, presentes)
+deactivate API
+UI --> CRE : exibirPainel()
+deactivate UI
+
+loop para cada participante
+  CRE -> UI : 3. escanearQrCode()
+  UI -> API : 4. POST /checkin {eventId, qrCode}
+  activate API
+  API -> CHK : 5. validarIngresso(eventId, qrCode)
+  activate CHK
+  CHK -> TCK : 6. buscarPorQrCode(qrCode)
+  activate TCK
+  TCK -> DB : 6.1 buscarIngresso(qrCode)
+  activate DB
+  DB --> TCK : ingresso(status, eventId)
+  deactivate DB
+  TCK --> CHK : ingresso
+  deactivate TCK
+
+  alt QR inexistente ou de outro evento
+    CHK --> API : ingressoInvalido()
+    API --> UI : 404 / 409
+    UI --> CRE : exibirVermelho("Inválido")
+  else status = UTILIZADO
+    CHK --> API : ingressoJaUtilizado(checkinEm)
+    API --> UI : 409 Conflict
+    UI --> CRE : exibirAmarelo("Já utilizado")
+  else status = VALIDO
+    CHK -> DB : 7. atualizarIngresso(status=UTILIZADO, checkinEm=now)
+    activate DB
+    DB --> CHK : ok
+    deactivate DB
+    CHK --> API : checkinConfirmado(participante, lote)
+    API --> UI : 200 OK
+    UI --> CRE : 8. exibirVerde("Bem-vindo, {participante}")
+  end
+  deactivate CHK
+  deactivate API
+end
+
+@enduml

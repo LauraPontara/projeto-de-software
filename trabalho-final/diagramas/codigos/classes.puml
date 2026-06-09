@@ -1,0 +1,188 @@
+@startuml classes
+!include _estilo-comum.puml
+
+title Diagrama de Classes - Modelo de Domínio\nPlataforma Elo
+
+skinparam classFontStyle bold
+skinparam classAttributeIconSize 0
+hide circle
+
+' ============================================================
+' ENUMERAÇÕES
+' ============================================================
+enum PapelMembro {
+  OWNER
+  ADMIN
+  MEMBRO
+}
+
+enum StatusMembro {
+  PENDENTE
+  ATIVO
+  REMOVIDO
+}
+
+enum Privacidade {
+  PUBLICA
+  PRIVADA
+}
+
+enum StatusEvento {
+  RASCUNHO
+  PUBLICADO
+  CANCELADO
+  ENCERRADO
+}
+
+enum StatusPedido {
+  PENDENTE
+  PAGO
+  CANCELADO
+  REEMBOLSADO
+}
+
+enum MetodoPagamento {
+  PIX
+  CARTAO
+}
+
+enum StatusIngresso {
+  VALIDO
+  UTILIZADO
+  CANCELADO
+}
+
+enum CanalCampanha {
+  EMAIL
+  PUSH
+}
+
+' ============================================================
+' ENTIDADES
+' ============================================================
+class Usuario {
+  +id: UUID
+  +nome: String
+  +email: String
+  +avatarUrl: String
+  +criadoEm: DateTime
+}
+
+class Comunidade {
+  +id: UUID
+  +nome: String
+  +slug: String
+  +descricao: String
+  +privacidade: Privacidade
+  +criadoEm: DateTime
+  +publicar(): void
+}
+
+class Membro {
+  +id: UUID
+  +papel: PapelMembro
+  +status: StatusMembro
+  +entrouEm: DateTime
+  +aprovar(): void
+  +remover(): void
+}
+
+class Evento {
+  +id: UUID
+  +titulo: String
+  +descricao: String
+  +local: String
+  +inicio: DateTime
+  +fim: DateTime
+  +capacidade: int
+  +status: StatusEvento
+  +publicar(): void
+  +cancelar(): void
+  +encerrar(): void
+}
+
+class Lote {
+  +id: UUID
+  +nome: String
+  +preco: Money
+  +quantidadeTotal: int
+  +quantidadeVendida: int
+  +inicioVendas: DateTime
+  +fimVendas: DateTime
+  +temSaldo(qtd: int): boolean
+}
+
+class Pedido {
+  +id: UUID
+  +compradorNome: String
+  +compradorEmail: String
+  +status: StatusPedido
+  +total: Money
+  +criadoEm: DateTime
+  +calcularTotal(): Money
+  +confirmar(): void
+  +reembolsar(): void
+}
+
+class ItemPedido {
+  +id: UUID
+  +quantidade: int
+  +precoUnitario: Money
+}
+
+class Pagamento {
+  +id: UUID
+  +metodo: MetodoPagamento
+  +status: StatusPedido
+  +valor: Money
+  +gatewayTxnId: String
+  +confirmadoEm: DateTime
+}
+
+class Ingresso {
+  +id: UUID
+  +participanteNome: String
+  +qrCode: String
+  +status: StatusIngresso
+  +checkinEm: DateTime
+  +validarCheckin(): void
+}
+
+class Campanha {
+  +id: UUID
+  +titulo: String
+  +conteudo: String
+  +canal: CanalCampanha
+  +segmento: String
+  +status: String
+  +agendadoEm: DateTime
+  +disparar(): void
+}
+
+class Notificacao {
+  +id: UUID
+  +tipo: String
+  +conteudo: String
+  +lida: boolean
+  +criadoEm: DateTime
+}
+
+' ============================================================
+' RELACIONAMENTOS
+' ============================================================
+Comunidade "1" o-- "*" Membro        : possui >
+Usuario    "1" -- "*" Membro          : participa como >
+Comunidade "1" o-- "*" Evento         : organiza >
+Evento     "1" *-- "*" Lote           : oferece >
+Evento     "1" -- "*" Pedido          : recebe >
+Pedido     "1" *-- "*" ItemPedido     : contém >
+ItemPedido "*" -- "1" Lote            : referencia >
+Pedido     "1" -- "1" Pagamento       : liquida >
+Pedido     "1" *-- "*" Ingresso       : gera >
+Ingresso   "*" -- "1" Lote            : pertence a >
+Comunidade "1" o-- "*" Campanha       : promove >
+Usuario    "1" -- "*" Notificacao     : recebe >
+
+Usuario "1" -- "*" Comunidade : é dono de >
+
+@enduml

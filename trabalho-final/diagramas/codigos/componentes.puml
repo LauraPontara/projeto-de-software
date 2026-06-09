@@ -1,0 +1,158 @@
+@startuml componentes
+!include _estilo-comum.puml
+!include <tupadr3/common>
+!include <tupadr3/material/dns>
+!include <logos/postgresql>
+!include <logos/nodejs>
+
+title Diagrama de Componentes\nElo API (Fastify) e seus módulos
+
+left to right direction
+hide stereotype
+
+' ============================================================
+' CLIENTES
+' ============================================================
+package "Aplicações Cliente (Next.js)" as CLIENTES #E3F2FD {
+  component "Gestor"     as GESTOR
+  component "Checkout"   as CHECKOUT
+}
+
+' ============================================================
+' CAMADA HTTP
+' ============================================================
+package "Camada HTTP (Fastify)" #ffe6f6 {
+  MATERIAL_DNS(ROUTER, "Roteador REST + Middlewares\n(Auth JWT, Validação Zod)", component, #a63381)
+}
+
+' ============================================================
+' ELO API - MÓDULOS DE NEGÓCIO (Service Layer)
+' ============================================================
+package "<$nodejs,scale=0.5> Elo API - Service Layer" as APIBOX #E8F5E9 {
+
+  frame "Módulos de Negócio" as MODS #F1F8E9 {
+    together {
+      package "Autenticação" #FAFAFA {
+        interface "IAuth" as IAuth
+        component "AuthService" as AUTH
+        IAuth -- AUTH
+      }
+      package "Comunidades" #FAFAFA {
+        interface "ICommunity" as ICom
+        component "CommunityService" as COM
+        component "MembershipService" as MEMB
+        ICom -- COM
+      }
+      package "Eventos" #FAFAFA {
+        interface "IEvent" as IEvt
+        component "EventService" as EVT
+        component "TicketTierService" as TIER
+        IEvt -- EVT
+      }
+      package "Checkout e Pedidos" #FAFAFA {
+        interface "IOrder" as IOrd
+        component "OrderService" as ORD
+        component "PaymentService" as PAY
+        IOrd -- ORD
+      }
+      package "Ingressos e Check-in" #FAFAFA {
+        interface "ITicket" as ITck
+        component "TicketService" as TCK
+        component "CheckinService" as CHK
+        ITck -- TCK
+      }
+      package "Campanhas" #FAFAFA {
+        interface "ICampaign" as ICmp
+        component "CampaignService" as CMP
+        ICmp -- CMP
+      }
+      package "Insights" #FAFAFA {
+        interface "IInsights" as IIns
+        component "InsightsService" as INS
+        IIns -- INS
+      }
+    }
+  }
+
+  frame "Acesso a Dados (Repository - Drizzle ORM)" as REPO #E1F5FE {
+    component "Repositories" as REPOS
+    interface "IRepository" as IRepo
+    REPOS -- IRepo
+  }
+
+  frame "Adaptadores de Saída" as OUT #FFF3E0 {
+    component "PaymentGatewayAdapter" as PGA
+    component "EmailAdapter (Resend)"  as EMA
+    component "StorageAdapter"         as STA
+    component "QueueAdapter (Cloud Tasks)" as QUE
+  }
+}
+
+' ============================================================
+' INFRA / EXTERNOS
+' ============================================================
+database "PostgreSQL\n(Supabase)\n<$postgresql,scale=0.45>" as DB
+interface "IdbSQL" as IdbSQL
+DB -- IdbSQL
+
+queue "Fila de Jobs\n(Cloud Tasks)" as FILA
+component "Worker de\nNotificações" as WRK
+cloud "Gateway de\nPagamento" as GW_PAY
+cloud "Resend\n(E-mail)" as RESEND
+cloud "Supabase\nStorage" as STORAGE
+
+' ============================================================
+' LIGAÇÕES
+' ============================================================
+GESTOR --> ROUTER : HTTPS
+CHECKOUT --> ROUTER : HTTPS
+
+ROUTER --( IAuth
+ROUTER --( ICom
+ROUTER --( IEvt
+ROUTER --( IOrd
+ROUTER --( ITck
+ROUTER --( ICmp
+ROUTER --( IIns
+
+' Serviços usam repositórios
+AUTH --( IRepo
+COM  --( IRepo
+EVT  --( IRepo
+ORD  --( IRepo
+TCK  --( IRepo
+CMP  --( IRepo
+INS  --( IRepo
+REPOS --( IdbSQL
+
+' Dependências internas relevantes
+ORD ..> EVT  : usa
+ORD ..> TIER : reserva
+PAY ..> PGA  : usa
+ORD ..> QUE  : enfileira
+CHK ..> TCK  : usa
+CMP ..> QUE  : enfileira
+
+' Adaptadores -> externos
+PGA --> GW_PAY : HTTPS
+STA --> STORAGE : HTTPS
+QUE --> FILA : HTTPS
+EMA --> RESEND : HTTPS
+
+' Worker consome fila e envia e-mail
+FILA --> WRK : dispara
+WRK ..> RESEND : HTTPS
+WRK --( IdbSQL
+
+' Webhook de pagamento
+GW_PAY ..> ROUTER : webhook HTTPS
+
+legend bottom
+  |= Notação            |= Significado                                  |
+  | A --( I             | Componente A requer a interface I (socket)    |
+  | I -- C              | Componente C fornece a interface I (lollipop) |
+  | A ..> B : usa       | Dependência interna entre módulos             |
+  | A --> Fila          | Publicação de job assíncrono                  |
+endlegend
+
+@enduml

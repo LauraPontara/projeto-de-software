@@ -1,0 +1,36 @@
+@startuml comunicacao-criar-evento
+!include _estilo-comum.puml
+
+title Diagrama de Comunicação\nUC08 - Criar Evento com Lotes
+
+skinparam actorStyle awesome
+
+actor "Creator" as CRE
+boundary "Gestor (UI)"        as UI
+control  "Elo API"            as API
+control  "EventService"      as EVT
+control  "MembershipService" as MEM
+control  "TicketTierService" as TIER
+database "PostgreSQL"         as DB
+
+CRE  --> UI   : 1: preencherDadosDoEvento()
+UI   --> API  : 2: POST /communities/{id}/events
+API  --> EVT  : 3: criarEvento()
+EVT  --> MEM  : 4: verificarPermissao(userId)
+MEM  --> DB   : 4.1: buscarMembro()
+EVT  --> DB   : 5: salvarEvento(RASCUNHO)
+CRE  --> UI   : 6: adicionarLote()
+UI   --> API  : 7: POST /events/{id}/tiers
+API  --> TIER : 8: adicionarLote()
+TIER --> DB   : 9: salvarLote()
+CRE  --> UI   : 10: publicarEvento()
+UI   --> API  : 11: POST /events/{id}/publish
+API  --> EVT  : 12: publicarEvento()
+EVT  --> DB   : 13: atualizarStatus(PUBLICADO)
+
+legend bottom
+  Mensagens numeradas indicam a ordem temporal das interações.
+  O sufixo (ex.: 4.1) indica aninhamento dentro da mensagem 4.
+endlegend
+
+@enduml

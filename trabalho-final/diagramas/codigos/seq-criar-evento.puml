@@ -1,0 +1,141 @@
+@startuml seq-criar-evento
+!include _estilo-comum.puml
+
+title Diagrama de Sequência (Realização)\nUC08 - Criar Evento com Lotes de Ingressos
+
+hide footbox
+skinparam sequenceMessageAlign center
+skinparam sequenceArrowThickness 1.5
+skinparam maxmessagesize 200
+skinparam actorStyle awesome
+
+skinparam sequence {
+  ArrowColor              #2176AE
+  ArrowFontColor          #1A5276
+  ArrowFontSize           11
+  LifeLineBorderColor     #2176AE
+  LifeLineBackgroundColor #EAF4FB
+  GroupBackgroundColor    #F0F7FF
+  GroupBorderColor        #1A5276
+  GroupFontColor          #1A5276
+  BoxBackgroundColor      #F8F9FA
+  BoxBorderColor          #1A5276
+  BoxFontColor            #1A5276
+}
+skinparam boundary {
+  BackgroundColor #BBDEFB
+  BorderColor     #1565C0
+}
+skinparam control {
+  BackgroundColor #C8E6C9
+  BorderColor     #2E7D32
+}
+skinparam database {
+  BackgroundColor #FFE0B2
+  BorderColor     #E65100
+}
+
+actor "Creator" as CRE
+
+box "Apresentação" #E8EAF6
+  boundary "Gestor\n(Next.js)" as UI
+end box
+box "API" #E8F5E9
+  control "Elo API\n(Router + Auth)" as API
+end box
+box "Serviços de Negócio" #E8F5E9
+  control "EventService"      as EVT
+  control "MembershipService" as MEM
+  control "TicketTierService" as TIER
+end box
+box "Dados" #FFF3E0
+  database "PostgreSQL" as DB
+end box
+
+== Criação do Evento ==
+CRE -> UI : 1. preencherDadosDoEvento(...)
+activate UI
+UI -> API : 2. POST /communities/{id}/events
+activate API
+API -> EVT : 3. criarEvento(communityId, dados)
+activate EVT
+EVT -> MEM : 4. verificarPermissao(userId, communityId)
+activate MEM
+MEM -> DB : 4.1 buscarMembro(userId, communityId)
+activate DB
+DB --> MEM : membro(papel)
+deactivate DB
+MEM --> EVT : permitido?
+deactivate MEM
+alt creator não é OWNER/ADMIN
+  EVT --> API : erroNaoAutorizado()
+  API --> UI : 403 Forbidden
+  UI --> CRE : exibirErroDePermissao()
+else autorizado
+  EVT -> DB : 5. salvarEvento(status=RASCUNHO)
+  activate DB
+  DB --> EVT : eventId
+  deactivate DB
+  EVT --> API : eventoCriado(eventId)
+  API --> UI : 201 Created
+  UI --> CRE : 6. exibirEventoEmRascunho(eventId)
+end
+deactivate EVT
+deactivate API
+deactivate UI
+
+== Adição de Lotes ==
+loop para cada lote
+  CRE -> UI : 7. adicionarLote(nome, preco, qtd, periodo)
+  activate UI
+  UI -> API : 8. POST /events/{id}/tiers
+  activate API
+  API -> TIER : 9. adicionarLote(eventId, dados)
+  activate TIER
+  alt período de vendas inválido
+    TIER --> API : erroPeriodoInvalido()
+    API --> UI : 422 Unprocessable
+    UI --> CRE : exibirErroDeValidacao()
+  else válido
+    TIER -> DB : 10. salvarLote(eventId, dados)
+    activate DB
+    DB --> TIER : loteId
+    deactivate DB
+    TIER --> API : loteAdicionado(loteId)
+    API --> UI : 201 Created
+    UI --> CRE : exibirLoteNaLista(loteId)
+  end
+  deactivate TIER
+  deactivate API
+  deactivate UI
+end
+
+== Publicação ==
+CRE -> UI : 11. publicarEvento()
+activate UI
+UI -> API : 12. POST /events/{id}/publish
+activate API
+API -> EVT : 13. publicarEvento(eventId)
+activate EVT
+EVT -> DB : 13.1 buscarEventoComLotes(eventId)
+activate DB
+DB --> EVT : evento + lotes
+deactivate DB
+alt evento sem lotes ou incompleto
+  EVT --> API : erroEventoIncompleto(pendencias)
+  API --> UI : 422 Unprocessable
+  UI --> CRE : exibirPendencias()
+else evento pronto
+  EVT -> DB : 14. atualizarStatus(PUBLICADO)
+  activate DB
+  DB --> EVT : ok
+  deactivate DB
+  EVT --> API : eventoPublicado(urlPublica)
+  API --> UI : 200 OK
+  UI --> CRE : 15. exibirLinkPublico(urlPublica)
+end
+deactivate EVT
+deactivate API
+deactivate UI
+
+@enduml

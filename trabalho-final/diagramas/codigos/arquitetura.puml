@@ -1,0 +1,48 @@
+@startuml arquitetura
+!include <C4/C4_Container>
+
+title Arquitetura da Plataforma Elo\nDiagrama de Contêineres (C4 - Nível 2)
+
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontName Arial
+LAYOUT_WITH_LEGEND()
+
+Person(creator, "Creator / Gestor", "Organiza comunidades, eventos e campanhas")
+Person(comprador, "Comprador", "Compra ingressos e faz RSVP (público)")
+
+System_Boundary(elo, "Plataforma Elo") {
+  Container(gestor, "Gestor Elo", "Next.js 16 / React 19", "Painel do creator: comunidades, eventos, campanhas e insights")
+  Container(checkout, "Checkout Elo", "Next.js 16 / React 19", "Listagem pública de eventos, RSVP e compra de ingressos")
+
+  Container(api, "Elo API", "Node.js 24 / Fastify 5", "API REST: regras de negócio, validação e orquestração")
+  Container(worker, "Worker de Notificações", "Node.js 24", "Processa jobs assíncronos: e-mails, campanhas e webhooks")
+  ContainerQueue(fila, "Fila de Jobs", "Google Cloud Tasks", "Desacopla o envio de notificações e o processamento de pagamentos")
+  ContainerDb(db, "Banco de Dados", "PostgreSQL 17 (Supabase)", "Comunidades, eventos, pedidos, ingressos; RLS por tenant")
+}
+
+System_Ext(auth, "Supabase Auth", "Identidade e emissão de JWT")
+System_Ext(storage, "Supabase Storage", "Imagens de eventos e QR codes")
+System_Ext(gateway, "Gateway de Pagamento", "PIX e Cartão de Crédito")
+System_Ext(resend, "Resend", "Envio transacional de e-mails")
+
+Rel(creator, gestor, "Usa", "HTTPS")
+Rel(comprador, checkout, "Usa", "HTTPS")
+
+Rel(gestor, api, "Chama", "JSON/HTTPS")
+Rel(checkout, api, "Chama", "JSON/HTTPS")
+
+Rel(gestor, auth, "Autentica", "JWT")
+Rel(checkout, auth, "Autentica (opcional)", "JWT")
+
+Rel(api, db, "Lê/Escreve", "SQL/Drizzle ORM")
+Rel(api, auth, "Valida JWT", "JWKS")
+Rel(api, storage, "Gera URLs assinadas", "HTTPS")
+Rel(api, gateway, "Cria cobranças", "HTTPS")
+Rel(api, fila, "Enfileira jobs", "HTTPS")
+
+Rel(gateway, api, "Webhook de pagamento", "HTTPS")
+Rel(fila, worker, "Dispara", "HTTPS")
+Rel(worker, db, "Lê/Escreve", "SQL")
+Rel(worker, resend, "Envia e-mails", "HTTPS")
+
+@enduml

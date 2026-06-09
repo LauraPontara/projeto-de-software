@@ -1,0 +1,62 @@
+@startuml ssd-comprar-ingresso
+!include _estilo-comum.puml
+
+title Diagrama de Sequência do Sistema\nUC13 - Comprar Ingresso
+
+hide footbox
+skinparam sequenceMessageAlign center
+skinparam sequenceArrowThickness 1.5
+skinparam maxmessagesize 220
+skinparam actorStyle awesome
+
+skinparam sequence {
+  ArrowColor              #2176AE
+  ArrowFontColor          #1A5276
+  LifeLineBorderColor     #2176AE
+  LifeLineBackgroundColor #EAF4FB
+  GroupBackgroundColor    #F0F7FF
+  GroupBorderColor        #1A5276
+  GroupFontColor          #1A5276
+}
+
+actor "Comprador" as BUY
+participant ":Plataforma Elo" as SYS
+
+BUY -> SYS : 1. listarIngressos(eventId)
+activate SYS
+SYS --> BUY : lotes disponíveis [nome, preço, saldo]
+deactivate SYS
+
+BUY -> SYS : 2. iniciarPedido(eventId, itens[loteId, qtd])
+activate SYS
+SYS --> BUY : pedido(pedidoId, total, status=PENDENTE)
+deactivate SYS
+
+BUY -> SYS : 3. informarDadosComprador(nome, email)
+activate SYS
+SYS --> BUY : dadosConfirmados()
+deactivate SYS
+
+alt pagamento via PIX
+  BUY -> SYS : 4. escolherPagamento(pedidoId, metodo=PIX)
+  activate SYS
+  SYS --> BUY : cobrancaPix(qrCode, copiaECola, expiraEm)
+  deactivate SYS
+  ... comprador efetua o PIX no app do banco ...
+  SYS -> SYS : 5. processarConfirmacaoPagamento(gatewayTxnId)
+  note right of SYS : evento assíncrono\n(webhook do gateway)
+else pagamento via Cartão de Crédito
+  BUY -> SYS : 4. escolherPagamento(pedidoId, metodo=CARTAO, dadosCartao)
+  activate SYS
+  alt cartão recusado
+    SYS --> BUY : pagamentoRecusado(motivo)
+  else cartão aprovado
+    SYS -> SYS : 5. processarConfirmacaoPagamento(gatewayTxnId)
+  end
+  deactivate SYS
+end
+
+SYS ->> BUY : 6. ingressosEmitidos(pedidoId, ingressos[qrCode])
+note left of BUY : ingressos também enviados\npor e-mail (UC15)
+
+@enduml

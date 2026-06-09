@@ -1,0 +1,103 @@
+@startuml implantacao
+!include _estilo-comum.puml
+!include <tupadr3/common>
+!include <tupadr3/material/smartphone>
+!include <tupadr3/material/computer>
+!include <logos/nextjs>
+!include <logos/nodejs>
+!include <logos/postgresql>
+!include <logos/docker>
+!include <logos/google-cloud>
+!include <logos/supabase-icon>
+!include <logos/github-icon>
+
+title Diagrama de Implantação\nPlataforma Elo
+
+hide stereotype
+
+' ============================================================
+' DISPOSITIVOS DOS USUÁRIOS
+' ============================================================
+node "Dispositivo do Usuário" as DEV #E3F2FD {
+  MATERIAL_COMPUTER(BROWSER, "Navegador Web", artifact, #1565C0)
+  MATERIAL_SMARTPHONE(MOBILE, "App Mobile (Expo)", artifact, #1565C0)
+}
+
+' ============================================================
+' VERCEL - FRONT-ENDS
+' ============================================================
+node "Vercel - Edge Network <<PaaS>>" as VERCEL #ECEFF1 {
+  artifact "Gestor\n<$nextjs,scale=0.5>"     as A_GESTOR
+  artifact "Checkout\n<$nextjs,scale=0.5>"   as A_CHECKOUT
+}
+
+' ============================================================
+' GOOGLE CLOUD PLATFORM
+' ============================================================
+node "Google Cloud Platform <$google-cloud,scale=0.5>" as GCP #E8F0FE {
+
+  node "Cloud Load Balancing" as LB #F0F7FF
+
+  node "Cloud Run <<serverless>>" as RUN #E8F5E9 {
+    artifact "elo-api\n<$docker,scale=0.4> <$nodejs,scale=0.4>" as C_API
+    artifact "elo-worker\n<$docker,scale=0.4> <$nodejs,scale=0.4>" as C_WRK
+  }
+
+  node "Cloud Tasks" as TASKS #F3E5F5 {
+    queue "Fila de Jobs" as Q
+  }
+}
+
+' ============================================================
+' SUPABASE
+' ============================================================
+node "Supabase <$supabase-icon,scale=0.5> <<BaaS>>" as SUPA #F1F8E9 {
+  database "PostgreSQL 17\n<$postgresql,scale=0.5>" as PG
+  node "Auth (GoTrue)" as GOTRUE #FAFAFA
+  node "Storage" as STG #FAFAFA
+}
+
+' ============================================================
+' SAAS EXTERNOS
+' ============================================================
+cloud "Gateway de Pagamento\n(PIX + Cartão)" as PAYG
+cloud "Resend\n(E-mail)" as RESEND
+
+' ============================================================
+' CI/CD
+' ============================================================
+node "GitHub Actions <$github-icon,scale=0.5> <<CI/CD>>" as CI #ECEFF1
+
+' ============================================================
+' CONEXÕES
+' ============================================================
+BROWSER --> VERCEL : HTTPS
+MOBILE  --> LB     : HTTPS (REST)
+VERCEL  --> LB     : HTTPS (REST)
+
+LB --> C_API : HTTP
+
+C_API --> PG     : TCP 5432 / SSL
+C_API --> GOTRUE : HTTPS (JWKS)
+C_API --> STG    : HTTPS
+C_API --> PAYG   : HTTPS
+C_API --> Q      : HTTPS (enqueue)
+PAYG  ..> C_API  : webhook HTTPS
+
+Q     --> C_WRK  : HTTPS (push)
+C_WRK --> PG     : TCP 5432 / SSL
+C_WRK --> RESEND : HTTPS
+
+CI ..> RUN    : deploy (container)
+CI ..> VERCEL : deploy (build)
+
+legend bottom
+  |= Notação        |= Significado                              |
+  | node            | Nó de execução / ambiente de hospedagem   |
+  | artifact        | Artefato implantado (build/imagem)        |
+  | -->             | Canal de comunicação (protocolo)          |
+  | ..> webhook     | Chamada assíncrona de retorno             |
+  | <<...>>         | Estereótipo do nó (PaaS, BaaS, serverless)|
+endlegend
+
+@enduml

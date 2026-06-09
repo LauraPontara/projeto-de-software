@@ -1,0 +1,166 @@
+@startuml seq-comprar-ingresso
+!include _estilo-comum.puml
+
+title Diagrama de Sequência (Realização)\nUC13 - Comprar Ingresso
+
+hide footbox
+skinparam sequenceMessageAlign center
+skinparam sequenceArrowThickness 1.5
+skinparam maxmessagesize 200
+skinparam actorStyle awesome
+
+skinparam sequence {
+  ArrowColor              #2176AE
+  ArrowFontColor          #1A5276
+  ArrowFontSize           11
+  LifeLineBorderColor     #2176AE
+  LifeLineBackgroundColor #EAF4FB
+  GroupBackgroundColor    #F0F7FF
+  GroupBorderColor        #1A5276
+  GroupFontColor          #1A5276
+  BoxBackgroundColor      #F8F9FA
+  BoxBorderColor          #1A5276
+  BoxFontColor            #1A5276
+}
+skinparam boundary {
+  BackgroundColor #BBDEFB
+  BorderColor     #1565C0
+}
+skinparam control {
+  BackgroundColor #C8E6C9
+  BorderColor     #2E7D32
+}
+skinparam database {
+  BackgroundColor #FFE0B2
+  BorderColor     #E65100
+}
+skinparam queue {
+  BackgroundColor #F3E5F5
+  BorderColor     #7B1FA2
+}
+
+actor "Comprador" as BUY
+
+box "Apresentação" #E8EAF6
+  boundary "Checkout\n(Next.js)" as UI
+end box
+box "API" #E8F5E9
+  control "Elo API\n(Router + Auth)" as API
+end box
+box "Serviços de Negócio" #E8F5E9
+  control "OrderService"   as ORD
+  control "EventService"   as EVT
+  control "PaymentService" as PAY
+  control "TicketService"  as TCK
+end box
+box "Mensageria" #F3E5F5
+  queue   "Cloud Tasks" as Q
+  control "Worker"      as WRK
+end box
+box "Externos" #F9FBE7
+  boundary "Gateway de\nPagamento" as GW
+  boundary "Resend"            as MAIL
+end box
+box "Dados" #FFF3E0
+  database "PostgreSQL" as DB
+end box
+
+== Criação do Pedido ==
+BUY -> UI : 1. iniciarPedido(eventId, itens)
+activate UI
+UI -> API : 2. POST /orders
+activate API
+API -> ORD : 3. criarPedido(eventId, itens)
+activate ORD
+
+ORD -> EVT : 4. verificarEventoPublicado(eventId)
+activate EVT
+EVT -> DB : 4.1 buscarEvento(eventId)
+activate DB
+DB --> EVT : evento(status)
+deactivate DB
+EVT --> ORD : eventoValido
+deactivate EVT
+
+ORD -> DB : 5. verificarSaldoLotes(itens)
+activate DB
+DB --> ORD : saldo
+deactivate DB
+
+alt sem saldo no lote
+  ORD --> API : erroSemSaldo()
+  API --> UI : 409 SemSaldo
+  UI --> BUY : exibirIndisponibilidade()
+else há saldo
+  ORD -> DB : 6. salvarPedido(status=PENDENTE)
+  activate DB
+  DB --> ORD : pedidoId
+  deactivate DB
+  ORD --> API : pedido(pedidoId, total)
+  API --> UI : 201 Created
+  UI --> BUY : 7. exibirResumoEPagamento(total)
+end
+deactivate ORD
+deactivate API
+deactivate UI
+
+== Pagamento ==
+BUY -> UI : 8. escolherPagamento(metodo, dados)
+activate UI
+UI -> API : 9. POST /orders/{id}/pay
+activate API
+API -> PAY : 10. criarCobranca(pedidoId, metodo)
+activate PAY
+PAY -> GW : 11. criarCobranca(valor, metodo)
+activate GW
+GW --> PAY : cobranca(txnId, pixQrCode | status)
+deactivate GW
+PAY -> DB : 12. salvarPagamento(txnId, status=PENDENTE)
+activate DB
+DB --> PAY : pagamentoId
+deactivate DB
+PAY --> API : dadosPagamento
+API --> UI : dadosPagamento
+UI --> BUY : 13. exibirQrPix() / aguardandoCartao()
+deactivate PAY
+deactivate API
+deactivate UI
+
+== Confirmação Assíncrona ==
+GW ->> API : 14. webhook pagamentoConfirmado(txnId)
+activate API
+API -> PAY : 15. confirmarPagamento(txnId)
+activate PAY
+PAY -> DB : 15.1 atualizarPagamento(PAGO)
+activate DB
+DB --> PAY : ok
+deactivate DB
+PAY -> DB : 15.2 atualizarPedido(PAGO)
+activate DB
+DB --> PAY : ok
+deactivate DB
+PAY ->> Q : 16. enfileirar("emitir-ingressos", pedidoId)
+PAY --> API : ok
+deactivate PAY
+API --> GW : 200 OK
+deactivate API
+
+Q ->> WRK : 17. dispararJob(pedidoId)
+activate WRK
+WRK -> TCK : 18. emitirIngressos(pedidoId)
+activate TCK
+TCK -> DB : 18.1 criarIngressos(qrCodes)
+activate DB
+DB --> TCK : ingressosPersistidos
+deactivate DB
+TCK -> DB : 18.2 baixarSaldoDosLotes(itens)
+activate DB
+DB --> TCK : ok
+deactivate DB
+TCK --> WRK : ingressos
+deactivate TCK
+WRK ->> MAIL : 19. enviarEmailIngressos(email, ingressos)
+MAIL -->> BUY : 20. e-mail com ingressos (QR Code)
+deactivate WRK
+
+@enduml

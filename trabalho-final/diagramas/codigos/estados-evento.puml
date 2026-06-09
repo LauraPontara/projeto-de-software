@@ -1,0 +1,42 @@
+@startuml estados-evento
+!include _estilo-comum.puml
+
+title Diagrama de Estados - Evento\nPlataforma Elo
+
+skinparam state {
+  BackgroundColor #EAF4FB
+  BorderColor     #2176AE
+  FontColor       #1A1A2E
+}
+
+[*] --> RASCUNHO : criarEvento()
+
+state RASCUNHO {
+}
+state PUBLICADO {
+}
+state CANCELADO {
+}
+state ENCERRADO {
+}
+
+RASCUNHO  --> PUBLICADO : publicar()\n[possui lotes válidos]
+PUBLICADO --> RASCUNHO  : despublicar()\n[sem ingressos vendidos]
+RASCUNHO  --> CANCELADO : cancelar()
+PUBLICADO --> CANCELADO : cancelar()\n[reembolsa pedidos pagos]
+PUBLICADO --> ENCERRADO : encerrar()\n[após data de fim]
+
+CANCELADO --> [*]
+ENCERRADO --> [*]
+
+note right of PUBLICADO
+  Evento visível no Checkout
+  e disponível para venda/RSVP.
+end note
+
+note right of CANCELADO
+  Dispara notificações (UC10/UC16)
+  e libera saldo dos lotes.
+end note
+
+@enduml

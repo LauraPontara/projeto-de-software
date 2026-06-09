@@ -1,0 +1,44 @@
+@startuml comunicacao-comprar-ingresso
+!include _estilo-comum.puml
+
+title Diagrama de Comunicação\nUC13 - Comprar Ingresso
+
+skinparam actorStyle awesome
+
+actor "Comprador" as BUY
+boundary "Checkout (UI)"  as UI
+control  "Elo API"        as API
+control  "OrderService"   as ORD
+control  "PaymentService" as PAY
+control  "TicketService"  as TCK
+queue    "Cloud Tasks"    as Q
+control  "Worker"         as WRK
+boundary "Gateway Pag."   as GW
+boundary "Resend"         as MAIL
+database "PostgreSQL"     as DB
+
+BUY  --> UI  : 1: iniciarPedido(eventId, itens)
+UI   --> API : 2: POST /orders
+API  --> ORD : 3: criarPedido()
+ORD  --> DB  : 4: salvarPedido(PENDENTE)
+BUY  --> UI  : 5: escolherPagamento(metodo)
+UI   --> API : 6: POST /orders/{id}/pay
+API  --> PAY : 7: criarCobranca()
+PAY  --> GW  : 8: criarCobranca(valor, metodo)
+PAY  --> DB  : 9: salvarPagamento(PENDENTE)
+GW   --> API : 10: webhook pagamentoConfirmado(txnId)
+API  --> PAY : 11: confirmarPagamento(txnId)
+PAY  --> DB  : 12: atualizarPedido(PAGO)
+PAY  --> Q   : 13: enfileirar(emitir-ingressos)
+Q    --> WRK : 14: dispararJob()
+WRK  --> TCK : 15: emitirIngressos()
+TCK  --> DB  : 16: criarIngressos(qrCodes)
+WRK  --> MAIL: 17: enviarEmailIngressos()
+MAIL --> BUY : 18: e-mail com QR Code
+
+legend bottom
+  Mensagens numeradas indicam a ordem temporal das interações
+  entre os objetos colaboradores (notação de comunicação UML).
+endlegend
+
+@enduml

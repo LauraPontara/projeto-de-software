@@ -1,13 +1,13 @@
 % ============================================================
-%  Documentação de Projeto — Template LaTeX  (iteração 5)
-%  Compile com pdfLaTeX no Overleaf
+%  Documentação de Projeto: Sistema Elo
+%  Compile com pdfLaTeX
 % ============================================================
 \documentclass[12pt, a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
 
 % Margens: 1 polegada = 2.54cm todos os lados
-% header distance from top of page = 720 twips = 0.5in
 \usepackage[
   a4paper,
   top=2.54cm, bottom=2.54cm,
@@ -17,25 +17,31 @@
 
 \usepackage{mathptmx}   % Times New Roman
 \usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{pdflscape}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf,justification=centering}
+
+% Caminho das imagens dos diagramas (PlantUML -> PNG)
+\graphicspath{{../diagramas/imagens/}}
 
 % Cabeçalho: Times bold itálico 10pt, direita, sem linha
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[R]{\fontsize{10}{12}\selectfont\bfseries\itshape
-  Documentação de Projeto para o Sistema \textless{}nome do sistema\textgreater{}
+  Documentação de Projeto para o Sistema Elo
   \enspace Página \thepage}
 \renewcommand{\headrulewidth}{0pt}
 \fancypagestyle{capa}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}}
 
-% Parágrafo: sem indentação, sem parskip automático
+% Parágrafo: sem indentação
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0pt}
-
-% Corpo de texto: ragged right (NÃO justificado — igual ao original)
+\setlength{\parskip}{6pt}
 \raggedright
 
-% Headings: H1=18pt bold (before=24pt after=12pt), H2=14pt bold (14/14)
+% Headings
 \usepackage{titlesec}
 \titleformat{\section}{\fontsize{18}{22}\selectfont\bfseries}{\thesection.}{1em}{}
 \titlespacing*{\section}{0pt}{24pt}{12pt}
@@ -45,10 +51,7 @@
 \titlespacing*{\subsubsection}{0pt}{10pt}{6pt}
 \setcounter{secnumdepth}{3}
 
-% Sumário: "Tabela de Conteúdo" 18pt bold
-% Seções 11pt bold, subseções 11pt normal
-% Indentação subseções = 360 twips = 0.635cm
-% Sem dots; número de seção com ponto
+% Sumário
 \usepackage{tocloft}
 \renewcommand{\contentsname}{Tabela de Conteúdo}
 \renewcommand{\cfttoctitlefont}{\fontsize{18}{22}\selectfont\bfseries}
@@ -75,73 +78,81 @@
 
 \usepackage{tabularx}
 \usepackage{array}
+\usepackage{longtable}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \usepackage[hidelinks]{hyperref}
+
+% Mantém o título do sumário como no template (babel-brazil o renomearia)
+\addto\captionsbrazil{\renewcommand{\contentsname}{Tabela de Conteúdo}}
+
+% --- Comando auxiliar para figuras de diagrama ---
+\newcommand{\elofig}[3]{%
+  \begin{figure}[H]\centering
+  \includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{#1}
+  \caption{#2}\label{#3}\end{figure}}
+
+% --- Comando auxiliar para tabela de contrato de operação ---
+\newcommand{\contrato}[5]{%
+\vspace{4pt}
+\begin{tabularx}{\textwidth}{|L{3.6cm}|X|}
+  \hline
+  \textbf{Contrato}             & #1 \\[4pt] \hline
+  \textbf{Operação}             & #2 \\[4pt] \hline
+  \textbf{Referências cruzadas} & #3 \\[4pt] \hline
+  \textbf{Pré-condições}        & #4 \\[4pt] \hline
+  \textbf{Pós-condições}        & #5 \\[4pt] \hline
+\end{tabularx}
+\vspace{6pt}}
 
 % ============================================================
 \begin{document}
 
 % ══════════════════════════════════════════════════════════════
-%  CAPA — vbox com posições absolutas pixel-perfeitas
-%  Medidas do original (px→pt @ 120dpi): 1px = 0.6pt
+%  CAPA
 % ══════════════════════════════════════════════════════════════
 \thispagestyle{capa}
 \setcounter{page}{1}
 
-% vbox ocupa toda a altura do texto; \vskip posiciona cada elemento
-% \hbox to \textwidth{\hfil CONTENT} = alinhamento à direita
 \noindent\vbox to \textheight{%
-  % linha horizontal: começa 22.8pt abaixo da margem
   \vskip 22.8pt
   \hbox{\rule{\textwidth}{2.5pt}}%
-  % "Documentação de Projeto" 32pt: gap=42.6pt depois da linha
   \vskip 42.6pt
   \hbox to \textwidth{\hfil
     {\fontsize{32}{38}\selectfont\bfseries Documentação de Projeto}}%
-  % "para o sistema" 20pt: gap=40.8pt (corrigido pela profundidade da fonte 32pt)
   \vskip 40.8pt
   \hbox to \textwidth{\hfil
     {\fontsize{20}{24}\selectfont\bfseries para o sistema}}%
-  % "<Nome do Sistema>" 32pt: gap=27.0pt
   \vskip 27.0pt
   \hbox to \textwidth{\hfil
-    {\fontsize{32}{38}\selectfont\bfseries
-      \textless\textcolor{red}{Nome do Sistema}\textgreater}}%
-  % "Versão 1.0" 14pt: gap=43.2pt
+    {\fontsize{32}{38}\selectfont\bfseries Elo}}%
   \vskip 43.2pt
   \hbox to \textwidth{\hfil
     {\fontsize{14}{17}\selectfont\bfseries Versão 1.0}}%
-  % autores linha 1, 12pt: gap=34.8pt
   \vskip 34.8pt
   \hbox to \textwidth{\hfil
     {\fontsize{12}{14}\selectfont
-      Projeto de sistema elaborado pelo(s) aluno(s) AAAA}}%
-  % autores linha 2: gap=0.0pt
+      Projeto de sistema elaborado pela aluna Laura Campos Pontara Lopes}}%
   \vskip 0.0pt
   \hbox to \textwidth{\hfil
     {\fontsize{12}{14}\selectfont
       como parte da disciplina \textbf{Projeto de Software}.}}%
-  % "<data de criação>" 14pt: gap=44.4pt
   \vskip 44.4pt
   \hbox to \textwidth{\hfil
     {\fontsize{14}{17}\selectfont\bfseries
-      \textless\textcolor{red}{data de criação}\textgreater}}%
+      09 de junho de 2026}}%
   \vfil
 }
 
 \newpage
 
 % ══════════════════════════════════════════════════════════════
-%  SUMÁRIO + HISTÓRICO (página 2)
+%  SUMÁRIO + HISTÓRICO
 % ══════════════════════════════════════════════════════════════
 \setcounter{page}{2}
 
 \tableofcontents
 
-% Espaço antes do Histórico (~2 blank lines of 12pt = 24pt + before H1 = 24pt)
 \vspace{18pt}
-
-% "Histórico de Revisões" estilo H1 manual
 \vspace{24pt}
 {\fontsize{18}{22}\selectfont\bfseries Histórico de Revisões}\par
 \vspace{12pt}
@@ -150,9 +161,7 @@
   \hline
   \textbf{Nome} & \textbf{Data} & \textbf{Razões para Mudança} & \textbf{Versão} \\
   \hline
-  & & & \\[14pt]
-  \hline
-  & & & \\[14pt]
+  Entrega 1 & 09/06/2026 & Criação do documento. Inclusão das seções 1 a 4: contextualização, modelagem de usuários e requisitos, modelos de projeto (arquitetura, componentes, implantação, classes, sequência, comunicação e estados) e modelo de dados do sistema Elo. & 1.0 \\[4pt]
   \hline
 \end{tabularx}
 
@@ -160,75 +169,460 @@
 \setcounter{page}{1}
 
 % ══════════════════════════════════════════════════════════════
-%  SEÇÕES
+%  1. INTRODUÇÃO
 % ══════════════════════════════════════════════════════════════
 \section{Introdução}
 
 Este documento agrega: 1) a elaboração e revisão de modelos de domínio e
-2) modelos de projeto para o sistema \textless\textcolor{red}{nome do sistema}\textgreater.
-A referência principal para a descrição geral do problema, domínio e requisitos
-do sistema é o documento de especificação que descreve a visão de domínio do sistema.
+2) modelos de projeto para o sistema Elo. A referência principal para a
+descrição geral do problema, do domínio e dos requisitos do sistema é o
+documento de especificação que descreve a visão de domínio do sistema.
 
+\subsection{Contextualização}
+
+A gestão de comunidades por \textit{creators} e \textit{community managers}
+ainda depende de um conjunto fragmentado de ferramentas: uma planilha para
+controlar membros, uma plataforma de eventos para vender ingressos, um
+provedor de e-mail para campanhas e ferramentas avulsas para mensurar
+engajamento. Essa fragmentação gera retrabalho, perda de informação entre
+sistemas, dificuldade de consolidar métricas e uma experiência inconsistente
+para o membro da comunidade.
+
+O \textbf{Elo} é uma plataforma SaaS de gestão de comunidades que reúne, em um
+único ecossistema, todas as operações de um \textit{creator}: criação e
+administração de comunidades, publicação de eventos com venda de ingressos,
+gestão de membros, campanhas de comunicação, check-in digital no dia do evento
+e acompanhamento da saúde da comunidade por meio de \textit{insights} em tempo
+real. A plataforma é organizada em duas superfícies:
+
+\begin{itemize}
+  \item \textbf{Gestor Elo}: painel privado onde o \textit{creator} gerencia
+        comunidades, eventos, membros, campanhas e insights;
+  \item \textbf{Checkout Elo}: aplicação pública para listagem de eventos,
+        RSVP e compra de ingressos com pagamento via PIX e cartão de crédito.
+\end{itemize}
+
+O nome ``Elo'' é fictício e utilizado para fins acadêmicos, preservando a
+identidade da empresa; a arquitetura aqui documentada é baseada em um sistema
+real em produção, mas foi remodelada para representar uma arquitetura de
+referência adequada aos requisitos do domínio.
+
+% ══════════════════════════════════════════════════════════════
+%  2. MODELOS DE USUÁRIO E REQUISITOS
+% ══════════════════════════════════════════════════════════════
 \section{Modelos de Usuário e Requisitos}
+
+Esta seção apresenta os modelos que capturam quem utiliza o sistema Elo e o que
+se espera dele. Primeiro são descritos os atores que interagem com a plataforma;
+em seguida, o modelo de casos de uso acompanhado das histórias de usuário que
+detalham os requisitos funcionais; e, por fim, os diagramas de sequência do
+sistema com os respectivos contratos de operação para os casos de uso mais
+representativos do domínio.
 
 \subsection{Descrição de Atores}
 
-Nesta subseção é apresentado descrição de cada um dos atores que interagem com o sistema.
+Nesta subseção é apresentada a descrição de cada um dos atores que interagem
+com o sistema Elo. Os atores humanos especializam o ator genérico
+\textbf{Usuário}; os atores de sistema representam serviços externos que
+colaboram com a plataforma.
+
+\vspace{4pt}
+\begin{tabularx}{\textwidth}{|L{3.2cm}|L{2.4cm}|X|}
+  \hline
+  \textbf{Ator} & \textbf{Tipo} & \textbf{Descrição} \\
+  \hline
+  Usuário & Humano (genérico) & Ator base que representa qualquer pessoa autenticada na plataforma. Concentra as capacidades comuns de autenticação. \\[2pt] \hline
+  Creator (Gestor) & Humano & Organizador da comunidade. Cria e administra comunidades, eventos, lotes de ingressos, campanhas, realiza o check-in e consulta insights. É o ator principal da superfície Gestor. \\[2pt] \hline
+  Membro & Humano & Pessoa que participa de uma comunidade. Solicita entrada, faz RSVP em eventos e recebe notificações e campanhas. \\[2pt] \hline
+  Comprador & Humano & Pessoa que adquire ingressos pela superfície Checkout. Pode atuar como convidado (\textit{guest}), sem conta prévia. \\[2pt] \hline
+  Gateway de Pagamento & Sistema & Serviço externo que processa cobranças via PIX e cartão de crédito e notifica a confirmação por \textit{webhook}. \\[2pt] \hline
+  Serviço de E-mail (Resend) & Sistema & Serviço externo de envio transacional de e-mails (ingressos, confirmações e campanhas). \\[2pt] \hline
+  Supabase Auth & Sistema & Provedor de identidade responsável pela emissão e validação de tokens JWT. \\[2pt] \hline
+\end{tabularx}
 
 \subsection{Modelo de Casos de Uso e Histórias de Usuários}
 
-Nesta subseção é apresentado o diagrama de casos de uso do sistema. Para cada um deles,
-utilize um ID que possa servir de referência no restante do documento.
-Por exemplo UC-01 para o Caso de Uso 01.
+Nesta subseção é apresentado o diagrama de casos de uso do sistema. Cada caso
+de uso possui um identificador (UC-XX) que serve de referência cruzada no
+restante do documento. O diagrama de casos de uso é exibido na
+Figura~\ref{fig:casodeuso}, em orientação paisagem para melhor legibilidade.
+
+% --- Diagrama de Casos de Uso (paisagem) ---
+\begin{landscape}
+\begin{figure}[H]\centering
+\includegraphics[width=0.95\linewidth,height=0.85\textheight,keepaspectratio]{caso-de-uso.png}
+\caption{Diagrama de Casos de Uso da plataforma Elo.}
+\label{fig:casodeuso}
+\end{figure}
+\end{landscape}
+
+A Tabela a seguir relaciona cada caso de uso ao seu ator principal e à(s)
+história(s) de usuário correspondente(s).
+
+\vspace{4pt}
+\begin{longtable}{|L{1.4cm}|L{6.2cm}|L{3.2cm}|L{2.4cm}|}
+  \hline
+  \textbf{ID} & \textbf{Caso de Uso} & \textbf{Ator Principal} & \textbf{História} \\
+  \hline \endhead
+  UC01 & Cadastrar-se na Plataforma          & Creator        & US01 \\ \hline
+  UC02 & Fazer Login                         & Usuário        & US02 \\ \hline
+  UC03 & Recuperar Senha                     & Usuário        & US03 \\ \hline
+  UC04 & Criar Comunidade                    & Creator        & US04 \\ \hline
+  UC05 & Gerenciar Membros                   & Creator        & US05 \\ \hline
+  UC06 & Configurar Privacidade              & Creator        & US06 \\ \hline
+  UC07 & Solicitar/Aprovar Entrada           & Membro/Creator & US07 \\ \hline
+  UC08 & Criar Evento com Lotes              & Creator        & US08 \\ \hline
+  UC09 & Publicar Evento                     & Creator        & US09 \\ \hline
+  UC10 & Cancelar Evento                     & Creator        & US10 \\ \hline
+  UC11 & Listar Eventos Públicos             & Comprador      & US11 \\ \hline
+  UC12 & Fazer RSVP                          & Membro         & US12 \\ \hline
+  UC13 & Comprar Ingresso                    & Comprador      & US13 \\ \hline
+  UC14 & Processar Pagamento                 & Gateway de Pag.& US13 \\ \hline
+  UC15 & Emitir Ingresso e Enviar E-mail     & Serviço E-mail & US14 \\ \hline
+  UC16 & Solicitar Reembolso                 & Comprador      & US15 \\ \hline
+  UC17 & Realizar Check-in Digital           & Creator        & US16 \\ \hline
+  UC18 & Criar Campanha                      & Creator        & US17 \\ \hline
+  UC19 & Disparar Campanha                   & Creator        & US18 \\ \hline
+  UC20 & Consultar Dashboard de Insights     & Creator        & US20 \\ \hline
+  UC21 & Exportar Relatório de Insights      & Creator        & US21 \\ \hline
+\end{longtable}
+
+\subsubsection{Histórias de Usuário}
+
+A seguir são descritas as histórias de usuário do sistema Elo, no formato
+``Como / Quero / Para que'', acompanhadas de seus critérios de aceitação.
+
+\paragraph{US01: Cadastrar-se na Plataforma.}
+\textbf{Como} \textit{creator}, \textbf{quero} criar uma conta informando nome,
+e-mail e senha, \textbf{para que} eu possa gerenciar minhas comunidades.
+\textit{Critérios:} (i) e-mail deve ser único; (ii) a senha deve atender à
+política mínima de segurança; (iii) a conta é criada via Supabase Auth e um
+e-mail de confirmação é enviado.
+
+\paragraph{US02: Fazer Login.}
+\textbf{Como} usuário cadastrado, \textbf{quero} autenticar-me com e-mail e
+senha, \textbf{para que} eu acesse as funcionalidades do meu perfil com
+segurança. \textit{Critérios:} (i) credenciais inválidas exibem mensagem
+genérica, sem revelar qual campo está incorreto; (ii) após o login é emitido um
+JWT; (iii) sessões inativas por mais de 30 minutos são encerradas.
+
+\paragraph{US03: Recuperar Senha.}
+\textbf{Como} usuário cadastrado, \textbf{quero} recuperar o acesso via e-mail,
+\textbf{para que} eu redefina minha senha caso a esqueça. \textit{Critérios:}
+(i) o link de redefinição tem validade de 1 hora; (ii) após o uso, o link é
+invalidado; (iii) o sistema não confirma nem nega a existência do e-mail.
+
+\paragraph{US04: Criar Comunidade.}
+\textbf{Como} \textit{creator}, \textbf{quero} criar uma comunidade com nome,
+descrição e identificador único (\textit{slug}), \textbf{para que} eu tenha um
+espaço para organizar membros e eventos. \textit{Critérios:} (i) o \textit{slug}
+deve ser único; (ii) o criador é registrado como \texttt{OWNER}; (iii) a
+comunidade nasce com privacidade padrão configurável.
+
+\paragraph{US05: Gerenciar Membros.}
+\textbf{Como} \textit{creator}, \textbf{quero} promover, rebaixar e remover
+membros, \textbf{para que} eu controle os papéis dentro da comunidade.
+\textit{Critérios:} (i) apenas \texttt{OWNER}/\texttt{ADMIN} podem gerenciar
+membros; (ii) o \texttt{OWNER} não pode ser removido; (iii) membros removidos
+perdem o acesso, mas o histórico é preservado.
+
+\paragraph{US06: Configurar Privacidade.}
+\textbf{Como} \textit{creator}, \textbf{quero} definir a comunidade como pública
+ou privada, \textbf{para que} eu controle quem pode entrar e visualizar
+conteúdo. \textit{Critérios:} (i) comunidades privadas exigem aprovação de
+entrada; (ii) comunidades públicas permitem entrada imediata.
+
+\paragraph{US07: Solicitar/Aprovar Entrada.}
+\textbf{Como} membro, \textbf{quero} solicitar entrada em uma comunidade e,
+\textbf{como} \textit{creator}, aprovar ou recusar a solicitação, \textbf{para
+que} o acesso seja controlado. \textit{Critérios:} (i) em comunidade privada a
+solicitação fica \texttt{PENDENTE}; (ii) a aprovação muda o status para
+\texttt{ATIVO} e notifica o membro.
+
+\paragraph{US08: Criar Evento com Lotes.}
+\textbf{Como} \textit{creator}, \textbf{quero} criar um evento e definir lotes de
+ingressos com preço e quantidade, \textbf{para que} eu possa vendê-los.
+\textit{Critérios:} (i) somente \texttt{OWNER}/\texttt{ADMIN} criam eventos;
+(ii) o evento nasce em \texttt{RASCUNHO}; (iii) cada lote possui período de
+vendas válido (início anterior ao fim).
+
+\paragraph{US09: Publicar Evento.}
+\textbf{Como} \textit{creator}, \textbf{quero} publicar um evento,
+\textbf{para que} ele fique visível no Checkout. \textit{Critérios:} (i) o
+evento deve ter ao menos um lote e dados obrigatórios completos; (ii) ao
+publicar, recebe \texttt{PUBLICADO} e uma URL pública.
+
+\paragraph{US10: Cancelar Evento.}
+\textbf{Como} \textit{creator}, \textbf{quero} cancelar um evento,
+\textbf{para que} ele saia do ar quando não puder ocorrer. \textit{Critérios:}
+(i) o status muda para \texttt{CANCELADO}; (ii) pedidos pagos são marcados para
+reembolso; (iii) os participantes são notificados.
+
+\paragraph{US11: Listar Eventos Públicos.}
+\textbf{Como} comprador, \textbf{quero} visualizar os eventos publicados,
+\textbf{para que} eu escolha em qual participar. \textit{Critérios:} (i) apenas
+eventos \texttt{PUBLICADO} aparecem; (ii) cada evento exibe lotes e saldo
+disponível.
+
+\paragraph{US12: Fazer RSVP.}
+\textbf{Como} membro, \textbf{quero} confirmar presença em um evento gratuito,
+\textbf{para que} eu garanta minha vaga. \textit{Critérios:} (i) o RSVP respeita
+a capacidade do evento; (ii) o membro recebe confirmação por e-mail.
+
+\paragraph{US13: Comprar Ingresso.}
+\textbf{Como} comprador, \textbf{quero} comprar ingressos pagando com PIX ou
+cartão, \textbf{para que} eu participe de um evento pago. \textit{Critérios:}
+(i) a compra só prossegue se houver saldo no lote; (ii) o pedido nasce
+\texttt{PENDENTE} e só é confirmado após o pagamento; (iii) o saldo do lote é
+baixado na emissão dos ingressos.
+
+\paragraph{US14: Receber Ingresso por E-mail.}
+\textbf{Como} comprador, \textbf{quero} receber meus ingressos por e-mail com
+QR Code, \textbf{para que} eu apresente na entrada. \textit{Critérios:} (i) o
+e-mail é enviado após a confirmação do pagamento; (ii) cada ingresso possui um
+QR Code único.
+
+\paragraph{US15: Solicitar Reembolso.}
+\textbf{Como} comprador, \textbf{quero} solicitar o reembolso de um pedido pago,
+\textbf{para que} eu recupere o valor quando não puder comparecer.
+\textit{Critérios:} (i) apenas pedidos \texttt{PAGO} podem ser reembolsados;
+(ii) o reembolso é solicitado ao gateway; (iii) os ingressos são cancelados.
+
+\paragraph{US16: Realizar Check-in Digital.}
+\textbf{Como} \textit{creator}, \textbf{quero} validar ingressos por QR Code na
+entrada, \textbf{para que} eu controle o acesso ao evento. \textit{Critérios:}
+(i) QR inválido ou de outro evento é recusado; (ii) ingresso já utilizado é
+sinalizado; (iii) ingresso válido é marcado como \texttt{UTILIZADO} com
+data/hora.
+
+\paragraph{US17: Criar Campanha.}
+\textbf{Como} \textit{creator}, \textbf{quero} criar campanhas de comunicação
+para a comunidade, \textbf{para que} eu engaje meus membros. \textit{Critérios:}
+(i) a campanha define canal (e-mail/push) e segmento; (ii) nasce em
+\texttt{RASCUNHO}; (iii) pode ser agendada para envio futuro.
+
+\paragraph{US18: Disparar Campanha.}
+\textbf{Como} \textit{creator}, \textbf{quero} disparar uma campanha,
+\textbf{para que} a mensagem chegue ao segmento escolhido. \textit{Critérios:}
+(i) o envio é assíncrono via fila; (ii) somente membros do segmento recebem;
+(iii) o status muda para \texttt{ENVIADA} ao concluir.
+
+\paragraph{US19: Receber Notificações.}
+\textbf{Como} membro, \textbf{quero} receber notificações sobre eventos e
+campanhas, \textbf{para que} eu acompanhe a comunidade. \textit{Critérios:}
+(i) o canal padrão é o e-mail cadastrado; (ii) as notificações ficam
+registradas para consulta.
+
+\paragraph{US20: Consultar Dashboard de Insights.}
+\textbf{Como} \textit{creator}, \textbf{quero} consultar métricas de
+engajamento, crescimento e saúde da comunidade, \textbf{para que} eu tome
+decisões com base em dados. \textit{Critérios:} (i) os indicadores são
+atualizados periodicamente; (ii) o painel cobre membros, eventos e vendas.
+
+\paragraph{US21: Exportar Relatório de Insights.}
+\textbf{Como} \textit{creator}, \textbf{quero} exportar os insights em PDF ou
+CSV, \textbf{para que} eu compartilhe os resultados. \textit{Critérios:} (i) o
+relatório reflete o estado no momento da exportação; (ii) o CSV contém as
+colunas das métricas principais.
 
 \subsection{Diagrama de Sequência do Sistema e Contrato de Operações}
 
-Nesta subseção é apresentado o diagrama de sequência do sistema de pelo menos, 3 Casos
-de Uso ou Histórias de Usuário descritos na Seção 2.3.
+Nesta subseção são apresentados os diagramas de sequência do sistema
+(\textit{caixa-preta}) de três casos de uso representativos do domínio Elo
+(\textbf{UC13 Comprar Ingresso}, \textbf{UC08 Criar Evento} e \textbf{UC17
+Check-in}), seguidos dos contratos das principais operações de sistema
+identificadas em cada um.
 
-\vspace{6pt}
-Formato para cada contrato de operação
+\subsubsection{UC13: Comprar Ingresso}
 
-\vspace{4pt}
-\begin{tabularx}{\textwidth}{|L{4cm}|X|}
-  \hline
-  \textbf{Contrato}             & \\[6pt] \hline
-  \textbf{Operação}             & \\[6pt] \hline
-  \textbf{Referências cruzadas} & \\[6pt] \hline
-  \textbf{Pré-condições}        & \\[6pt] \hline
-  \textbf{Pós-condições}        & \\[6pt] \hline
-\end{tabularx}
+Neste caso de uso, o comprador seleciona os lotes desejados, informa seus dados
+e efetua o pagamento por PIX ou cartão de crédito. A confirmação do pagamento
+ocorre de forma assíncrona, após o retorno do gateway, quando os ingressos são
+emitidos e enviados por e-mail. O diagrama de sequência do sistema é exibido na
+Figura~\ref{fig:ssd-compra}.
 
+\elofig{ssd-comprar-ingresso.png}{Diagrama de Sequência do Sistema: UC13 Comprar Ingresso.}{fig:ssd-compra}
+
+\contrato
+{CO1: Iniciar Pedido}
+{\texttt{iniciarPedido(eventId, itens[loteId, qtd])}}
+{Caso de Uso UC13: Comprar Ingresso; História US13.}
+{O evento existe e está \texttt{PUBLICADO}; os lotes informados pertencem ao evento.}
+{Um \texttt{Pedido} foi criado com status \texttt{PENDENTE}; os \texttt{ItemPedido} foram associados ao pedido; o total foi calculado.}
+
+\contrato
+{CO2: Confirmar Pagamento}
+{\texttt{processarConfirmacaoPagamento(gatewayTxnId)}}
+{Caso de Uso UC13/UC14; Histórias US13, US14.}
+{Existe um \texttt{Pagamento} \texttt{PENDENTE} associado ao \texttt{gatewayTxnId}; o gateway confirmou a transação.}
+{O \texttt{Pagamento} e o \texttt{Pedido} passaram a \texttt{PAGO}; um job de emissão de ingressos foi enfileirado; os ingressos são emitidos e enviados por e-mail.}
+
+\subsubsection{UC08: Criar Evento com Lotes}
+
+Neste caso de uso, o \textit{creator} informa os dados do evento, adiciona um ou
+mais lotes de ingressos e, por fim, publica o evento, tornando-o visível no
+Checkout. O diagrama de sequência do sistema é exibido na
+Figura~\ref{fig:ssd-evento}.
+
+\elofig{ssd-criar-evento.png}{Diagrama de Sequência do Sistema: UC08 Criar Evento.}{fig:ssd-evento}
+
+\contrato
+{CO3: Criar Evento}
+{\texttt{criarEvento(communityId, dados)}}
+{Caso de Uso UC08; História US08.}
+{O usuário autenticado é \texttt{OWNER} ou \texttt{ADMIN} da comunidade.}
+{Um \texttt{Evento} foi criado com status \texttt{RASCUNHO}, vinculado à comunidade.}
+
+\contrato
+{CO4: Publicar Evento}
+{\texttt{publicarEvento(eventId)}}
+{Caso de Uso UC09; História US09.}
+{O evento está em \texttt{RASCUNHO}, possui ao menos um lote e dados obrigatórios completos.}
+{O evento passou a \texttt{PUBLICADO} e recebeu uma URL pública; tornou-se visível no Checkout.}
+
+\subsubsection{UC17: Realizar Check-in Digital}
+
+Neste caso de uso, na entrada do evento, o \textit{creator} valida o QR Code de
+cada ingresso apresentado. O sistema verifica se o ingresso é válido, se já foi
+utilizado ou se é inválido, registrando o check-in quando apropriado. O diagrama
+de sequência do sistema é exibido na Figura~\ref{fig:ssd-checkin}.
+
+\elofig{ssd-checkin.png}{Diagrama de Sequência do Sistema: UC17 Check-in.}{fig:ssd-checkin}
+
+\contrato
+{CO5: Validar Ingresso}
+{\texttt{validarIngresso(eventId, qrCode)}}
+{Caso de Uso UC17; História US16.}
+{Existe um ingresso correspondente ao \texttt{qrCode}; o \textit{creator} tem permissão no evento.}
+{Se o ingresso era \texttt{VALIDO}, passou a \texttt{UTILIZADO} com data/hora de check-in registrada; caso contrário, o sistema sinaliza ``inválido'' ou ``já utilizado'' sem alterar o estado.}
+
+% ══════════════════════════════════════════════════════════════
+%  3. MODELOS DE PROJETO
+% ══════════════════════════════════════════════════════════════
 \section{Modelos de Projeto}
+
+Esta seção detalha as decisões de projeto que realizam os requisitos
+apresentados na Seção~2. São descritos a arquitetura geral da solução, a
+organização interna em componentes e sua implantação física, o modelo de
+classes do domínio e os diagramas dinâmicos (sequência, comunicação e estados)
+que especificam o comportamento do sistema na realização dos casos de uso.
 
 \subsection{Arquitetura}
 
-Pode ser descrita com um diagrama apropriado da UML ou \quad C4 Model
+A arquitetura do Elo é descrita pelo modelo \textbf{C4} no nível de contêineres
+(Nível 2), exibido na Figura~\ref{fig:arquitetura}. Vale destacar que, no modelo
+C4, um \textit{contêiner} representa uma unidade executável e implantável de
+forma independente (uma aplicação, um serviço ou um banco de dados), e não um
+contêiner Docker. Cada superfície (Gestor e
+Checkout) é uma aplicação Next.js independente que consome uma API
+REST central (Elo API, em Fastify). A API encapsula as regras de negócio em uma
+\textit{Service Layer}, persiste dados em PostgreSQL (Supabase) por meio do
+padrão \textit{Repository} (Drizzle ORM) e delega o trabalho assíncrono (envio de
+e-mails, campanhas e processamento de confirmação de pagamento) a um
+\textbf{Worker} acionado por uma fila (Cloud Tasks). A identidade é provida pelo
+Supabase Auth (JWT), e serviços externos (Gateway de Pagamento e Resend)
+integram-se via HTTPS e \textit{webhooks}.
 
-\subsection{Diagrama de Componentes e Implantação.}
+\elofig{arquitetura.png}{Diagrama de Contêineres (C4, Nível 2) da plataforma Elo.}{fig:arquitetura}
 
-Diagramas de componentes do sistema. Diagrama de implantação mostrando onde os
-componentes estarão alocados para a execução.
+\subsection{Diagrama de Componentes e Implantação}
+
+O diagrama de componentes (Figura~\ref{fig:componentes}) detalha a organização
+interna da Elo API: a camada HTTP (roteamento, autenticação JWT e validação com
+Zod), os módulos de negócio (\textit{services}) e suas interfaces fornecidas e
+requeridas, a camada de acesso a dados (\textit{repositories}) e os adaptadores
+de saída para gateway de pagamento, e-mail, \textit{storage} e fila.
+
+\elofig{componentes.png}{Diagrama de Componentes da Elo API.}{fig:componentes}
+
+O diagrama de implantação (Figura~\ref{fig:implantacao}) mostra a alocação
+física dos componentes: os front-ends Next.js hospedados na Vercel; a Elo API e
+o Worker como contêineres no Google Cloud Run; a fila no Cloud Tasks; o banco
+PostgreSQL, a autenticação e o \textit{storage} no Supabase; e os serviços SaaS
+externos (Gateway de Pagamento e Resend). O fluxo de CI/CD é operado pelo GitHub
+Actions.
+
+\elofig{implantacao.png}{Diagrama de Implantação da plataforma Elo.}{fig:implantacao}
 
 \subsection{Diagrama de Classes}
 
-Diagrama de classes do sistema.
+A Figura~\ref{fig:classes} apresenta o modelo de domínio do Elo. As entidades
+centrais são \texttt{Comunidade}, \texttt{Evento}, \texttt{Lote},
+\texttt{Pedido}, \texttt{Pagamento} e \texttt{Ingresso}, conectadas por
+relações de composição e associação. As enumerações modelam os estados e
+categorias do domínio (status de evento, pedido e ingresso, papéis de membro,
+métodos de pagamento e canais de campanha).
+
+\elofig{classes.png}{Diagrama de Classes: modelo de domínio da plataforma Elo.}{fig:classes}
 
 \subsection{Diagramas de Sequência}
 
-Diagramas de sequência para realização de casos de uso.
+Os diagramas a seguir realizam, em nível de projeto (\textit{caixa-branca}), os
+três casos de uso selecionados, detalhando a colaboração entre as fronteiras de
+interface (\textit{boundary}), os controladores/serviços (\textit{control}) e o
+repositório de dados (\textit{database}).
+
+\elofig{seq-comprar-ingresso.png}{Diagrama de Sequência: realização do UC13 Comprar Ingresso.}{fig:seq-compra}
+
+\elofig{seq-criar-evento.png}{Diagrama de Sequência: realização do UC08 Criar Evento.}{fig:seq-evento}
+
+\elofig{seq-checkin.png}{Diagrama de Sequência: realização do UC17 Check-in.}{fig:seq-checkin}
 
 \subsection{Diagramas de Comunicação}
 
-Diagramas de comunicação para realização de casos de uso.
+Os diagramas de comunicação representam as mesmas interações dos diagramas de
+sequência, enfatizando os vínculos entre objetos colaboradores e a ordem
+temporal das mensagens (numeração). São apresentados para os três casos de uso
+selecionados: Comprar Ingresso (Figura~\ref{fig:com-compra}), Criar Evento
+(Figura~\ref{fig:com-evento}) e Check-in (Figura~\ref{fig:com-checkin}).
+
+\elofig{comunicacao-comprar-ingresso.png}{Diagrama de Comunicação: UC13 Comprar Ingresso.}{fig:com-compra}
+
+\elofig{comunicacao-criar-evento.png}{Diagrama de Comunicação: UC08 Criar Evento.}{fig:com-evento}
+
+\elofig{comunicacao-checkin.png}{Diagrama de Comunicação: UC17 Check-in.}{fig:com-checkin}
 
 \subsection{Diagramas de Estados}
 
-Diagramas de estados do sistema.
+São modelados os ciclos de vida das entidades cujo comportamento é governado por
+estados: o \texttt{Evento} (Figura~\ref{fig:est-evento}) e o \texttt{Pedido} em
+conjunto com o \texttt{Ingresso} (Figura~\ref{fig:est-pedido}).
 
+\elofig{estados-evento.png}{Diagrama de Estados: Evento.}{fig:est-evento}
+
+\elofig{estados-pedido.png}{Diagrama de Estados: Pedido e Ingresso.}{fig:est-pedido}
+
+% ══════════════════════════════════════════════════════════════
+%  4. MODELOS DE DADOS
+% ══════════════════════════════════════════════════════════════
 \section{Modelos de Dados}
 
-Deve-se apresentar os esquemas de banco de dados e as estratégias de mapeamento
-entre as representações de objetos e não-objetos.
+O esquema de banco de dados do Elo é relacional, implementado em PostgreSQL 17 e
+gerenciado via Drizzle ORM. A Figura~\ref{fig:dados} apresenta o modelo
+entidade-relacionamento, com chaves primárias (\texttt{PK}), chaves estrangeiras
+(\texttt{FK}), restrições de unicidade e cardinalidades em notação \textit{crow's
+foot}.
+
+\elofig{modelo-de-dados.png}{Modelo de Dados: esquema relacional (PostgreSQL).}{fig:dados}
+
+\textbf{Estratégia de mapeamento objeto-relacional.} A correspondência entre o
+modelo de domínio (Seção 3.3) e o esquema relacional segue as convenções:
+
+\begin{itemize}
+  \item cada \textit{classe de entidade} é mapeada para uma \textbf{tabela}, e
+        cada instância para uma \textbf{linha}, identificada por chave primária
+        \texttt{uuid};
+  \item as \textit{enumerações} do domínio são mapeadas para \textbf{tipos
+        \texttt{enum}} nativos do PostgreSQL (ex.: \texttt{status\_evento\_enum});
+  \item as \textit{associações um-para-muitos} (ex.: Comunidade–Evento) são
+        representadas por uma \textbf{chave estrangeira} no lado ``muitos'';
+  \item as \textit{composições} (ex.: Pedido–ItemPedido, Pedido–Ingresso) usam
+        chave estrangeira com integridade referencial em cascata;
+  \item a associação \textit{um-para-um} Pedido–Pagamento é garantida por uma
+        \textbf{restrição \texttt{unique}} sobre \texttt{pedido\_id};
+  \item o controle de acesso multi-inquilino (\textit{multi-tenant}) é reforçado
+        por \textbf{Row-Level Security (RLS)} do Supabase, restringindo cada
+        linha ao seu \textit{tenant} (comunidade) de origem.
+\end{itemize}
 
 \end{document}
