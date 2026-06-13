@@ -1,4 +1,10 @@
 <div align="center">
+  <img src="./assets/logo-elo.png" alt="Logo Elo" width="280px"/>
+</div>
+
+<br/>
+
+<div align="center">
   <img src="https://joaopauloaramuni.github.io/image/logo_ES_vertical.png" alt="Logo Engenharia de Software PUC Minas" width="110px"/>
 </div>
 
