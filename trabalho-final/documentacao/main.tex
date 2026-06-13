@@ -537,12 +537,15 @@ de saída para gateway de pagamento, e-mail, \textit{storage} e fila.
 
 \elofig{componentes.png}{Diagrama de Componentes da Elo API.}{fig:componentes}
 
-O diagrama de implantação (Figura~\ref{fig:implantacao}) mostra a alocação
-física dos componentes: os front-ends Next.js hospedados na Vercel; a Elo API e
-o Worker como contêineres no Google Cloud Run; a fila no Cloud Tasks; o banco
-PostgreSQL, a autenticação e o \textit{storage} no Supabase; e os serviços SaaS
-externos (Gateway de Pagamento e Resend). O fluxo de CI/CD é operado pelo GitHub
-Actions.
+O diagrama de implantação (Figura~\ref{fig:implantacao}) toma como base a mesma
+estrutura do diagrama de componentes (módulos de negócio, interfaces fornecidas e
+requeridas, acesso a dados e adaptadores) e a posiciona sobre a topologia física
+de hospedagem, acrescentando as tecnologias empregadas em cada nó. Mostra, assim,
+a alocação física dos componentes: os front-ends Next.js hospedados na Vercel; a
+Elo API e o Worker como contêineres Docker no Google Cloud Run; a fila no Cloud
+Tasks; o banco PostgreSQL, a autenticação e o \textit{storage} no Supabase; e os
+serviços SaaS externos (Gateway de Pagamento e Resend). O fluxo de CI/CD é operado
+pelo GitHub Actions.
 
 \elofig{implantacao.png}{Diagrama de Implantação da plataforma Elo.}{fig:implantacao}
 

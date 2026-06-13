@@ -3,8 +3,11 @@
 !include <tupadr3/common>
 !include <tupadr3/material/smartphone>
 !include <tupadr3/material/computer>
+!include <tupadr3/material/dns>
+!include <tupadr3/material/email>
 !include <logos/nextjs>
 !include <logos/nodejs>
+!include <logos/react>
 !include <logos/postgresql>
 !include <logos/docker>
 !include <logos/google-cloud>
@@ -13,22 +16,29 @@
 
 title Diagrama de Implantação\nPlataforma Elo
 
+left to right direction
 hide stereotype
 
 ' ============================================================
-' DISPOSITIVOS DOS USUÁRIOS
+' DISPOSITIVO DO USUÁRIO (Clientes)
 ' ============================================================
 node "Dispositivo do Usuário" as DEV #E3F2FD {
   MATERIAL_COMPUTER(BROWSER, "Navegador Web", artifact, #1565C0)
-  MATERIAL_SMARTPHONE(MOBILE, "App Mobile (Expo)", artifact, #1565C0)
+  MATERIAL_SMARTPHONE(MOBILE, "App Mobile (Expo)\n<$react,color=#16ccff>", artifact, #1565C0)
 }
 
 ' ============================================================
 ' VERCEL - FRONT-ENDS
 ' ============================================================
 node "Vercel - Edge Network <<PaaS>>" as VERCEL #ECEFF1 {
-  artifact "Gestor\n<$nextjs,scale=0.5>"     as A_GESTOR
-  artifact "Checkout\n<$nextjs,scale=0.5>"   as A_CHECKOUT
+  artifact GESTOR [
+    <$nextjs,color=#000000>
+    Gestor
+  ]
+  artifact CHECKOUT [
+    <$nextjs,color=#000000>
+    Checkout
+  ]
 }
 
 ' ============================================================
@@ -39,12 +49,113 @@ node "Google Cloud Platform <$google-cloud,scale=0.5>" as GCP #E8F0FE {
   node "Cloud Load Balancing" as LB #F0F7FF
 
   node "Cloud Run <<serverless>>" as RUN #E8F5E9 {
-    artifact "elo-api\n<$docker,scale=0.4> <$nodejs,scale=0.4>" as C_API
-    artifact "elo-worker\n<$docker,scale=0.4> <$nodejs,scale=0.4>" as C_WRK
+
+    ' --- Contêiner da API (Fastify) ---
+    package "elo-api <$docker,scale=0.4> <$nodejs,scale=0.4> (Fastify)" as APIBOX #E8F5E9 {
+
+      MATERIAL_DNS(ROUTER, "Roteador REST + Middlewares\n(Auth JWT, Validação Zod)", component, #2176AE)
+
+      frame "Módulos de Negócio" as MODS #F1F8E9 {
+        together {
+          package "Autenticação" #FAFAFA {
+            interface "IAuth" as IAuth
+            component AUTH [
+              <$nodejs,color=#339933>
+              AuthService
+            ]
+            IAuth -- AUTH
+          }
+          package "Comunidades" #FAFAFA {
+            interface "ICommunity" as ICom
+            component COM [
+              <$nodejs,color=#339933>
+              CommunityService
+            ]
+            component MEMB [
+              <$nodejs,color=#339933>
+              MembershipService
+            ]
+            ICom -- COM
+          }
+          package "Eventos" #FAFAFA {
+            interface "IEvent" as IEvt
+            component EVT [
+              <$nodejs,color=#339933>
+              EventService
+            ]
+            component TIER [
+              <$nodejs,color=#339933>
+              TicketTierService
+            ]
+            IEvt -- EVT
+          }
+          package "Checkout e Pedidos" #FAFAFA {
+            interface "IOrder" as IOrd
+            component ORD [
+              <$nodejs,color=#339933>
+              OrderService
+            ]
+            component PAY [
+              <$nodejs,color=#339933>
+              PaymentService
+            ]
+            IOrd -- ORD
+          }
+          package "Ingressos e Check-in" #FAFAFA {
+            interface "ITicket" as ITck
+            component TCK [
+              <$nodejs,color=#339933>
+              TicketService
+            ]
+            component CHK [
+              <$nodejs,color=#339933>
+              CheckinService
+            ]
+            ITck -- TCK
+          }
+          package "Campanhas" #FAFAFA {
+            interface "ICampaign" as ICmp
+            component CMP [
+              <$nodejs,color=#339933>
+              CampaignService
+            ]
+            ICmp -- CMP
+          }
+          package "Insights" #FAFAFA {
+            interface "IInsights" as IIns
+            component INS [
+              <$nodejs,color=#339933>
+              InsightsService
+            ]
+            IIns -- INS
+          }
+        }
+      }
+
+      frame "Acesso a Dados (Repository - Drizzle ORM)" as REPO #E1F5FE {
+        component "Repositories" as REPOS
+        interface "IRepository" as IRepo
+        REPOS -- IRepo
+      }
+
+      frame "Adaptadores de Saída" as OUT #FFF3E0 {
+        component "PaymentGatewayAdapter"     as PGA
+        component "EmailAdapter (Resend)"      as EMA
+        component "StorageAdapter"             as STA
+        component "QueueAdapter (Cloud Tasks)" as QUE
+      }
+    }
+
+    ' --- Contêiner do Worker ---
+    artifact WRK [
+      <$docker,scale=0.4> <$nodejs,scale=0.4>
+      elo-worker
+      Worker de Notificações
+    ]
   }
 
   node "Cloud Tasks" as TASKS #F3E5F5 {
-    queue "Fila de Jobs" as Q
+    queue "Fila de Jobs" as FILA
   }
 }
 
@@ -52,16 +163,18 @@ node "Google Cloud Platform <$google-cloud,scale=0.5>" as GCP #E8F0FE {
 ' SUPABASE
 ' ============================================================
 node "Supabase <$supabase-icon,scale=0.5> <<BaaS>>" as SUPA #F1F8E9 {
-  database "PostgreSQL 17\n<$postgresql,scale=0.5>" as PG
+  database "PostgreSQL 17\n<$postgresql,scale=0.5>" as DB
+  interface "IdbSQL" as IdbSQL
   node "Auth (GoTrue)" as GOTRUE #FAFAFA
-  node "Storage" as STG #FAFAFA
+  node "Storage"       as STG    #FAFAFA
+  DB -- IdbSQL
 }
 
 ' ============================================================
 ' SAAS EXTERNOS
 ' ============================================================
-cloud "Gateway de Pagamento\n(PIX + Cartão)" as PAYG
-cloud "Resend\n(E-mail)" as RESEND
+cloud "Gateway de Pagamento\n(PIX + Cartão)" as GW_PAY
+MATERIAL_EMAIL(RESEND, "Resend\n(Envio de e-mail)", cloud, #827717)
 
 ' ============================================================
 ' CI/CD
@@ -69,35 +182,68 @@ cloud "Resend\n(E-mail)" as RESEND
 node "GitHub Actions <$github-icon,scale=0.5> <<CI/CD>>" as CI #ECEFF1
 
 ' ============================================================
-' CONEXÕES
+' CONEXÕES - acesso dos clientes
 ' ============================================================
 BROWSER --> VERCEL : HTTPS
 MOBILE  --> LB     : HTTPS (REST)
 VERCEL  --> LB     : HTTPS (REST)
+LB      --> ROUTER : HTTP
 
-LB --> C_API : HTTP
+' Roteador consome as interfaces dos módulos (sockets)
+ROUTER --( IAuth
+ROUTER --( ICom
+ROUTER --( IEvt
+ROUTER --( IOrd
+ROUTER --( ITck
+ROUTER --( ICmp
+ROUTER --( IIns
 
-C_API --> PG     : TCP 5432 / SSL
-C_API --> GOTRUE : HTTPS (JWKS)
-C_API --> STG    : HTTPS
-C_API --> PAYG   : HTTPS
-C_API --> Q      : HTTPS (enqueue)
-PAYG  ..> C_API  : webhook HTTPS
+' Serviços usam o repositório; repositório acessa o banco
+AUTH --( IRepo
+COM  --( IRepo
+EVT  --( IRepo
+ORD  --( IRepo
+TCK  --( IRepo
+CMP  --( IRepo
+INS  --( IRepo
+REPOS --( IdbSQL : TCP 5432 / SSL
 
-Q     --> C_WRK  : HTTPS (push)
-C_WRK --> PG     : TCP 5432 / SSL
-C_WRK --> RESEND : HTTPS
+' Dependências internas relevantes entre serviços
+ORD ..> EVT  : usa
+ORD ..> TIER : reserva
+PAY ..> PGA  : usa
+ORD ..> QUE  : enfileira
+CHK ..> TCK  : usa
+CMP ..> QUE  : enfileira
 
+' Adaptadores de saída -> serviços gerenciados / externos
+PGA --> GW_PAY : HTTPS
+STA --> STG    : HTTPS
+QUE --> FILA   : HTTPS (enqueue)
+EMA --> RESEND : HTTPS
+ROUTER --> GOTRUE : HTTPS (JWKS)
+
+' Webhook de confirmação de pagamento
+GW_PAY ..> ROUTER : webhook HTTPS
+
+' Worker consome a fila e envia e-mail
+FILA --> WRK    : HTTPS (push)
+WRK  --( IdbSQL
+WRK  ..> RESEND : HTTPS
+
+' Pipeline de entrega contínua
 CI ..> RUN    : deploy (container)
 CI ..> VERCEL : deploy (build)
 
 legend bottom
-  |= Notação        |= Significado                              |
-  | node            | Nó de execução / ambiente de hospedagem   |
-  | artifact        | Artefato implantado (build/imagem)        |
-  | -->             | Canal de comunicação (protocolo)          |
-  | ..> webhook     | Chamada assíncrona de retorno             |
-  | <<...>>         | Estereótipo do nó (PaaS, BaaS, serverless)|
+  |= Notação            |= Tipo de Relação      |= Descrição                                       |
+  | node                | Nó de implantação     | Ambiente de execução / hospedagem                |
+  | artifact            | Artefato              | Build ou imagem implantada no nó                 |
+  | I -- C              | Interface fornecida   | Componente expõe um contrato (lollipop)          |
+  | A --( I             | Interface requerida   | Componente consome um contrato (socket)          |
+  | A ..> B : usa       | Dependência interna   | Serviço depende internamente de outro serviço    |
+  | A --> B : protocolo | Canal de comunicação  | Protocolo de rede entre nós (HTTPS, AMQP, TCP)   |
+  | <<...>>             | Estereótipo do nó     | Modelo de hospedagem (PaaS, BaaS, serverless)    |
 endlegend
 
 @enduml
