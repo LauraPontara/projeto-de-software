@@ -3,42 +3,65 @@
 
 title Diagrama de Comunicação\nUC13 - Comprar Ingresso
 
-skinparam actorStyle awesome
+skinparam rectangle {
+  BackgroundColor #EAF4FB
+  BorderColor     #2176AE
+  FontColor       #1A1A2E
+  FontStyle       plain
+  FontSize        12
+  BorderThickness 1.5
+}
 
-actor "Comprador" as BUY
-boundary "Checkout (UI)"  as UI
-control  "Elo API"        as API
-control  "OrderService"   as ORD
-control  "PaymentService" as PAY
-control  "TicketService"  as TCK
-queue    "Cloud Tasks"    as Q
-control  "Worker"         as WRK
-boundary "Gateway Pag."   as GW
-boundary "Resend"         as MAIL
-database "PostgreSQL"     as DB
+actor     "Comprador" as BUY
+rectangle ":Checkout (UI)"   as UI
+rectangle ":Elo API"        as API
+rectangle ":OrderService"   as ORD
+rectangle ":EventService"   as EVT
+rectangle ":PaymentService" as PAY
+rectangle ":TicketService"  as TCK
+rectangle ":Cloud Tasks"    as Q
+rectangle ":Worker"         as WRK
+rectangle ":Gateway Pag."   as GW
+rectangle ":Resend"         as MAIL
+rectangle ":PostgreSQL"     as DB
 
-BUY  --> UI  : 1: iniciarPedido(eventId, itens)
-UI   --> API : 2: POST /orders
-API  --> ORD : 3: criarPedido()
-ORD  --> DB  : 4: salvarPedido(PENDENTE)
-BUY  --> UI  : 5: escolherPagamento(metodo)
-UI   --> API : 6: POST /orders/{id}/pay
-API  --> PAY : 7: criarCobranca()
-PAY  --> GW  : 8: criarCobranca(valor, metodo)
-PAY  --> DB  : 9: salvarPagamento(PENDENTE)
-GW   --> API : 10: webhook pagamentoConfirmado(txnId)
-API  --> PAY : 11: confirmarPagamento(txnId)
-PAY  --> DB  : 12: atualizarPedido(PAGO)
-PAY  --> Q   : 13: enfileirar(emitir-ingressos)
-Q    --> WRK : 14: dispararJob()
-WRK  --> TCK : 15: emitirIngressos()
-TCK  --> DB  : 16: criarIngressos(qrCodes)
-WRK  --> MAIL: 17: enviarEmailIngressos()
-MAIL --> BUY : 18: e-mail com QR Code
+' --- Fase 1: criação do pedido ---
+BUY  --> UI  : "1: iniciarPedido(eventId, itens)"
+UI   --> API : "2: POST /orders"
+API  --> ORD : "2.1: criarPedido(eventId, itens)"
+ORD  --> EVT : "2.1.1: verificarEventoPublicado(eventId)"
+EVT  --> DB  : "2.1.1.1: buscarEvento(eventId)"
+ORD  --> DB  : "2.1.2: verificarSaldoLotes(itens)"
+ORD  --> DB  : "2.1.3: salvarPedido(PENDENTE)"
+UI   --> BUY : "3: exibirResumoEPagamento(total)"
+
+' --- Fase 2: pagamento ---
+BUY  --> UI  : "4: escolherPagamento(metodo, dados)"
+UI   --> API : "5: POST /orders/{id}/pay"
+API  --> PAY : "5.1: criarCobranca(pedidoId, metodo)"
+PAY  --> GW  : "5.1.1: criarCobranca(valor, metodo)"
+PAY  --> DB  : "5.1.2: salvarPagamento(PENDENTE)"
+UI   --> BUY : "6: exibirQrPix() / aguardandoCartao()"
+
+' --- Fase 3: confirmação assíncrona ---
+GW   ..> API : "7: webhook pagamentoConfirmado(txnId)"
+API  --> PAY : "7.1: confirmarPagamento(txnId)"
+PAY  --> DB  : "7.1.1: atualizarPagamento(PAGO)"
+PAY  --> DB  : "7.1.2: atualizarPedido(PAGO)"
+PAY  ..> Q   : "7.1.3: [assíncrono] enfileirar(emitir-ingressos)"
+Q    ..> WRK : "8: [assíncrono] dispararJob(pedidoId)"
+WRK  --> TCK : "8.1: emitirIngressos(pedidoId)"
+TCK  --> DB  : "8.1.1: criarIngressos(qrCodes)"
+TCK  --> DB  : "8.1.2: baixarSaldoDosLotes(itens)"
+WRK  ..> MAIL: "8.2: [assíncrono] enviarEmailIngressos()"
+MAIL ..> BUY : "8.2.1: [assíncrono] e-mail com QR Code"
 
 legend bottom
-  Mensagens numeradas indicam a ordem temporal das interações
-  entre os objetos colaboradores (notação de comunicação UML).
+  Notação de comunicação UML: objetos colaboradores ligados por vínculos.
+  A numeração decimal indica a ordem e o aninhamento das mensagens
+  (ex.: 2.1.1 ocorre durante o processamento de 2.1). Setas tracejadas
+  representam mensagens assíncronas; retornos foram omitidos para
+  maior legibilidade.
 endlegend
 
 @enduml

@@ -3,34 +3,49 @@
 
 title Diagrama de Comunicação\nUC08 - Criar Evento com Lotes
 
-skinparam actorStyle awesome
+skinparam rectangle {
+  BackgroundColor #EAF4FB
+  BorderColor     #2176AE
+  FontColor       #1A1A2E
+  FontStyle       plain
+  FontSize        12
+  BorderThickness 1.5
+}
 
-actor "Creator" as CRE
-boundary "Gestor (UI)"        as UI
-control  "Elo API"            as API
-control  "EventService"      as EVT
-control  "MembershipService" as MEM
-control  "TicketTierService" as TIER
-database "PostgreSQL"         as DB
+actor     "Creator" as CRE
+rectangle ":Gestor (UI)"         as UI
+rectangle ":Elo API"            as API
+rectangle ":EventService"       as EVT
+rectangle ":MembershipService"  as MEM
+rectangle ":TicketTierService"  as TIER
+rectangle ":PostgreSQL"         as DB
 
-CRE  --> UI   : 1: preencherDadosDoEvento()
-UI   --> API  : 2: POST /communities/{id}/events
-API  --> EVT  : 3: criarEvento()
-EVT  --> MEM  : 4: verificarPermissao(userId)
-MEM  --> DB   : 4.1: buscarMembro()
-EVT  --> DB   : 5: salvarEvento(RASCUNHO)
-CRE  --> UI   : 6: adicionarLote()
-UI   --> API  : 7: POST /events/{id}/tiers
-API  --> TIER : 8: adicionarLote()
-TIER --> DB   : 9: salvarLote()
-CRE  --> UI   : 10: publicarEvento()
-UI   --> API  : 11: POST /events/{id}/publish
-API  --> EVT  : 12: publicarEvento()
-EVT  --> DB   : 13: atualizarStatus(PUBLICADO)
+' --- Fluxo: criar evento em rascunho ---
+CRE  --> UI   : "1: preencherDadosDoEvento()"
+UI   --> API  : "2: POST /communities/{id}/events"
+API  --> EVT  : "2.1: criarEvento(communityId, dados)"
+EVT  --> MEM  : "2.1.1: verificarPermissao(userId)"
+MEM  --> DB   : "2.1.1.1: buscarMembro(userId)"
+EVT  --> DB   : "2.1.2: salvarEvento(RASCUNHO)"
+
+' --- Fluxo: adicionar lote (repetido por lote) ---
+CRE  --> UI   : "3: adicionarLote(nome, preco, qtd)"
+UI   --> API  : "4: POST /events/{id}/tiers"
+API  --> TIER : "4.1: adicionarLote(eventId, dados)"
+TIER --> DB   : "4.1.1: salvarLote(eventId, dados)"
+
+' --- Fluxo: publicar evento ---
+CRE  --> UI   : "5: publicarEvento()"
+UI   --> API  : "6: POST /events/{id}/publish"
+API  --> EVT  : "6.1: publicarEvento(eventId)"
+EVT  --> DB   : "6.1.1: buscarEventoComLotes(eventId)"
+EVT  --> DB   : "6.1.2: atualizarStatus(PUBLICADO)"
 
 legend bottom
-  Mensagens numeradas indicam a ordem temporal das interações.
-  O sufixo (ex.: 4.1) indica aninhamento dentro da mensagem 4.
+  Notação de comunicação UML: objetos colaboradores ligados por vínculos.
+  A numeração decimal indica a ordem e o aninhamento das mensagens
+  (ex.: 2.1.1 ocorre durante o processamento de 2.1). Mensagens de
+  retorno foram omitidas para maior legibilidade.
 endlegend
 
 @enduml

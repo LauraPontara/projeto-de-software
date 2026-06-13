@@ -3,29 +3,40 @@
 
 title Diagrama de Comunicação\nUC17 - Realizar Check-in Digital
 
-skinparam actorStyle awesome
+skinparam rectangle {
+  BackgroundColor #EAF4FB
+  BorderColor     #2176AE
+  FontColor       #1A1A2E
+  FontStyle       plain
+  FontSize        12
+  BorderThickness 1.5
+}
 
-actor "Creator" as CRE
-boundary "Gestor - Scanner (UI)" as UI
-control  "Elo API"        as API
-control  "CheckinService" as CHK
-control  "TicketService"  as TCK
-database "PostgreSQL"     as DB
+actor     "Creator" as CRE
+rectangle ":Gestor - Scanner (UI)" as UI
+rectangle ":Elo API"        as API
+rectangle ":CheckinService" as CHK
+rectangle ":TicketService"  as TCK
+rectangle ":PostgreSQL"     as DB
 
-CRE -> UI  : 1: abrirCheckin(eventId)
-UI  -> API : 2: GET /events/{id}/checkin/summary
-CRE -> UI  : 3: escanearQrCode()
-UI  -> API : 4: POST /checkin {eventId, qrCode}
-API -> CHK : 5: validarIngresso(eventId, qrCode)
-CHK -> TCK : 6: buscarPorQrCode(qrCode)
-TCK -> DB  : 6.1: buscarIngresso(qrCode)
-CHK -> DB  : 7: atualizarIngresso(UTILIZADO, checkinEm)
-API -> UI  : 8: resultado(validado | jaUtilizado | invalido)
-UI  -> CRE : 9: exibirRetorno(verde | amarelo | vermelho)
+' --- Fluxo: abrir painel de check-in ---
+CRE --> UI  : "1: abrirCheckin(eventId)"
+UI  --> API : "1.1: GET /events/{id}/checkin/summary"
+
+' --- Fluxo: validar ingresso (repetido por participante) ---
+CRE --> UI  : "2: escanearQrCode()"
+UI  --> API : "2.1: POST /checkin {eventId, qrCode}"
+API --> CHK : "2.1.1: validarIngresso(eventId, qrCode)"
+CHK --> TCK : "2.1.1.1: buscarPorQrCode(qrCode)"
+TCK --> DB  : "2.1.1.1.1: buscarIngresso(qrCode)"
+CHK --> DB  : "2.1.1.2: atualizarIngresso(UTILIZADO, checkinEm)"
+UI  --> CRE : "2.2: exibirRetorno(verde | amarelo | vermelho)"
 
 legend bottom
-  Mensagens numeradas indicam a ordem temporal das interações.
-  O sufixo (ex.: 6.1) indica aninhamento dentro da mensagem 6.
+  Notação de comunicação UML: objetos colaboradores ligados por vínculos.
+  A numeração decimal indica a ordem e o aninhamento das mensagens
+  (ex.: 2.1.1 ocorre durante o processamento de 2.1). Mensagens de
+  retorno foram omitidas para maior legibilidade.
 endlegend
 
 @enduml
